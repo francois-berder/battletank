@@ -12,6 +12,11 @@ Logger& Logger::instance()
     return l;
 }
 
+void Logger::setEnabled(const bool enabled)
+{
+    m_enabled = enabled;
+}
+
 void Logger::writeToFile(const std::string& fileName)
 {
     m_file.open(fileName.c_str());

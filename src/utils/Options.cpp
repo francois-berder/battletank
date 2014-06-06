@@ -50,13 +50,13 @@ std::list<Argument> Options::getArgs() const
 
 void Options::parseArg(char *arg)
 {
-    std::regex r("--?[a-zA-Z]+(=[a-zA-Z0-9]+)?");
+    std::regex r("--?[a-zA-Z-]+(=[a-zA-Z0-9]+)?");
     std::cmatch m;
     if(!std::regex_match(arg, m, r))    
     {
         std::stringstream msg;
-        msg << "Malformed argument: " << arg << ".\n";    
-        throw new std::runtime_error(msg.str());
+        msg << "Malformed argument: " << arg;    
+        throw std::runtime_error(msg.str());
     }
     std::string name, value;
     

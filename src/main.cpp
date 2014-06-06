@@ -2,6 +2,7 @@
 
 #include "Options.hpp"
 #include "Logger.hpp"
+#include "Game.hpp"
 
 
 int main(int argc, char **argv)
@@ -15,6 +16,10 @@ int main(int argc, char **argv)
     {
         LOG << "ERROR ! " << e.what() << "\n";
     }
+    
+    Game game;
+    game.setOptions(opt);
+    game.run();
     
     return 0;
 }
