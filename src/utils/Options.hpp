@@ -11,13 +11,10 @@ class Argument
         Argument(const std::string &name = std::string(),
                  const std::string &value = std::string());
         
-        std::string getName();
-        std::string getValue();
+        std::string getName() const;
+        std::string getValue() const;
         
-        bool operator==(const std::string &name)
-        {
-            return m_name == name;
-        }
+        bool operator==(const std::string &name);
         
     private :
         
@@ -34,7 +31,7 @@ class Options
         
         void parse(int argc, char **argv);
         
-        std::list<Argument> getArgs();
+        std::list<Argument> getArgs() const;
         
     private :
     

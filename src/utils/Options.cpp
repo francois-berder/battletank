@@ -9,17 +9,22 @@ m_value(value)
 {
 }
 
-std::string Argument::getName()
+bool Argument::operator==(const std::string &name)
+{
+    return m_name == name;
+}
+        
+std::string Argument::getName() const
 {
     return m_name;
 }
 
-std::string Argument::getValue()
+std::string Argument::getValue() const
 {
     return m_value;
 }
         
-        
+
 Options::Options():
 m_args()
 {
@@ -38,7 +43,7 @@ void Options::parse(int argc, char **argv)
         parseArg(argv[i]);
 }
 
-std::list<Argument> Options::getArgs()
+std::list<Argument> Options::getArgs() const
 {
     return m_args;
 }
