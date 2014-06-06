@@ -24,7 +24,7 @@ EntityPtr EntityFactory::createFromName(const std::string &name)
         std::stringstream msg;
         msg << "Could not create entity from name: ";
         msg << name;
-        msg << ".";
+        msg << ".\n";
         throw new std::runtime_error(msg.str());
     }
 }
