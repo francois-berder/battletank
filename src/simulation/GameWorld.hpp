@@ -14,6 +14,8 @@ class GameWorld
         
         void step();
         
+        bool isFinished();
+        
     private :
     
         unsigned int m_currentStep;

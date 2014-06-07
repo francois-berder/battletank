@@ -14,7 +14,9 @@ int main(int argc, char **argv)
     }
     catch(std::exception &e)
     {
-        LOG << "ERROR ! " << e.what() << "\n";
+        LOG << e.what() << "\n";
+        LOG << "Abort\n";
+        return -1;
     }
     
     Game game;

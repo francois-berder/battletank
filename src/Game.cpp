@@ -1,9 +1,14 @@
+#include <stdexcept>
+
 #include "Game.hpp"
 #include "Logger.hpp"
+#include "CommandFactory.hpp"
 
 
 Game::Game():
-m_isInteractive(false)
+m_isInteractive(false),
+m_exit(false),
+m_gameWorld()
 {
 }
 
@@ -34,9 +39,23 @@ void Game::run()
         runNonInteractiveMode();
 }
 
-void Game::runInteractiveMode()
+void Game::exit()
 {
+    m_exit = true;
+}
 
+void Game::runInteractiveMode()
+{   
+    CommandFactory cmdFactory;
+    while(!m_gameWorld.isFinished() && !m_exit)
+    {
+        std::cout << "> ";
+        std::string cmdStr;
+        std::getline(std::cin, cmdStr);
+
+        CommandPtr cmd = cmdFactory.parseCmd(cmdStr);
+        cmd->execute(*this, m_gameWorld);
+    }
 }
 
 void Game::runNonInteractiveMode()

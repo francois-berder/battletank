@@ -17,3 +17,7 @@ void GameWorld::step()
     ++m_currentStep;
 }
 
+bool GameWorld::isFinished()
+{
+    return false;
+}
