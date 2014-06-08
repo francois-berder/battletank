@@ -5,8 +5,8 @@ Entity(id)
 {
 }
         
-std::string Obstacle::log()
+std::string Obstacle::print()
 {
-    return Entity::log() + ",type:obstacle";
+    return Entity::print() + ",type:obstacle";
 }
 

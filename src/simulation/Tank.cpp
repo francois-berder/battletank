@@ -14,11 +14,11 @@ void Tank::update()
 
 }
 
-std::string Tank::log()
+std::string Tank::print()
 {
     std::stringstream ss;
     ss << "type:tank,";
     ss << "health:";
     ss << m_health;
-    return Entity::log() + "," + ss.str();
+    return Entity::print() + "," + ss.str();
 }

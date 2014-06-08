@@ -15,7 +15,7 @@ class Entity
        
        virtual void update();
        
-       virtual std::string log();
+       virtual std::string print();
        
     private :
    

@@ -10,7 +10,7 @@ class Obstacle : public Entity
     
         Obstacle(const EntityID id);
     
-        virtual std::string log();
+        virtual std::string print();
 };
 
 #endif /* __OBSTACLE_H__ */

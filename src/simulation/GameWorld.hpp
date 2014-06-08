@@ -16,6 +16,8 @@ class GameWorld
         
         bool isFinished();
         
+        std::string print();
+        
     private :
     
         unsigned int m_currentStep;

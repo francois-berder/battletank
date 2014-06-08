@@ -17,7 +17,7 @@ void Entity::update()
     // by default, do nothing
 }
 
-std::string Entity::log()
+std::string Entity::print()
 {
     std::stringstream ss;
     ss << "id:";
