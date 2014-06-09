@@ -63,7 +63,7 @@ std::string GameWorld::print()
     for(auto it = m_entities.begin();
         it != m_entities.end();
         ++it)
-        ss << it->second->print();
+        ss << it->second->print() << ';';
     ss << ']';
     return ss.str();
 }   
