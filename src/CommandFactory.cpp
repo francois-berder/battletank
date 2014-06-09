@@ -70,8 +70,14 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
         cmd = CommandPtr(new PrintCommand);
     else if(cmdName == "a" || cmdName == "apply")
     {
-        if(args.size() < 4)
+        if(args.size() < 3)
             cmd = CommandPtr(new InvalidCommand);
+        else if(args.size() == 3)
+        {
+            std::string name = args[1];
+            std::string arg = args[2];
+            cmd = CommandPtr(new ApplyCommand(0, name, arg));
+        }
         else
         {
             EntityID id;
@@ -81,7 +87,7 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
             std::string name = args[2];
             std::string arg = args[3];
             cmd = CommandPtr(new ApplyCommand(id, name, arg));
-        }    
+        }
     }
     else
         cmd = CommandPtr(new InvalidCommand);
