@@ -51,7 +51,7 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
         cmd = CommandPtr(new QuitCommand);
     else if(cmdName == "s" || cmdName == "step")
     {
-        unsigned int nbSteps = 1;
+        int nbSteps = 1;
         if(args.size() > 1)
         {
             std::stringstream ss;
@@ -59,8 +59,8 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
             ss >> nbSteps;
         }
         
-        if(nbSteps == 0)
-            cmd = CommandPtr(new Command);
+        if(nbSteps < 0)
+            cmd = CommandPtr(new InvalidCommand);
         else
             cmd = CommandPtr(new StepCommand(nbSteps));
     }
