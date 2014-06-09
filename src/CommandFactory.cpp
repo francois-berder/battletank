@@ -68,6 +68,21 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
         cmd = CommandPtr(new HelpCommand);
     else if(cmdName == "p" || cmdName == "print")
         cmd = CommandPtr(new PrintCommand);
+    else if(cmdName == "a" || cmdName == "apply")
+    {
+        if(args.size() < 4)
+            cmd = CommandPtr(new InvalidCommand);
+        else
+        {
+            EntityID id;
+            std::stringstream ss;
+            ss << args[1];
+            ss >> id;
+            std::string name = args[2];
+            std::string arg = args[3];
+            cmd = CommandPtr(new ApplyCommand(id, name, arg));
+        }    
+    }
     else
         cmd = CommandPtr(new InvalidCommand);
         

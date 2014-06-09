@@ -59,5 +59,18 @@ class PrintCommand : public Command
         virtual void execute(Game &game, GameWorld &gameWorld);
 };
 
+class ApplyCommand : public Command
+{
+    public :
+    
+        ApplyCommand(const EntityID id, const std::string name, const std::string &arg);
+    
+        virtual void execute(Game &game, GameWorld &gameWorld);
+
+    private :
+    
+        Change m_change;
+};
+
 #endif /* __COMMAND_H__ */
 
