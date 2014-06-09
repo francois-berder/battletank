@@ -50,7 +50,20 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
     if(cmdName == "q" || cmdName == "quit")
         cmd = CommandPtr(new QuitCommand);
     else if(cmdName == "s" || cmdName == "step")
-        cmd = CommandPtr(new StepCommand);
+    {
+        unsigned int nbSteps = 1;
+        if(args.size() > 1)
+        {
+            std::stringstream ss;
+            ss << args[1];
+            ss >> nbSteps;
+        }
+        
+        if(nbSteps == 0)
+            cmd = CommandPtr(new Command);
+        else
+            cmd = CommandPtr(new StepCommand(nbSteps));
+    }
     else if(cmdName == "h" || cmdName == "help")
         cmd = CommandPtr(new HelpCommand);
     else if(cmdName == "p" || cmdName == "print")

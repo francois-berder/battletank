@@ -35,8 +35,14 @@ class QuitCommand : public Command
 class StepCommand : public Command
 {
     public :
+
+        StepCommand(const unsigned int nbSteps = 1);
     
         virtual void execute(Game &game, GameWorld &gameWorld);
+        
+    private :
+    
+        unsigned int m_nbSteps;
 };
 
 class HelpCommand : public Command

@@ -18,9 +18,19 @@ void QuitCommand::execute(Game &game, GameWorld &gameWorld)
     game.exit();
 }
 
+StepCommand::StepCommand(const unsigned int nbSteps):
+m_nbSteps(nbSteps)
+{
+
+}
+
 void StepCommand::execute(Game &game, GameWorld &gameWorld)
 {
-    gameWorld.step();
+    while(m_nbSteps != 0)
+    {
+        gameWorld.step();
+        --m_nbSteps;
+    }
 }
 
 void HelpCommand::execute(Game &game, GameWorld &gameWorld)
