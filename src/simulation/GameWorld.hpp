@@ -6,7 +6,7 @@
 #include "Entity.hpp"
 #include "EntityFactory.hpp"
 #include "Change.hpp"
-
+#include "PhysicWorld.hpp"
 
 class GameWorld
 {

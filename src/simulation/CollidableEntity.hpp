@@ -1,0 +1,18 @@
+#ifndef __COLLIDABLE_ENTITY_H__
+#define __COLLIDABLE_ENTITY_H__
+
+#include "Entity.hpp"
+
+
+class CollidableEntity : public Entity
+{
+    public :
+    
+        CollidableEntity(const EntityID id);
+        virtual ~CollidableEntity() = default;
+    
+        virtual void handleCollision(const CollidableEntity &b) = 0;
+};
+
+#endif /* __COLLIDABLE_ENTITY_H__ */
+

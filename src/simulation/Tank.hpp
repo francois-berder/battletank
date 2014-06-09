@@ -1,7 +1,10 @@
 #ifndef __TANK_H__
 #define __TANK_H__
 
+#include <Box2D/Box2D.h>
+
 #include "Entity.hpp"
+
 
 class Tank : public Entity
 {
@@ -16,6 +19,7 @@ class Tank : public Entity
     private :
     
         int m_health;
+        b2Body *m_body;
 };
 
 #endif /* __TANK_H__ */

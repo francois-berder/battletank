@@ -5,7 +5,8 @@
 
 Tank::Tank(const EntityID id):
 Entity(id),
-m_health(100)
+m_health(100),
+m_body()
 {
 }
 

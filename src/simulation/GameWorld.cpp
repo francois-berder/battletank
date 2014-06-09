@@ -19,6 +19,8 @@ void GameWorld::step()
         it != m_entities.end();
         ++it)
         it->second->update();
+        
+    PhysicWorld::instance().update();
 }
 
 void GameWorld::applyChange(const Change &change)
@@ -26,7 +28,6 @@ void GameWorld::applyChange(const Change &change)
     const EntityID id = change.getTargetID();
     if(id != 0)
         m_entities[id]->applyChange(change);
-        
     else
         proceedChange(change.getName(), change.getArg());
 }
