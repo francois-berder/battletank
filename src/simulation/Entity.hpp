@@ -4,6 +4,8 @@
 #include <memory>
 #include <string>
 
+class Change;
+
 typedef unsigned int EntityID;
 
 class Entity
@@ -15,7 +17,11 @@ class Entity
        
        virtual void update();
        
+       virtual void applyChange(const Change &change);
+       
        virtual std::string print();
+       
+       EntityID getID() const;
        
     private :
    
