@@ -2,6 +2,7 @@
 #define __OBSTACLE_H__
 
 #include <Box2D/Box2D.h>
+#include <memory>
 
 #include "Entity.hpp"
 
@@ -16,7 +17,7 @@ class Obstacle : public Entity
         
     private :
     
-        b2Body *m_body;
+        std::unique_ptr<b2Body, void (*)(b2Body*)> m_body;
 };
 
 #endif /* __OBSTACLE_H__ */

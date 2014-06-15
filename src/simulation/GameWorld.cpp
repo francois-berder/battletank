@@ -20,7 +20,7 @@ void GameWorld::step()
         ++it)
         it->second->update();
         
-    PhysicWorld::instance().update();
+    PhysicWorld::update();
 }
 
 void GameWorld::applyChange(const Change &change)

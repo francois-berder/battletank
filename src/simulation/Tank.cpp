@@ -1,12 +1,12 @@
 #include <sstream>
 
 #include "Tank.hpp"
-
+#include "PhysicWorld.hpp"
 
 Tank::Tank(const EntityID id):
 Entity(id),
 m_health(100),
-m_body()
+m_body(nullptr, PhysicWorld::destroyBody)
 {
 }
 

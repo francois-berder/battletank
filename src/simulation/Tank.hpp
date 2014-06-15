@@ -19,7 +19,7 @@ class Tank : public Entity
     private :
     
         int m_health;
-        b2Body *m_body;
+        std::unique_ptr<b2Body, void (*)(b2Body*) > m_body;
 };
 
 #endif /* __TANK_H__ */
