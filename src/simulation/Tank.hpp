@@ -13,7 +13,7 @@ class Tank : public Entity
         Tank(const EntityID id);        
         
         virtual void update(); 
-        
+        virtual void applyChange(const Change &change);
         virtual std::string print();
 
     private :
