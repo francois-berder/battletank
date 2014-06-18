@@ -1,8 +1,24 @@
+#include <stdexcept>
 #include <sstream>
 
 #include "EntityFactory.hpp"
 #include "GameWorld.hpp"
+#include "Logger.hpp"
 
+
+namespace
+{
+    std::list<std::string> split(const std::string &s) 
+    {
+        std::list<std::string> elems;
+        std::stringstream ss(s);
+        std::string item;
+        while (std::getline(ss, item, ' '))
+            elems.push_back(item);
+
+        return elems;
+    }
+}
 
 GameWorld::GameWorld():
 m_currentStep(0),
@@ -36,7 +52,13 @@ void GameWorld::proceedChange(const std::string &name, const std::string &arg)
 {
     if(name == "new")
     {
-        EntityPtr e = m_factory.createFromName(arg);
+        std::list<std::string> args = split(arg);
+        if(args.empty())
+            throw std::runtime_error("Missing type to create entity\n.");
+        
+        std::string type = args.front();
+        args.pop_front();
+        EntityPtr e = m_factory.createFromName(type, args);
         m_entities[e->getID()] = e;
     }
     else if(name == "delete")
@@ -49,6 +71,8 @@ void GameWorld::proceedChange(const std::string &name, const std::string &arg)
         
         m_entities.erase(id);
     }
+    else
+        Logger::instance() << "Ignored change " << name << '\n';
 }
 
 bool GameWorld::isFinished()

@@ -10,7 +10,7 @@ class Tank : public Entity
 {
     public :
         
-        Tank(const EntityID id);        
+        Tank(const EntityID id, const b2Vec2& startPos);        
         
         virtual void update(); 
         virtual void applyChange(const Change &change);
