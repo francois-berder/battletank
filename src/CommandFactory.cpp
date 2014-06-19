@@ -45,8 +45,9 @@ namespace
             ss << *it;
             ss << " ";
         }
+        std::string str = ss.str();
         
-        return ss.str();
+        return str.substr(0, str.size()-1);
     }
 }
 
