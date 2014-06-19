@@ -89,6 +89,6 @@ std::string GameWorld::print()
         it != m_entities.end();
         ++it)
         ss << it->second->print() << ';';
-    ss << ']';
-    return ss.str();
+    std::string str = ss.str();
+    return str.substr(0, str.size()-1) + ']';
 }   
