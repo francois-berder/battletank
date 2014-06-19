@@ -1,3 +1,4 @@
+#include <fstream>
 #include <stdexcept>
 
 #include "Game.hpp"
@@ -28,9 +29,11 @@ void Game::setOptions(Options& opt)
             LOG.setEnabled(true);
         else if(arg == "--log-file")
             LOG.writeToFile(arg.getValue());
+        else if(arg == "-x")
+            executeFile(arg.getValue());
     }
 }
-    
+
 void Game::run()
 {
     if(m_isInteractive)
@@ -63,3 +66,22 @@ void Game::runNonInteractiveMode()
 
 }
 
+void Game::executeFile(const std::string& path)
+{
+    std::ifstream file(path.c_str());
+    if(!file)
+    {
+        Logger::instance() << "Could not execute file " << path << ".\n";
+        return;
+    }
+
+    CommandFactory cmdFactory;    
+    std::string cmdStr;
+    while(std::getline(file, cmdStr))
+    {
+        CommandPtr cmd = cmdFactory.parseCmd(cmdStr);
+        cmd->execute(*this, m_gameWorld);
+    }
+    
+    file.close();
+}

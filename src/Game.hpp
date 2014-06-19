@@ -22,6 +22,8 @@ class Game
         void runInteractiveMode();
         void runNonInteractiveMode();
         
+        void executeFile(const std::string& path);
+        
         bool m_isInteractive;
         bool m_exit;
         GameWorld m_gameWorld;
