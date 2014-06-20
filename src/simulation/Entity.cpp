@@ -2,6 +2,7 @@
 
 #include "Entity.hpp"
 #include "Change.hpp"
+#include "Logger.hpp"
 
 
 Entity::Entity(const EntityID id):
@@ -20,7 +21,7 @@ void Entity::update()
 
 void Entity::applyChange(const Change &change)
 {
-
+    Logger::instance() << "Ignored " << change.getName() << " change.\n";
 }
 
 std::string Entity::print()
