@@ -15,6 +15,7 @@ src/*
 include_directories(src/)
 include_directories(src/simulation)
 include_directories(src/utils)
+include_directories(src/view)
 
 add_executable(
 tank
