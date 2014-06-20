@@ -20,6 +20,8 @@ class Tank : public Entity
     
         int m_health;
         std::unique_ptr<b2Body, void (*)(b2Body*) > m_body;
+        float m_angularVelocity;
+        float m_velocity;
 };
 
 #endif /* __TANK_H__ */

@@ -10,7 +10,9 @@
 Tank::Tank(const EntityID id, const b2Vec2& startPos):
 Entity(id),
 m_health(100),
-m_body(nullptr, PhysicWorld::destroyBody)
+m_body(nullptr, PhysicWorld::destroyBody),
+m_angularVelocity(0.f),
+m_velocity(0.f)
 {
     b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
@@ -34,7 +36,19 @@ m_body(nullptr, PhysicWorld::destroyBody)
 
 void Tank::update()
 {
+    if(fabs(m_angularVelocity) > 0.1f)
+    {
+        m_body->SetAngularVelocity(m_angularVelocity);
+        m_angularVelocity = 0.f;
+    }
 
+    if(fabs(m_velocity) > 0.1f)
+    {
+        b2Vec2 vel(0.f, m_velocity);
+        vel = b2Mul(b2Rot(m_body->GetAngle()), vel);
+        m_body->SetLinearVelocity(vel);
+        m_velocity = 0.f;
+    }
 }
 
 void Tank::applyChange(const Change &change)
@@ -45,18 +59,16 @@ void Tank::applyChange(const Change &change)
     if(change.getName() == "move")
     {
         std::string dirName = change.getArg();
-        b2Vec2 dir;
         if(dirName == "down")
-            dir = b2Vec2(0.f, -2.f);
+            m_velocity -= 2.f;
         else if(dirName == "up")
-            dir = b2Vec2(0.f, 2.f);
+            m_velocity += 2.f;
         else if(dirName == "left")
-            dir = b2Vec2(-2.f, 0.f);
+            m_angularVelocity -= 2.f;
         else if(dirName == "right")
-            dir = b2Vec2(2.f, 0.f);
+            m_angularVelocity += -2.f;
         else
             Logger::instance() << "Ignored move change, could not recognize direction " << change.getArg() << '\n';
-        m_body->SetLinearVelocity(dir);
     }
     else
         Logger::instance() << "Ignored change " << change.getName() << '\n';
@@ -69,10 +81,11 @@ std::string Tank::print()
     ss << "type:tank,";
     ss << "health:";
     ss << m_health;
-    ss << ",pos:(";
+    ss << ",pos:[x:";
     ss << pos.x;
-    ss << ",";
+    ss << ",y:";
     ss << pos.y;
-    ss << ")";
+    ss << "],angle:";
+    ss << m_body->GetAngle();
     return Entity::print() + "," + ss.str();
 }
