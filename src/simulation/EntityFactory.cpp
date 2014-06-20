@@ -38,7 +38,15 @@ EntityPtr EntityFactory::createFromName(const std::string &name, std::list<std::
         return EntityPtr(new Tank(m_currentID, b2Vec2(x, y))); 
     }
     else if(name == "obstacle")
-        return EntityPtr(new Obstacle(m_currentID));
+    {
+        if(args.size() < 2)
+            throw std::runtime_error("Not enough arguments given to create obstacle.\n");
+
+        float x = convertFromStr(args.front());
+        args.pop_front();
+        float y = convertFromStr(args.front());
+        return EntityPtr(new Obstacle(m_currentID, b2Vec2(x, y)));
+    }
     else
     {
         std::stringstream msg;

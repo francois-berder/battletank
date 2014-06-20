@@ -11,7 +11,7 @@ class Obstacle : public Entity
 {
     public :
     
-        Obstacle(const EntityID id);
+        Obstacle(const EntityID id, const b2Vec2 &pos);
     
         virtual std::string print();
         
