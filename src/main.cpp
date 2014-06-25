@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     catch(std::exception &e)
     {
         LOG << e.what() << "\n";
-        LOG << "Abort\n";
+        LOG << "Abort.\n";
         return -1;
     }
     
