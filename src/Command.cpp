@@ -3,36 +3,44 @@
 #include "Command.hpp"
 
 
-void Command::execute(Game &game, GameWorld &gameWorld)
+void Command::execute()
 {
 }
 
-void InvalidCommand::execute(Game &game, GameWorld &gameWorld)
+void InvalidCommand::execute()
 {
     std::cout << "Invalid command." << std::endl;
 }
-    
-void QuitCommand::execute(Game &game, GameWorld &gameWorld)
+
+QuitCommand::QuitCommand(Game& game):
+Command(),
+m_game(game)
 {
-    std::cout << "Exiting." << std::endl;
-    game.exit();
 }
 
-StepCommand::StepCommand(const unsigned int nbSteps):
+void QuitCommand::execute()
+{
+    std::cout << "Exiting." << std::endl;
+    m_game.exit();
+}
+
+StepCommand::StepCommand(GameWorld &gameWorld, const unsigned int nbSteps):
+Command(),
+m_gameWorld(gameWorld),
 m_nbSteps(nbSteps)
 {
 }
 
-void StepCommand::execute(Game &game, GameWorld &gameWorld)
+void StepCommand::execute()
 {
     while(m_nbSteps != 0)
     {
-        gameWorld.step();
+        m_gameWorld.step();
         --m_nbSteps;
     }
 }
 
-void HelpCommand::execute(Game &game, GameWorld &gameWorld)
+void HelpCommand::execute()
 {
     std::cout << "Command list:" << std::endl;
     std::cout << "step\tExecute one simulation step" << std::endl;
@@ -42,18 +50,26 @@ void HelpCommand::execute(Game &game, GameWorld &gameWorld)
     std::cout << "quit\tQuit game" << std::endl;    
 }
 
-void PrintCommand::execute(Game &game, GameWorld &gameWorld)
+PrintCommand::PrintCommand(GameWorld &gameWorld):
+Command(),
+m_gameWorld(gameWorld)
 {
-    std::cout << gameWorld.print() << std::endl;   
 }
 
-ApplyCommand::ApplyCommand(const EntityID id, const std::string name, const std::string &arg):
+void PrintCommand::execute()
+{
+    std::cout << m_gameWorld.print() << std::endl;   
+}
+
+ApplyCommand::ApplyCommand(GameWorld &gameWorld, const EntityID id, const std::string name, const std::string &arg):
+Command(),
+m_gameWorld(gameWorld),
 m_change(id, name, arg)
 {
 }
     
-void ApplyCommand::execute(Game &game, GameWorld &gameWorld)
+void ApplyCommand::execute()
 {
-    gameWorld.applyChange(m_change);
+    m_gameWorld.applyChange(m_change);
 }
 

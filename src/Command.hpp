@@ -13,7 +13,7 @@ class Command
         
         virtual ~Command() = default;
         
-        virtual void execute(Game &game, GameWorld &gameWorld);
+        virtual void execute();
 };
 
 typedef std::shared_ptr<Command> CommandPtr;
@@ -22,26 +22,33 @@ class InvalidCommand : public Command
 {
     public :
     
-        virtual void execute(Game &game, GameWorld &gameWorld);
+        virtual void execute();
 };
 
 class QuitCommand : public Command
 {
     public :
     
-        virtual void execute(Game &game, GameWorld &gameWorld);
+        QuitCommand(Game &game);
+        
+        virtual void execute();
+        
+    private :
+        
+        Game &m_game;
 };
 
 class StepCommand : public Command
 {
     public :
 
-        StepCommand(const unsigned int nbSteps = 1);
+        StepCommand(GameWorld &gameWorld, const unsigned int nbSteps = 1);
     
-        virtual void execute(Game &game, GameWorld &gameWorld);
+        virtual void execute();
         
     private :
     
+        GameWorld &m_gameWorld;
         unsigned int m_nbSteps;
 };
 
@@ -49,26 +56,33 @@ class HelpCommand : public Command
 {
     public :
     
-        virtual void execute(Game &game, GameWorld &gameWorld);
+        virtual void execute();
 };
 
 class PrintCommand : public Command
 {
     public :
     
-        virtual void execute(Game &game, GameWorld &gameWorld);
+        PrintCommand(GameWorld &gameWorld);
+        
+        virtual void execute();
+        
+    private :
+    
+        GameWorld &m_gameWorld;
 };
 
 class ApplyCommand : public Command
 {
     public :
     
-        ApplyCommand(const EntityID id, const std::string name, const std::string &arg);
+        ApplyCommand(GameWorld &gameWorld, const EntityID id, const std::string name, const std::string &arg);
     
-        virtual void execute(Game &game, GameWorld &gameWorld);
+        virtual void execute();
 
     private :
-    
+
+        GameWorld &m_gameWorld;
         Change m_change;
 };
 

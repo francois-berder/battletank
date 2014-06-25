@@ -49,7 +49,7 @@ void Game::exit()
 
 void Game::runInteractiveMode()
 {   
-    CommandFactory cmdFactory;
+    CommandFactory cmdFactory(*this, m_gameWorld);
     while(!m_gameWorld.isFinished() && !m_exit)
     {
         std::cout << "> ";
@@ -57,7 +57,7 @@ void Game::runInteractiveMode()
         std::getline(std::cin, cmdStr);
 
         CommandPtr cmd = cmdFactory.parseCmd(cmdStr);
-        cmd->execute(*this, m_gameWorld);
+        cmd->execute();
     }
 }
 
@@ -75,12 +75,12 @@ void Game::executeFile(const std::string& path)
         return;
     }
 
-    CommandFactory cmdFactory;    
+    CommandFactory cmdFactory(*this, m_gameWorld);    
     std::string cmdStr;
     while(std::getline(file, cmdStr))
     {
         CommandPtr cmd = cmdFactory.parseCmd(cmdStr);
-        cmd->execute(*this, m_gameWorld);
+        cmd->execute();
     }
     
     file.close();

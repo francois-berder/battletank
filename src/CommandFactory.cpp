@@ -51,8 +51,10 @@ namespace
     }
 }
 
-CommandFactory::CommandFactory():
-m_lastCmd(CommandPtr(new Command))
+CommandFactory::CommandFactory(Game &game, GameWorld &gameWorld):
+m_lastCmd(CommandPtr(new Command)),
+m_game(game),
+m_gameWorld(gameWorld)
 {
 }
 
@@ -68,7 +70,7 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
     
     CommandPtr cmd;
     if(cmdName == "q" || cmdName == "quit")
-        cmd = CommandPtr(new QuitCommand);
+        cmd = CommandPtr(new QuitCommand(m_game));
     else if(cmdName == "s" || cmdName == "step")
     {
         int nbSteps = 1;
@@ -82,12 +84,12 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
         if(nbSteps < 0)
             cmd = CommandPtr(new InvalidCommand);
         else
-            cmd = CommandPtr(new StepCommand(nbSteps));
+            cmd = CommandPtr(new StepCommand(m_gameWorld, nbSteps));
     }
     else if(cmdName == "h" || cmdName == "help")
         cmd = CommandPtr(new HelpCommand);
     else if(cmdName == "p" || cmdName == "print")
-        cmd = CommandPtr(new PrintCommand);
+        cmd = CommandPtr(new PrintCommand(m_gameWorld));
     else if(cmdName == "a" || cmdName == "apply")
     {
         if(args.empty())
@@ -105,7 +107,7 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
             }
             std::string name = args.front();
             args.pop_front();
-            cmd = CommandPtr(new ApplyCommand(id, name, concat(args)));
+            cmd = CommandPtr(new ApplyCommand(m_gameWorld, id, name, concat(args)));
         }
     }
     else
