@@ -15,7 +15,7 @@ class CommandFactory
         
     private :
     
-        CommandPtr m_lastCmd;
+        std::string m_lastCmd;
         Game &m_game;
         GameWorld &m_gameWorld;
 };

@@ -1,61 +1,52 @@
+#include <stdexcept>
 #include <regex>
 
-#include "Options.hpp"
+#include "Option.hpp"
 #include "Logger.hpp"
 
-Argument::Argument(const std::string &name, const std::string &value):
+Option::Option(const std::string &name, const std::string &value):
 m_name(name),
 m_value(value)
 {
 }
 
-bool Argument::operator==(const std::string &name)
+bool Option::operator==(const std::string &name)
 {
     return m_name == name;
 }
         
-std::string Argument::getName() const
+std::string Option::getName() const
 {
     return m_name;
 }
 
-std::string Argument::getValue() const
+std::string Option::getValue() const
 {
     return m_value;
 }
         
-
-Options::Options():
-m_args()
+std::list<Option> Option::parse(int argc, char **argv)
 {
-}
-        
-void Options::parse(int argc, char **argv)
-{
-    m_args.clear();
-
     if(argc < 2)
-        return;
+        throw std::runtime_error("Could not parse options, too few arguments given.");
     if(argv == NULL)
-        return;
+        throw std::runtime_error("Could not parse options: null argument list given.");
         
+    std::list<Option> options;
     for(int i = 1; i < argc; ++i)
-        parseArg(argv[i]);
+        options.push_back(Option::parseArg(argv[i]));
+
+    return options;
 }
 
-std::list<Argument> Options::getArgs() const
-{
-    return m_args;
-}
-
-void Options::parseArg(char *arg)
+Option Option::parseArg(char *arg)
 {
     std::regex r("--?[a-zA-Z-]+(=[a-zA-Z0-9]+)?");
     std::cmatch m;
     if(!std::regex_match(arg, m, r))    
     {
         std::stringstream msg;
-        msg << "Malformed argument: " << arg;    
+        msg << "Malformed Option: " << arg;    
         throw std::runtime_error(msg.str());
     }
     std::string name, value;
@@ -69,7 +60,7 @@ void Options::parseArg(char *arg)
     }
     else
         name = s;
-        
-    m_args.push_back(Argument(name, value));
+
+    return Option(name, value);   
 }
 

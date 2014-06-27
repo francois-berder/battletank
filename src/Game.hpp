@@ -1,7 +1,7 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#include "Options.hpp"
+#include "Option.hpp"
 #include "GameWorld.hpp"
 
 
@@ -11,7 +11,7 @@ class Game
     
         Game();
 
-        void setOptions(Options& opt);
+        void setOptions(std::list<Option>& options);
         
         void run();
         

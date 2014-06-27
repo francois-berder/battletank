@@ -1,16 +1,16 @@
 #include <stdexcept>
 
-#include "Options.hpp"
+#include "Option.hpp"
 #include "Logger.hpp"
 #include "Game.hpp"
 
 
 int main(int argc, char **argv)
 {
-    Options opt;
+    std::list<Option> options;
     try
     {
-        opt.parse(argc, argv);
+        options = Option::parse(argc, argv);
     }
     catch(std::exception &e)
     {
@@ -20,7 +20,7 @@ int main(int argc, char **argv)
     }
     
     Game game;
-    game.setOptions(opt);
+    game.setOptions(options);
     game.run();
     
     return 0;

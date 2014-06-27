@@ -13,24 +13,22 @@ m_gameWorld()
 {
 }
 
-void Game::setOptions(Options& opt)
+void Game::setOptions(std::list<Option>& options)
 {
-    std::list<Argument> args = opt.getArgs();
-
-    for(auto it = args.begin();
-        it != args.end();
+    for(auto it = options.begin();
+        it != options.end();
         ++it)
     {
-        Argument arg = *it;
+        Option opt = *it;
         
-        if(arg == "-i" || arg == "--interactive")
+        if(opt == "-i" || opt == "--interactive")
             m_isInteractive = true;
-        else if(arg == "--enable-log")
+        else if(opt == "--enable-log")
             LOG.setEnabled(true);
-        else if(arg == "--log-file")
-            LOG.writeToFile(arg.getValue());
-        else if(arg == "-x")
-            executeFile(arg.getValue());
+        else if(opt == "--log-file")
+            LOG.writeToFile(opt.getValue());
+        else if(opt == "-x")
+            executeFile(opt.getValue());
     }
 }
 
