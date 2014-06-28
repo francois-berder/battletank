@@ -67,7 +67,7 @@ bool GameWorld::isFinished()
     return false;
 }
 
-std::string GameWorld::print()
+std::string GameWorld::print() const
 {
     std::stringstream ss;
     ss << "step " << m_currentStep << ":\n";

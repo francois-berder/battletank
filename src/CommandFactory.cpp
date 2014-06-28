@@ -5,10 +5,9 @@
 #include "Argument.hpp"
 
 
-CommandFactory::CommandFactory(Game &game, GameWorld &gameWorld):
+CommandFactory::CommandFactory(Game &game):
 m_lastCmd(""),
-m_game(game),
-m_gameWorld(gameWorld)
+m_game(game)
 {
 }
 
@@ -44,12 +43,12 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
         if(nbSteps < 0)
             cmd = CommandPtr(new InvalidCommand);
         else
-            cmd = CommandPtr(new StepCommand(m_gameWorld, nbSteps));
+            cmd = CommandPtr(new StepCommand(m_game.getWorld(), nbSteps));
     }
     else if(cmdName == "h" || cmdName == "help")
         cmd = CommandPtr(new HelpCommand);
     else if(cmdName == "p" || cmdName == "print")
-        cmd = CommandPtr(new PrintCommand(m_gameWorld));
+        cmd = CommandPtr(new PrintCommand(m_game.getWorld()));
     else if(cmdName == "a" || cmdName == "apply")
     {
         if(args.empty())
@@ -67,7 +66,7 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
             }
             std::string name = args.front();
             args.pop_front();
-            cmd = CommandPtr(new ApplyCommand(m_gameWorld, id, name, Argument::concat(args)));
+            cmd = CommandPtr(new ApplyCommand(m_game.getWorld(), id, name, Argument::concat(args)));
         }
     }
     else

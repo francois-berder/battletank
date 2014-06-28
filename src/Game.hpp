@@ -17,6 +17,8 @@ class Game
         
         void exit();
         
+        GameWorld& getWorld();
+        
     private :
     
         void runInteractiveMode();

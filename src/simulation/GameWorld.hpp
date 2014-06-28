@@ -20,7 +20,7 @@ class GameWorld
         
         bool isFinished();
         
-        std::string print();
+        std::string print() const;
         
     private :
     

@@ -9,7 +9,7 @@ class CommandFactory
 {
     public :
         
-        CommandFactory(Game &game, GameWorld &gameWorld);
+        CommandFactory(Game &game);
         
         CommandPtr parseCmd(const std::string &cmdStr);
         
@@ -17,7 +17,6 @@ class CommandFactory
     
         std::string m_lastCmd;
         Game &m_game;
-        GameWorld &m_gameWorld;
 };
 
 #endif /* __COMMAND_FACTORY_H__ */
