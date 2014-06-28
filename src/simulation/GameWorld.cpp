@@ -75,10 +75,11 @@ std::string GameWorld::print() const
     for(auto it = m_entities.begin();
         it != m_entities.end();
         ++it)
-        ss << it->second->print() << ';';
-    std::string str = ss.str();
-    if(!m_entities.empty())
-        str = str.substr(0, str.size()-1);
-        
-    return str + ']';
+    {
+        ss << it->second->print();
+        if(std::next(it) != m_entities.end())
+            ss << ';';
+    }
+    ss << ']';
+    return ss.str();
 }
