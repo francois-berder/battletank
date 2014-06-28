@@ -3,6 +3,7 @@
 
 #include "Option.hpp"
 #include "GameWorld.hpp"
+#include "View.hpp"
 
 
 class Game
@@ -29,6 +30,7 @@ class Game
         bool m_isInteractive;
         bool m_exit;
         GameWorld m_gameWorld;
+        View m_view;
 };
 
 #endif /* __GAME_H__ */

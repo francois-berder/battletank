@@ -9,7 +9,8 @@
 Game::Game():
 m_isInteractive(false),
 m_exit(false),
-m_gameWorld()
+m_gameWorld(),
+m_view(*this)
 {
 }
 
@@ -56,12 +57,12 @@ void Game::runInteractiveMode()
 
         CommandPtr cmd = cmdFactory.parseCmd(cmdStr);
         cmd->execute();
+        m_view.update();
     }
 }
 
 void Game::runNonInteractiveMode()
 {
-
 }
 
 void Game::executeFile(const std::string& path)
