@@ -27,12 +27,14 @@ std::string Option::getValue() const
         
 std::list<Option> Option::parse(int argc, char **argv)
 {
-    if(argc < 2)
-        throw std::runtime_error("Could not parse options, too few arguments given.");
     if(argv == NULL)
         throw std::runtime_error("Could not parse options: null argument list given.");
-        
+
     std::list<Option> options;
+    
+    if(argc < 2)
+        return options;
+
     for(int i = 1; i < argc; ++i)
         options.push_back(Option::parseArg(argv[i]));
 
