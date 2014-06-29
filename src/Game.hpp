@@ -23,8 +23,6 @@ class Game
         
         void pushEvent(const Event& event);
         
-        GameWorld& getWorld();
-        
     private :
     
         void runInteractiveMode();
