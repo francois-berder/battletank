@@ -16,6 +16,8 @@ class View
 
     private :
     
+        void draw();
+        
         Game &m_game;
         sf::RenderWindow m_window;
 };
