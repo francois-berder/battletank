@@ -1,6 +1,7 @@
 #include "View.hpp"
 #include "Game.hpp"
 #include "TextureManager.hpp"
+#include "Event.hpp"
 
 
 View::View(Game &game):
@@ -11,7 +12,22 @@ m_window(sf::VideoMode(800, 600), "Battle Tank")
 
 void View::update(const std::string& gameState)
 {
+    proceedEvents();
+    
     draw();
+}
+
+void View::proceedEvents()
+{
+    sf::Event e;
+
+    while(m_window.pollEvent(e))
+    {
+        if(e.type == sf::Event::Closed)
+            m_game.pushEvent(QuitEvent);
+        if(e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Escape)
+            m_game.pushEvent(QuitEvent);
+    }
 }
 
 void View::draw()

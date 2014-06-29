@@ -10,7 +10,8 @@ Game::Game():
 m_isInteractive(false),
 m_exit(false),
 m_gameWorld(),
-m_view(*this)
+m_view(*this),
+m_events()
 {
 }
 
@@ -46,6 +47,11 @@ void Game::exit()
     m_exit = true;
 }
 
+void Game::pushEvent(const Event& event)
+{
+    m_events.push(event);
+}
+
 void Game::runInteractiveMode()
 {   
     CommandFactory cmdFactory(*this);
@@ -58,6 +64,7 @@ void Game::runInteractiveMode()
         CommandPtr cmd = cmdFactory.parseCmd(cmdStr);
         cmd->execute();
         m_view.update(m_gameWorld.print());
+        proceedEvents();
     }
 }
 
@@ -67,6 +74,7 @@ void Game::runNonInteractiveMode()
     {
         m_gameWorld.step();
         m_view.update(m_gameWorld.print());
+        proceedEvents();
     }
 }
 
@@ -90,8 +98,26 @@ void Game::executeFile(const std::string& path)
     file.close();
 }
 
+void Game::proceedEvents()
+{
+    while(!m_events.empty())
+    {
+        Event evt = m_events.front();
+        switch(evt)
+        {
+            case Event::QuitEvent:
+                exit();
+                break;
+            default:
+                throw std::runtime_error("Could not proceed unknown event."); 
+        }
+        m_events.pop();
+    }
+}
+
 GameWorld& Game::getWorld()
 {
     return m_gameWorld;
 }
+
 

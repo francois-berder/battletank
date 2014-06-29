@@ -16,6 +16,7 @@ class View
 
     private :
     
+        void proceedEvents();
         void draw();
         void drawBackground();
         Game &m_game;
