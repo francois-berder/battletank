@@ -1,5 +1,6 @@
 #include "View.hpp"
 #include "Game.hpp"
+#include "TextureManager.hpp"
 
 
 View::View(Game &game):
@@ -16,6 +17,13 @@ void View::update(const std::string& gameState)
 void View::draw()
 {
     m_window.clear();
-    
+    drawBackground();
     m_window.display();
+}
+
+void View::drawBackground()
+{
+    TexturePtr tex = TextureManager::instance().get("background.png");
+    sf::Sprite background(*tex);
+    m_window.draw(background);
 }
