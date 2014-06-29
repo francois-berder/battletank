@@ -48,7 +48,17 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
     else if(cmdName == "h" || cmdName == "help")
         cmd = CommandPtr(new HelpCommand);
     else if(cmdName == "p" || cmdName == "print")
-        cmd = CommandPtr(new PrintCommand(m_game.getWorld()));
+    {
+        EntityID id = 0;
+        if(!args.empty() && args.front().isInteger())
+        {
+            std::stringstream ss;
+            ss << args.front().toString();
+            ss >> id;
+            args.pop_front();
+        }
+        cmd = CommandPtr(new PrintCommand(m_game.getWorld(), id));
+    }
     else if(cmdName == "a" || cmdName == "apply")
     {
         if(args.empty())

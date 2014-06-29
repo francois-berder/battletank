@@ -63,13 +63,14 @@ class PrintCommand : public Command
 {
     public :
     
-        PrintCommand(GameWorld &gameWorld);
+        PrintCommand(GameWorld &gameWorld, EntityID id);
         
         virtual void execute();
         
     private :
     
         GameWorld &m_gameWorld;
+        EntityID m_id;
 };
 
 class ApplyCommand : public Command

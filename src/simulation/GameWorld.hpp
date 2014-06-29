@@ -21,7 +21,8 @@ class GameWorld
         bool isFinished();
         
         std::string print() const;
-        
+        std::string printEntity(EntityID id) const;
+                
     private :
     
         void proceedChange(const std::string &name, const std::string &arg);

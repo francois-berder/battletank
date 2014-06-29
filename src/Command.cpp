@@ -50,15 +50,28 @@ void HelpCommand::execute()
     std::cout << "quit\tQuit game" << std::endl;    
 }
 
-PrintCommand::PrintCommand(GameWorld &gameWorld):
+PrintCommand::PrintCommand(GameWorld &gameWorld, EntityID id):
 Command(),
-m_gameWorld(gameWorld)
+m_gameWorld(gameWorld),
+m_id(id)
 {
 }
 
 void PrintCommand::execute()
 {
-    std::cout << m_gameWorld.print() << std::endl;   
+    if(m_id == 0)
+        std::cout << m_gameWorld.print() << std::endl;   
+    else
+    {
+        try
+        {
+            std::cout << m_gameWorld.printEntity(m_id) << std::endl;
+        }
+        catch(std::exception &e)
+        {
+            std::cout << "Error: " << e.what() << std::endl;
+        }
+    }
 }
 
 ApplyCommand::ApplyCommand(GameWorld &gameWorld, const EntityID id, const std::string name, const std::string &arg):

@@ -83,3 +83,18 @@ std::string GameWorld::print() const
     ss << ']';
     return ss.str();
 }
+
+std::string GameWorld::printEntity(EntityID id) const
+{
+    auto it = m_entities.find(id);
+    if(it == m_entities.end())
+    {
+        std::stringstream msg;
+        msg << "Cannot print unknown entity ";
+        msg << id;
+        throw std::runtime_error(msg.str());
+    }
+    
+    return it->second->print();
+}
+
