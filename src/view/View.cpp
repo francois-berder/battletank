@@ -8,7 +8,7 @@ m_window(sf::VideoMode(800, 600), "Battle Tank")
 {
 }
 
-void View::update()
+void View::update(const std::string& gameState)
 {
     m_window.clear();
     m_window.display();

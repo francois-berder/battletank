@@ -12,7 +12,7 @@ class View
 
         View(Game &game);
 
-        void update();
+        void update(const std::string& gameState);
 
     private :
     

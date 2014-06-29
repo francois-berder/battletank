@@ -57,12 +57,17 @@ void Game::runInteractiveMode()
 
         CommandPtr cmd = cmdFactory.parseCmd(cmdStr);
         cmd->execute();
-        m_view.update();
+        m_view.update(m_gameWorld.print());
     }
 }
 
 void Game::runNonInteractiveMode()
 {
+    while(!m_gameWorld.isFinished() && !m_exit)
+    {
+        m_gameWorld.step();
+        m_view.update(m_gameWorld.print());
+    }
 }
 
 void Game::executeFile(const std::string& path)
