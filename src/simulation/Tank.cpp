@@ -36,19 +36,13 @@ m_velocity(0.f)
 
 void Tank::update()
 {
-    if(fabs(m_angularVelocity) > 0.1f)
-    {
-        m_body->SetAngularVelocity(m_angularVelocity);
-        m_angularVelocity = 0.f;
-    }
+    m_body->SetAngularVelocity(m_angularVelocity);
+    m_angularVelocity = 0.f;
 
-    if(fabs(m_velocity) > 0.1f)
-    {
-        b2Vec2 vel(0.f, m_velocity);
-        vel = b2Mul(b2Rot(m_body->GetAngle()), vel);
-        m_body->SetLinearVelocity(vel);
-        m_velocity = 0.f;
-    }
+    b2Vec2 vel(0.f, m_velocity);
+    vel = b2Mul(b2Rot(m_body->GetAngle()), vel);
+    m_body->SetLinearVelocity(vel);
+    m_velocity = 0.f;
 }
 
 void Tank::applyChange(const Change &change)
