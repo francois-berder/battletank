@@ -1,9 +1,9 @@
 #ifndef __EVENT_H__
 #define __EVENT_H__
 
-enum Event
+enum class Event
 {
-    QuitEvent
+    Quit
 };
 
 #endif /* __EVENT_H__ */

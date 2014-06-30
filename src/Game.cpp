@@ -102,10 +102,9 @@ void Game::proceedEvents()
 {
     while(!m_events.empty())
     {
-        Event evt = m_events.front();
-        switch(evt)
+        switch(m_events.front())
         {
-            case Event::QuitEvent:
+            case Event::Quit:
                 exit();
                 break;
             default:

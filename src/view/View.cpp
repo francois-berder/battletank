@@ -24,9 +24,9 @@ void View::proceedEvents()
     while(m_window.pollEvent(e))
     {
         if(e.type == sf::Event::Closed)
-            m_game.pushEvent(QuitEvent);
+            m_game.pushEvent(Event::Quit);
         if(e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Escape)
-            m_game.pushEvent(QuitEvent);
+            m_game.pushEvent(Event::Quit);
     }
 }
 
