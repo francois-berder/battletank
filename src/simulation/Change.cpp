@@ -1,9 +1,9 @@
 #include "Change.hpp"
 
-Change::Change(const EntityID id, const std::string &name, const std::string &arg):
+Change::Change(const EntityID id, const std::string &name, const std::list<Argument> &args):
 m_id(id),
 m_name(name),
-m_arg(arg)
+m_args(args)
 {
 }
 
@@ -17,8 +17,8 @@ std::string Change::getName() const
     return m_name;
 }
 
-std::string Change::getArg() const
+std::list<Argument> Change::getArgs() const
 {
-    return m_arg;
+    return m_args;
 }
 

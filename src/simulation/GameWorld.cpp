@@ -32,27 +32,30 @@ void GameWorld::applyChange(const Change &change)
     if(id != 0)
         m_entities[id]->applyChange(change);
     else
-        proceedChange(change.getName(), change.getArg());
+        proceedChange(change.getName(), change.getArgs());
 }
 
-void GameWorld::proceedChange(const std::string &name, const std::string &arg)
+void GameWorld::proceedChange(const std::string &name, const std::list<Argument> &args)
 {
     if(name == "new")
     {
-        std::list<Argument> args = Argument::parse(arg);
         if(args.empty())
-            throw std::runtime_error("Missing type to create entity\n.");
+            throw std::runtime_error("Missing type to create entity.\n");
         
         Argument type = args.front();
-        args.pop_front();
-        EntityPtr e = m_factory.createFromName(type, args);
+        std::list<Argument> entityArgs = args;
+        entityArgs.pop_front();
+        EntityPtr e = m_factory.createFromName(type, entityArgs);
         m_entities[e->getID()] = e;
     }
     else if(name == "delete")
     {
+        if(args.empty())
+            throw std::runtime_error("Missing entity ID to delete entity.\n");
+            
         // Convert string to EntityID
         std::stringstream ss;
-        ss << arg;
+        ss << args.front();
         EntityID id;
         ss >> id;
         

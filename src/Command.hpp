@@ -2,9 +2,11 @@
 #define __COMMAND_H__
 
 #include <memory>
+#include <list>
 
 #include "Game.hpp"
 #include "GameWorld.hpp"
+#include "Argument.hpp"
 
 
 class Command
@@ -77,7 +79,7 @@ class ApplyCommand : public Command
 {
     public :
     
-        ApplyCommand(GameWorld &gameWorld, const EntityID id, const std::string name, const std::string &arg);
+        ApplyCommand(GameWorld &gameWorld, const EntityID id, const std::string name, const std::list<Argument> &args);
     
         virtual void execute();
 

@@ -77,7 +77,7 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
             }
             std::string name = args.front();
             args.pop_front();
-            cmd = CommandPtr(new ApplyCommand(m_gameWorld, id, name, Argument::concat(args)));
+            cmd = CommandPtr(new ApplyCommand(m_gameWorld, id, name, args));
         }
     }
     else

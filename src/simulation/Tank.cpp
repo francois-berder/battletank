@@ -52,7 +52,10 @@ void Tank::applyChange(const Change &change)
     
     if(change.getName() == "move")
     {
-        std::string dirName = change.getArg();
+        if(change.getArgs().empty())
+            throw std::runtime_error("Missing direction to apply move change to tank.");
+
+        std::string dirName = change.getArgs().front();
         if(dirName == "down")
             m_velocity -= 2.f;
         else if(dirName == "up")
@@ -62,7 +65,7 @@ void Tank::applyChange(const Change &change)
         else if(dirName == "right")
             m_angularVelocity += -2.f;
         else
-            Logger::instance() << "Ignored move change, could not recognize direction " << change.getArg() << '\n';
+            Logger::instance() << "Ignored move change, could not recognize direction " << dirName << '\n';
     }
     else
         Logger::instance() << "Ignored change " << change.getName() << '\n';
