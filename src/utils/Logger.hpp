@@ -9,40 +9,40 @@
 
 class Logger
 {
-    public :
+	public:
 
-        Logger();
+		Logger();
 
-        static Logger& instance();
+		static Logger& instance();
 
-        template<typename T>
-        Logger& operator<<(T msg)
-        {
-            if(!m_enabled)  
-                return *this;
-            
-            if(m_file.is_open())
-            {
-                std::stringstream ss;
-                ss << msg;
-                std::string s = ss.str();
-                m_file.write(s.c_str(), s.size());
-            }
-            else
-                std::cout << msg;
-               
-            return *this;
-        }
+		template<typename T>
+		Logger& operator<<(T msg)
+		{
+			if(!m_enabled)
+				return *this;
 
-        void setEnabled(const bool enabled);
-        
-        void writeToFile(const std::string& fileName);
-        void writeToConsole();
-        
-    private :
-        
-        bool  m_enabled;
-        std::ofstream m_file;
+			if(m_file.is_open())
+			{
+				std::stringstream ss;
+				ss << msg;
+				std::string s = ss.str();
+				m_file.write(s.c_str(), s.size());
+			}
+			else
+				std::cout << msg;
+
+			return *this;
+		}
+
+		void setEnabled(const bool enabled);
+
+		void writeToFile(const std::string& fileName);
+		void writeToConsole();
+
+	private:
+
+		bool m_enabled;
+		std::ofstream m_file;
 };
 
 #endif /* __LOGGER_H__ */

@@ -4,36 +4,35 @@
 #include "Change.hpp"
 #include "Logger.hpp"
 
-
-Entity::Entity(const EntityID id):
-m_id(id)
+Entity::Entity(const EntityID id) :
+		m_id(id)
 {
 }
-       
+
 Entity::~Entity()
 {
 }
 
 void Entity::update()
 {
-    // by default, do nothing
+	// by default, do nothing
 }
 
 void Entity::applyChange(const Change &change)
 {
-    Logger::instance() << "Ignored " << change.getName() << " change.\n";
+	Logger::instance() << "Ignored " << change.getName() << " change.\n";
 }
 
 std::string Entity::print()
 {
-    std::stringstream ss;
-    ss << "id:";
-    ss << m_id;
-    return ss.str();
+	std::stringstream ss;
+	ss << "id:";
+	ss << m_id;
+	return ss.str();
 }
 
 EntityID Entity::getID() const
 {
-    return m_id;
+	return m_id;
 }
 

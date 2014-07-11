@@ -8,85 +8,85 @@
 #include "GameWorld.hpp"
 #include "Argument.hpp"
 
-
 class Command
 {
-    public :
-        
-        virtual ~Command() = default;
-        
-        virtual void execute();
+	public:
+
+		virtual ~Command() = default;
+
+		virtual void execute();
 };
 
 typedef std::shared_ptr<Command> CommandPtr;
 
 class InvalidCommand : public Command
 {
-    public :
-    
-        virtual void execute();
+	public:
+
+		virtual void execute();
 };
 
 class QuitCommand : public Command
 {
-    public :
-    
-        QuitCommand(Game &game);
-        
-        virtual void execute();
-        
-    private :
-        
-        Game &m_game;
+	public:
+
+		QuitCommand(Game &game);
+
+		virtual void execute();
+
+	private:
+
+		Game &m_game;
 };
 
 class StepCommand : public Command
 {
-    public :
+	public:
 
-        StepCommand(GameWorld &gameWorld, const unsigned int nbSteps = 1);
-    
-        virtual void execute();
-        
-    private :
-    
-        GameWorld &m_gameWorld;
-        unsigned int m_nbSteps;
+		StepCommand(GameWorld &gameWorld, const unsigned int nbSteps = 1);
+
+		virtual void execute();
+
+	private:
+
+		GameWorld &m_gameWorld;
+		unsigned int m_nbSteps;
 };
 
 class HelpCommand : public Command
 {
-    public :
-    
-        virtual void execute();
+	public:
+
+		virtual void execute();
 };
 
 class PrintCommand : public Command
 {
-    public :
-    
-        PrintCommand(GameWorld &gameWorld, EntityID id);
-        
-        virtual void execute();
-        
-    private :
-    
-        GameWorld &m_gameWorld;
-        EntityID m_id;
+	public:
+
+		PrintCommand(GameWorld &gameWorld, EntityID id);
+
+		virtual void execute();
+
+	private:
+
+		GameWorld &m_gameWorld;
+		EntityID m_id;
 };
 
 class ApplyCommand : public Command
 {
-    public :
-    
-        ApplyCommand(GameWorld &gameWorld, const EntityID id, const std::string name, const std::list<Argument> &args);
-    
-        virtual void execute();
+	public:
 
-    private :
+		ApplyCommand(GameWorld &gameWorld, const EntityID id,
+				const std::string name, const std::list<Argument> &args);
 
-        GameWorld &m_gameWorld;
-        Change m_change;
+		virtual void execute();
+
+	private:
+
+		GameWorld &m_gameWorld;
+		Change m_change;
 };
 
 #endif /* __COMMAND_H__ */

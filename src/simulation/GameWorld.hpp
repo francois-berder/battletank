@@ -10,26 +10,27 @@
 
 class GameWorld
 {
-    public :
-    
-        GameWorld();
-        
-        void step();
-        
-        void applyChange(const Change &change);
-        
-        bool isFinished();
-        
-        std::string print() const;
-        std::string printEntity(EntityID id) const;
-                
-    private :
-    
-        void proceedChange(const std::string &name, const std::list<Argument> &args);
-    
-        unsigned int m_currentStep;
-        std::map<EntityID, EntityPtr> m_entities;
-        EntityFactory m_factory;
+	public:
+
+		GameWorld();
+
+		void step();
+
+		void applyChange(const Change &change);
+
+		bool isFinished();
+
+		std::string print() const;
+		std::string printEntity(EntityID id) const;
+
+	private:
+
+		void proceedChange(const std::string &name,
+				const std::list<Argument> &args);
+
+		unsigned int m_currentStep;
+		std::map<EntityID, EntityPtr> m_entities;
+		EntityFactory m_factory;
 };
 
 #endif /* __GAME_WORLD_H__ */

@@ -5,11 +5,10 @@
 
 class ContactListener : public b2ContactListener
 {
-    public :
-    
-        virtual void BeginContact(b2Contact *contact); 
+	public:
+
+		virtual void BeginContact(b2Contact *contact);
 };
 
 #endif /* __CONTACT_LISTENER_H__ */
-
 

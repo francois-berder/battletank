@@ -3,24 +3,25 @@
 
 #include <SFML/Graphics.hpp>
 
-
 class Game;
 
 class View
 {
-    public :
+	public:
 
-        View(Game &game);
+		View(Game &game);
 
-        void update(const std::string& gameState);
+		void update(const std::string& gameState);
 
-    private :
-    
-        void proceedEvents();
-        void draw();
-        void drawBackground();
-        Game &m_game;
-        sf::RenderWindow m_window;
+	private:
+
+		void proceedEvents();
+		void draw(const std::string &state);
+		void drawBackground();
+		void drawState(const std::string &state);
+
+		Game &m_game;
+		sf::RenderWindow m_window;
 };
 
 #endif /* __VIEW_H__ */

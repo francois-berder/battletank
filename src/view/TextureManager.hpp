@@ -6,28 +6,26 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 
-
 typedef std::shared_ptr<sf::Texture> TexturePtr;
 
 class TextureManager
 {
-    public :
-    
+	public:
 
-        TextureManager(const TextureManager& tm) = delete;
-        TextureManager& operator=(const TextureManager& tm) = delete;
-        
-        static TextureManager& instance();
-        
-        TexturePtr get(const std::string& name);
-        
-    private :
+		TextureManager(const TextureManager& tm) = delete;
+		TextureManager& operator=(const TextureManager& tm) = delete;
 
-        TextureManager();
+		static TextureManager& instance();
 
-        TexturePtr load(const std::string &path);
-        
-        std::map<std::string, TexturePtr> m_textures;
+		TexturePtr get(const std::string& name);
+
+	private:
+
+		TextureManager();
+
+		TexturePtr load(const std::string &path);
+
+		std::map<std::string, TexturePtr> m_textures;
 };
 
 #endif /* __TEXTURE_MANAGER_H__ */
