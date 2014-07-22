@@ -3,15 +3,9 @@
 
 #include "Tree.hpp"
 
-Data::Data(const std::string &name, const std::string &value):
-m_name(name),
+Data::Data(const std::string &value):
 m_value(value)
 {
-}
-
-std::string Data::getName() const
-{
-    return m_name;
 }
 
 std::string Data::getValue() const
@@ -42,6 +36,11 @@ long unsigned int Array::size() const
     return m_nodes.size();
 }
 
+bool Array::empty() const
+{
+    return size() == 0;
+}
+
 Map::Map():
 m_nodes()
 {
@@ -66,3 +65,12 @@ NodePtr Map::operator[](const std::string &name)
     return it->second;
 }
 
+long unsigned int Map::size() const
+{
+    return m_nodes.size();
+}
+
+bool Map::empty() const
+{
+    return size() == 0;
+}

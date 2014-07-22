@@ -13,6 +13,9 @@ class StringBuffer
         char peek();
         void get();
         void get(char c);
+        std::string extractWordOrNumber();
+        std::string extractWord();
+        std::string extractNumber();
         
     private :
     

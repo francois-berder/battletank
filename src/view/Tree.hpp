@@ -19,14 +19,12 @@ class Data : public Node
 {
     public :
 
-        Data(const std::string &name, const std::string &value);
+        Data(const std::string &value);
         
-        std::string getName() const;
         std::string getValue() const;
         
     private :
     
-        std::string m_name;
         std::string m_value;
 };
 
@@ -40,6 +38,7 @@ class Array : public Node
         NodePtr operator[](const unsigned int index);
         
         long unsigned int size() const;
+        bool empty() const;
         
     private :
     
@@ -49,11 +48,14 @@ class Array : public Node
 class Map : public Node
 {
     public :
-    
+
         Map();
-        
+
         void addNode(const std::string &name, NodePtr node);
         NodePtr operator[](const std::string &name);
+
+        long unsigned int size() const;
+        bool empty() const;
         
     private :
     

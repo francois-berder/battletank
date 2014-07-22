@@ -1,6 +1,7 @@
 #include <stdexcept>
 
 #include "StringBuffer.hpp"
+#include "Utils.hpp"
 
 StringBuffer::StringBuffer(const std::string &str):
 m_str(),
@@ -34,5 +35,34 @@ void StringBuffer::get(char c)
         throw std::runtime_error("Invalid char");
         
     ++m_index;
+}
+
+std::string StringBuffer::extractWordOrNumber()
+{
+    char c = peek();
+    if(isLetter(c))
+        return extractWord();
+    else if(isNumber(c) || c == '.')
+        return extractNumber();
+    else
+        throw std::runtime_error("Invalid char while extractWordOrNumber");
+}
+
+std::string StringBuffer::extractWord()
+{
+    std::string str;
+    while(m_index < str.size() && isLetter(peek()))
+        str += m_str[m_index++];
+        
+    return str;
+}
+
+std::string StringBuffer::extractNumber()
+{
+    std::string str;
+    while(m_index < str.size() && (isNumber(peek()) || peek() == '.'))
+        str += m_str[m_index++];
+        
+    return str;
 }
 

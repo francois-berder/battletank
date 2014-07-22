@@ -48,7 +48,8 @@ void View::drawBackground()
 
 void View::drawState(const std::string &state)
 {
-    Array entities = EntityParser::parse(state);
+    EntityParser parser(state);
+    Array entities = parser.parse();
     EntityViewer v(m_window, entities);
     v.drawAll();
 }

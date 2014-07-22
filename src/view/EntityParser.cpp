@@ -1,7 +1,102 @@
+#include <stdexcept>
+
 #include "EntityParser.hpp"
+#include "Utils.hpp"
 
-
-Array EntityParser::parse(std::string entities)
+enum : char
 {
-    return Array();
+    // Array tokens
+    ARRAY_BEGIN = '[',
+    ARRAY_END = ']',
+    ARRAY_SEP = ';',
+    
+    // Map tokens
+    MAP_BEGIN = '{',
+    MAP_END = '}',
+    MAP_SEP = ',',
+    MAP_NAME_SEP = ':'
+};
+
+EntityParser::EntityParser(const std::string &str):
+m_buffer(str)
+{
 }
+        
+Array EntityParser::parse()
+{
+    return parseArray();
+}
+
+NodePtr EntityParser::parseNode()
+{
+    char c = m_buffer.peek();
+    switch(c)
+    {
+        case ARRAY_BEGIN:
+        {
+            Array a = parseArray();
+            return NodePtr(&a);
+        }
+        case MAP_BEGIN:
+        {
+            Map m = parseMap();
+            return NodePtr(&m);
+        }
+        default:
+        {
+            if(isAlphaNumeric(c) || c == '.')
+            {
+                Data d = parseData();
+                return NodePtr(&d);
+            }
+            else
+                throw std::runtime_error("Invalid token");
+        }
+    }
+}
+
+Data EntityParser::parseData()
+{
+    return Data(m_buffer.extractWordOrNumber());
+}
+
+Array EntityParser::parseArray()
+{
+    m_buffer.get(ARRAY_BEGIN);
+
+    Array a;
+    
+    while(m_buffer.peek() != ARRAY_END)
+    {
+        if(!a.empty())
+            m_buffer.get(ARRAY_SEP);
+
+         a.addNode(parseNode());   
+    }
+
+    m_buffer.get(ARRAY_END);
+    
+    return a;
+}
+
+Map EntityParser::parseMap()
+{
+    m_buffer.get(MAP_BEGIN);
+    
+    Map m;
+    
+    while(m_buffer.peek() != MAP_END)
+    {
+        if(!m.empty())
+            m_buffer.get(MAP_SEP);
+        
+        std::string name = m_buffer.extractWord();
+        m_buffer.get(MAP_NAME_SEP);
+        m.addNode(name, parseNode());   
+    }
+    
+    m_buffer.get(MAP_END);
+ 
+    return m;
+}
+

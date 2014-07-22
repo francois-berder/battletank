@@ -21,6 +21,22 @@ bool isInteger(const std::string &str)
 	return true;
 }
 
+bool isLetter(const char c)
+{
+    return ('a' <= c && c <= 'z')
+        || ('A' <= c && c <= 'Z');
+}
+
+bool isNumber(const char c)
+{
+    return '0' <= c && c <= '9';
+}
+bool isAlphaNumeric(const char c)
+{
+    return isLetter(c)
+        || isNumber(c);
+}
+
 int toInteger(const std::string &str)
 {
 	std::stringstream ss;

@@ -6,6 +6,9 @@
 
 bool isEmpty(const std::string &str);
 bool isInteger(const std::string &str);
+bool isLetter(const char c);
+bool isNumber(const char c);
+bool isAlphaNumeric(const char c);
 
 int toInteger(const std::string &str);
 float toFloat(const std::string &str);

@@ -3,13 +3,25 @@
 
 #include <string>
 #include "Tree.hpp"
+#include "StringBuffer.hpp"
 
 
 class EntityParser
 {
     public :
     
-        static Array parse(std::string entities);  
+        EntityParser(const std::string &str);
+    
+        Array parse();
+        
+    private :
+    
+        NodePtr parseNode();
+        Data parseData();
+        Array parseArray();
+        Map parseMap();
+        
+        StringBuffer m_buffer;
 };
 
 #endif /* __ENTITY_PARSER_H__ */
