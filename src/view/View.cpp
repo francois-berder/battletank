@@ -2,6 +2,8 @@
 #include "Game.hpp"
 #include "TextureManager.hpp"
 #include "Event.hpp"
+#include "EntityViewer.hpp"
+
 
 View::View(Game &game) :
 		m_game(game), m_window(sf::VideoMode(800, 600), "Battle Tank")
@@ -45,5 +47,8 @@ void View::drawBackground()
 
 void View::drawState(const std::string &state)
 {
-
+    EntityViewer v(m_window, state);
+    v.drawAll();
 }
+
+
