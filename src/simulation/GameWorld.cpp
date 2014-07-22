@@ -69,7 +69,6 @@ bool GameWorld::isFinished()
 std::string GameWorld::print() const
 {
 	std::stringstream ss;
-	ss << "step " << m_currentStep << ":\n";
 	ss << '[';
 	for(auto it = m_entities.begin(); it != m_entities.end(); ++it)
 	{
@@ -95,3 +94,7 @@ std::string GameWorld::printEntity(EntityID id) const
 	return it->second->print();
 }
 
+unsigned int GameWorld::getCurrentStep() const
+{
+	return m_currentStep;
+}

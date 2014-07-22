@@ -23,6 +23,8 @@ class GameWorld
 		std::string print() const;
 		std::string printEntity(EntityID id) const;
 
+		unsigned int getCurrentStep() const;
+
 	private:
 
 		void proceedChange(const std::string &name,

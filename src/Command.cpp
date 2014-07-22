@@ -54,7 +54,10 @@ PrintCommand::PrintCommand(GameWorld &gameWorld, EntityID id) :
 void PrintCommand::execute()
 {
 	if(m_id == 0)
+	{
+		std::cout << "step " << m_gameWorld.getCurrentStep() << ":" << std::endl;
 		std::cout << m_gameWorld.print() << std::endl;
+	}
 	else
 	{
 		try
