@@ -5,7 +5,6 @@
 #include <list>
 
 #include "Entity.hpp"
-#include "Argument.hpp"
 
 class Change
 {
@@ -13,17 +12,17 @@ class Change
 
 		Change() = delete;
 		Change(const EntityID id, const std::string &name,
-				const std::list<Argument> &args);
+				const std::list<std::string> &args);
 
 		EntityID getTargetID() const;
 		std::string getName() const;
-		std::list<Argument> getArgs() const;
+		std::list<std::string> getArgs() const;
 
 	private:
 
 		const EntityID m_id;
 		const std::string m_name;
-		const std::list<Argument> m_args;
+		const std::list<std::string> m_args;
 };
 
 #endif /* __CHANGE_H__ */

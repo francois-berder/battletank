@@ -4,7 +4,6 @@
 #include "EntityFactory.hpp"
 #include "GameWorld.hpp"
 #include "Logger.hpp"
-#include "Argument.hpp"
 
 GameWorld::GameWorld() :
 		m_currentStep(0), m_entities(), m_factory()
@@ -31,15 +30,15 @@ void GameWorld::applyChange(const Change &change)
 }
 
 void GameWorld::proceedChange(const std::string &name,
-		const std::list<Argument> &args)
+		const std::list<std::string> &args)
 {
 	if(name == "new")
 	{
 		if(args.empty())
 			throw std::runtime_error("Missing type to create entity.\n");
 
-		Argument type = args.front();
-		std::list<Argument> entityArgs = args;
+		std::string type = args.front();
+		std::list<std::string> entityArgs = args;
 		entityArgs.pop_front();
 		EntityPtr e = m_factory.createFromName(type, entityArgs);
 		m_entities[e->getID()] = e;

@@ -28,7 +28,7 @@ class GameWorld
 	private:
 
 		void proceedChange(const std::string &name,
-				const std::list<Argument> &args);
+				const std::list<std::string> &args);
 
 		unsigned int m_currentStep;
 		std::map<EntityID, EntityPtr> m_entities;

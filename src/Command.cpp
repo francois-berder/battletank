@@ -72,7 +72,7 @@ void PrintCommand::execute()
 }
 
 ApplyCommand::ApplyCommand(GameWorld &gameWorld, const EntityID id,
-		const std::string name, const std::list<Argument> &args) :
+		const std::string name, const std::list<std::string> &args) :
 		Command(), m_gameWorld(gameWorld), m_change(id, name, args)
 {
 }

@@ -6,7 +6,6 @@
 
 #include "Game.hpp"
 #include "GameWorld.hpp"
-#include "Argument.hpp"
 
 class Command
 {
@@ -79,7 +78,7 @@ class ApplyCommand : public Command
 	public:
 
 		ApplyCommand(GameWorld &gameWorld, const EntityID id,
-				const std::string name, const std::list<Argument> &args);
+				const std::string name, const std::list<std::string> &args);
 
 		virtual void execute();
 

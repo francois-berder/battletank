@@ -2,7 +2,7 @@
 #include <sstream>
 
 #include "CommandFactory.hpp"
-#include "Argument.hpp"
+#include "Utils.hpp"
 
 CommandFactory::CommandFactory(Game &game, GameWorld &gameWorld) :
 		m_lastCmd(""), m_game(game), m_gameWorld(gameWorld)
@@ -11,14 +11,13 @@ CommandFactory::CommandFactory(Game &game, GameWorld &gameWorld) :
 
 CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
 {
-	std::list<Argument> args;
+	std::list<std::string> args;
 
-	Argument c(cmdStr);
-	if(c.isEmpty())
-		args = Argument::parse(m_lastCmd);
+	if(isEmpty(cmdStr))
+		args = split(m_lastCmd, ' ');
 	else
 	{
-		args = Argument::parse(cmdStr);
+		args = split(cmdStr, ' ');
 		m_lastCmd = cmdStr;
 	}
 
@@ -34,7 +33,7 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
 		if(!args.empty())
 		{
 			std::stringstream ss;
-			ss << args.front().toString();
+			ss << args.front();
 			ss >> nbSteps;
 		}
 
@@ -48,10 +47,10 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
 	else if(cmdName == "p" || cmdName == "print")
 	{
 		EntityID id = 0;
-		if(!args.empty() && args.front().isInteger())
+		if(!args.empty() && isInteger(args.front()))
 		{
 			std::stringstream ss;
-			ss << args.front().toString();
+			ss << args.front();
 			ss >> id;
 			args.pop_front();
 		}
@@ -65,10 +64,10 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
 		{
 			EntityID id = 0;
 
-			if(args.front().isInteger())
+			if(isInteger(args.front()))
 			{
 				std::stringstream ss;
-				ss << args.front().toString();
+				ss << args.front();
 				ss >> id;
 				args.pop_front();
 			}
