@@ -2,7 +2,7 @@
 #include "TextureManager.hpp"
 
 
-EntityViewer::EntityViewer(sf::RenderWindow &renderWindow, const std::string &entities):
+EntityViewer::EntityViewer(sf::RenderWindow &renderWindow, Array &entities):
 m_renderWindow(renderWindow),
 m_entities(entities)
 {

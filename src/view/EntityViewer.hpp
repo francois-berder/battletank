@@ -3,13 +3,14 @@
 
 #include <string>
 #include <SFML/Graphics.hpp>
+#include "Tree.hpp"
 
 
 class EntityViewer
 {
     public :
     
-        EntityViewer(sf::RenderWindow &renderWindow, const std::string &entities);
+        EntityViewer(sf::RenderWindow &renderWindow, Array &entities);
     
         void drawAll();
     
@@ -19,7 +20,7 @@ class EntityViewer
         void drawTank(float x, float y, float angle, unsigned int health);
         
         sf::RenderWindow &m_renderWindow;
-        std::string m_entities;
+        Array &m_entities;
 };
 
 #endif /* __ENTITY_VIEWER_H__ */

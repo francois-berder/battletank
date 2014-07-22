@@ -3,6 +3,7 @@
 #include "TextureManager.hpp"
 #include "Event.hpp"
 #include "EntityViewer.hpp"
+#include "EntityParser.hpp"
 
 
 View::View(Game &game) :
@@ -47,7 +48,8 @@ void View::drawBackground()
 
 void View::drawState(const std::string &state)
 {
-    EntityViewer v(m_window, state);
+    Array entities = EntityParser::parse(state);
+    EntityViewer v(m_window, entities);
     v.drawAll();
 }
 
