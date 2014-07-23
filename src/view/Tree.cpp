@@ -3,6 +3,21 @@
 
 #include "Tree.hpp"
 
+Data& Node::asData()
+{
+    return dynamic_cast<Data&>(*this);
+}
+
+Array& Node::asArray()
+{
+    return dynamic_cast<Array&>(*this);
+}
+
+Map& Node::asMap()
+{
+    return dynamic_cast<Map&>(*this);
+}
+
 Data::Data(const std::string &value):
 m_value(value)
 {

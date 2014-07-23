@@ -6,11 +6,19 @@
 #include <string>
 #include <memory>
 
+class Data;
+class Array;
+class Map;
+
 class Node
 {
     public :
     
         virtual ~Node() = default;
+        
+        Data& asData();
+        Array& asArray();
+        Map& asMap();
 };
 
 typedef std::shared_ptr<Node> NodePtr;
