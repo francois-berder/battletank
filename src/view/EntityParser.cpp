@@ -33,25 +33,14 @@ NodePtr EntityParser::parseNode()
     switch(c)
     {
         case ARRAY_BEGIN:
-        {
-            Array a = parseArray();
-            return NodePtr(new Array(a));
-        }
+            return NodePtr(new Array(parseArray()));
         case MAP_BEGIN:
-        {
-            Map m = parseMap();
-            return NodePtr(new Map(m));
-        }
+            return NodePtr(new Map(parseMap()));
         default:
-        {
             if(isAlphaNumeric(c) || c == '.')
-            {
-                Data d = parseData();
-                return NodePtr(new Data(d));
-            }
+                return NodePtr(new Data(parseData()));
             else
                 throw std::runtime_error("Invalid token");
-        }
     }
 }
 
