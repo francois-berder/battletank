@@ -3,6 +3,11 @@
 #include "Utils.hpp"
 
 
+namespace
+{
+    const float GAME_TO_GFX_COORD = 40.f;
+}
+
 EntityViewer::EntityViewer(sf::RenderWindow &renderWindow, Array &entities):
 m_renderWindow(renderWindow),
 m_entities(entities)
@@ -21,6 +26,8 @@ void EntityViewer::drawAll()
             Map &pos = entity["pos"]->asMap();
             float x = toFloat(pos["x"]->asData().getValue());
             float y = toFloat(pos["y"]->asData().getValue());
+            x *= GAME_TO_GFX_COORD;
+            y *= GAME_TO_GFX_COORD;
             drawObstacle(x, y);
         }
         else if(type == "tank")
@@ -28,6 +35,8 @@ void EntityViewer::drawAll()
             Map &pos = entity["pos"]->asMap();
             float x = toFloat(pos["x"]->asData().getValue());
             float y = toFloat(pos["y"]->asData().getValue());
+            x *= GAME_TO_GFX_COORD;
+            y *= GAME_TO_GFX_COORD;
             float angle = toFloat(entity["angle"]->asData().getValue());
             unsigned int health = toUInteger(entity["health"]->asData().getValue());
             drawTank(x, y, angle, health);
