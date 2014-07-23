@@ -45,24 +45,24 @@ std::string StringBuffer::extractWordOrNumber()
     else if(isNumber(c) || c == '.')
         return extractNumber();
     else
-        throw std::runtime_error("Invalid char while extractWordOrNumber");
+        throw std::runtime_error("Invalid char in extractWordOrNumber");
 }
 
 std::string StringBuffer::extractWord()
 {
     std::string str;
-    while(m_index < str.size() && isLetter(peek()))
+    while(m_index < m_str.size() && isLetter(peek()))
         str += m_str[m_index++];
-        
+
     return str;
 }
 
 std::string StringBuffer::extractNumber()
 {
     std::string str;
-    while(m_index < str.size() && (isNumber(peek()) || peek() == '.'))
+    while(m_index < m_str.size() && (isNumber(peek()) || peek() == '.'))
         str += m_str[m_index++];
-        
+
     return str;
 }
 

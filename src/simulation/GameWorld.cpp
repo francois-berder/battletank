@@ -71,7 +71,9 @@ std::string GameWorld::print() const
 	ss << '[';
 	for(auto it = m_entities.begin(); it != m_entities.end(); ++it)
 	{
+	    ss << '{';
 		ss << it->second->print();
+		ss << '}';
 		if(std::next(it) != m_entities.end())
 			ss << ';';
 	}

@@ -33,11 +33,11 @@ std::string Obstacle::print()
 {
 	b2Vec2 pos = m_body->GetPosition();
 	std::stringstream ss;
-	ss << "type:obstacle,pos:[x:";
+	ss << "type:obstacle,pos:{x:";
 	ss << pos.x;
 	ss << ",y:";
 	ss << pos.y;
-	ss << "]";
+	ss << "}";
 	return Entity::print() + "," + ss.str();
 }
 

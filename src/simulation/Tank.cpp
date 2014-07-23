@@ -78,11 +78,11 @@ std::string Tank::print()
 	ss << "type:tank,";
 	ss << "health:";
 	ss << m_health;
-	ss << ",pos:[x:";
+	ss << ",pos:{x:";
 	ss << pos.x;
 	ss << ",y:";
 	ss << pos.y;
-	ss << "],angle:";
+	ss << "},angle:";
 	ss << m_body->GetAngle();
 	return Entity::print() + "," + ss.str();
 }
