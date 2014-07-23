@@ -37,6 +37,15 @@ bool isAlphaNumeric(const char c)
         || isNumber(c);
 }
 
+unsigned int toUInteger(const std::string &str)
+{
+	std::stringstream ss;
+	ss << str;
+	unsigned int val;
+	ss >> val;
+	return val;
+}
+
 int toInteger(const std::string &str)
 {
 	std::stringstream ss;

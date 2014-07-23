@@ -10,6 +10,7 @@ bool isLetter(const char c);
 bool isNumber(const char c);
 bool isAlphaNumeric(const char c);
 
+unsigned int toUInteger(const std::string &str);
 int toInteger(const std::string &str);
 float toFloat(const std::string &str);
 
