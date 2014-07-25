@@ -88,3 +88,9 @@ std::string concat(std::list<std::string> &elems, const char sep)
 	return ss.str();
 }
 
+float convertGradToDeg(float angle)
+{
+    return angle * 360.f / (2.f*3.14f);
+}
+
+
