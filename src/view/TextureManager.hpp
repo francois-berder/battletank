@@ -25,6 +25,7 @@ class TextureManager
 
 		TexturePtr load(const std::string &path);
 
+        const std::string rootDir;
 		std::map<std::string, TexturePtr> m_textures;
 };
 

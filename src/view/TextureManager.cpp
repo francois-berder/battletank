@@ -2,9 +2,11 @@
 #include <sstream>
 
 #include "TextureManager.hpp"
+#include "Logger.hpp"
 
 TextureManager::TextureManager() :
-		m_textures()
+rootDir("media/textures/"),
+m_textures()
 {
 }
 
@@ -20,7 +22,7 @@ TexturePtr TextureManager::get(const std::string& name)
 	if(it != m_textures.end())
 		return it->second;
 
-	std::string path = "media/textures/" + name;
+	std::string path = rootDir + name;
 	m_textures[name] = load(path);
 
 	return m_textures[name];
@@ -36,6 +38,6 @@ TexturePtr TextureManager::load(const std::string &path)
 		msg << "Could not load texture from file " << path;
 		throw std::runtime_error(msg.str());
 	}
-
+    Logger::instance() << "Loaded texture from path " << path << "\n";
 	return TexturePtr(tex);
 }
