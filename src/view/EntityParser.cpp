@@ -37,7 +37,7 @@ NodePtr EntityParser::parseNode()
         case MAP_BEGIN:
             return NodePtr(new Map(parseMap()));
         default:
-            if(isAlphaNumeric(c) || c == '.')
+            if(isAlphaNumeric(c) || c == '.' || c == '-')
                 return NodePtr(new Data(parseData()));
             else
                 throw std::runtime_error("Invalid token");

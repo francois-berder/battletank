@@ -42,7 +42,7 @@ std::string StringBuffer::extractWordOrNumber()
     char c = peek();
     if(isLetter(c))
         return extractWord();
-    else if(isNumber(c) || c == '.')
+    else if(isNumber(c) || c == '.' || c == '-')
         return extractNumber();
     else
         throw std::runtime_error("Invalid char in extractWordOrNumber");
@@ -60,7 +60,7 @@ std::string StringBuffer::extractWord()
 std::string StringBuffer::extractNumber()
 {
     std::string str;
-    while(m_index < m_str.size() && (isNumber(peek()) || peek() == '.'))
+    while(m_index < m_str.size() && (isNumber(peek()) || peek() == '.' || peek() == '-'))
         str += m_str[m_index++];
 
     return str;
