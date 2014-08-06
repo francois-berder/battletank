@@ -28,6 +28,7 @@ std::list<std::string> getImagesFromDir(const std::string& dir)
         if(path.has_extension() && path.extension().compare(".bmp") == 0)
             names.push_back(path.string());
     }
+    names.sort();
 
     return names;
 }
@@ -62,6 +63,7 @@ void fillImage(sf::Image& output, const std::list<std::string>& images)
         it != images.end();
         ++it)
     {
+        std::cout << *it << std::endl;
         sf::Image i;
         if(!i.loadFromFile(*it))
             throw std::runtime_error(std::string("could not load image from path ") + *it);
