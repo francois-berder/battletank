@@ -37,7 +37,7 @@ void EntityViewer::drawAll()
             float y = toFloat(pos["y"]->asData().getValue());
             x *= GAME_TO_GFX_COORD;
             y *= GAME_TO_GFX_COORD;
-            float angle = toFloat(entity["angle"]->asData().getValue());
+            int angle = toInteger(entity["angle"]->asData().getValue());
             unsigned int health = toUInteger(entity["health"]->asData().getValue());
             drawTank(x, y, angle, health);
         }
@@ -55,20 +55,20 @@ void EntityViewer::drawObstacle(float x, float y)
     m_renderWindow.draw(sprite);
 }
 
-void EntityViewer::drawTank(float x, float y, float angle, unsigned int health)
+void EntityViewer::drawTank(float x, float y, int angle, unsigned int health)
 {
     // Draw lower part
     TexturePtr tex = TextureManager::instance().get("tank_lower_part.png");
     sf::Sprite lowerPartSprite(*tex);
     lowerPartSprite.setPosition(x, y);
-    angle = convertGradToDeg(angle);
-    angle += 5.6f;
-    if(angle < 0.f)
-        angle += 360.f;
-    if(angle >= 360.f)
-        angle -= 360.f;
-    unsigned int rectY = static_cast<unsigned int>(angle / 56.25f);
-    unsigned int rectX = static_cast<unsigned int>((angle - static_cast<float>(rectY) * 56.25f) / 11.25);
+    float a = angle;
+    a += 5.6f;
+    while(a < 0.f)
+        a += 360.f;
+    while(a >= 360.f)
+        a -= 360.f;
+    unsigned int rectY = static_cast<unsigned int>(a / 56.25f);
+    unsigned int rectX = static_cast<unsigned int>((a - static_cast<float>(rectY) * 56.25f) / 11.25);
     lowerPartSprite.setTextureRect(sf::IntRect(rectX * 160, rectY * 160, 160, 160));
     lowerPartSprite.setOrigin(80, 80);
 

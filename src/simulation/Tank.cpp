@@ -5,6 +5,8 @@
 #include "Change.hpp"
 #include "PhysicWorld.hpp"
 #include "Logger.hpp"
+#include "Utils.hpp"
+
 
 Tank::Tank(const EntityID id, const b2Vec2& startPos) :
 		Entity(id), m_health(100), m_body(nullptr, PhysicWorld::destroyBody), m_angularVelocity(
@@ -85,6 +87,11 @@ std::string Tank::print()
 	ss << ",y:";
 	ss << pos.y;
 	ss << "},angle:";
-	ss << m_body->GetAngle();
+
+	// Convert rad to deg
+	float angle = m_body->GetAngle();
+	angle = convertGradToDeg(angle);
+	ss << static_cast<int>(angle);
+	
 	return Entity::print() + "," + ss.str();
 }

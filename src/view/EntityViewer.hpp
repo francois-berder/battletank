@@ -17,7 +17,7 @@ class EntityViewer
     private :
     
         void drawObstacle(float x, float y);
-        void drawTank(float x, float y, float angle, unsigned int health);
+        void drawTank(float x, float y, int angle, unsigned int health);
         
         sf::RenderWindow &m_renderWindow;
         Array &m_entities;
