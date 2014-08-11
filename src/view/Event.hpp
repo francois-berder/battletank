@@ -3,7 +3,11 @@
 
 enum class Event
 {
-	Quit
+	Quit,
+	Left,
+	Right,
+	Up,
+	Down
 };
 
 #endif /* __EVENT_H__ */

@@ -19,14 +19,22 @@ void View::update(const std::string& gameState)
 
 void View::proceedEvents()
 {
-	sf::Event e;
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		m_game.pushEvent(Event::Left);
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		m_game.pushEvent(Event::Right);
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		m_game.pushEvent(Event::Down);
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		m_game.pushEvent(Event::Up);
 
-	while (m_window.pollEvent(e))
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+		m_game.pushEvent(Event::Quit);
+
+	sf::Event e;
+	while(m_window.pollEvent(e))
 	{
 		if(e.type == sf::Event::Closed)
-			m_game.pushEvent(Event::Quit);
-		if(e.type == sf::Event::KeyPressed
-				&& e.key.code == sf::Keyboard::Escape)
 			m_game.pushEvent(Event::Quit);
 	}
 }

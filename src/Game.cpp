@@ -93,6 +93,8 @@ void Game::executeFile(const std::string& path)
 
 void Game::proceedEvents()
 {
+	CommandFactory cmdFactory(*this, m_gameWorld);
+	CommandPtr cmd;
 	while (!m_events.empty())
 	{
 		switch (m_events.front())
@@ -100,6 +102,22 @@ void Game::proceedEvents()
 			case Event::Quit :
 				exit();
 				break;
+			case Event::Left :
+	    		cmd = cmdFactory.parseCmd("a 1 move left");
+		        cmd->execute();
+			    break;
+		    case Event::Right :
+	    		cmd = cmdFactory.parseCmd("a 1 move right");
+		        cmd->execute();
+		        break;
+	        case Event::Up :
+	    		cmd = cmdFactory.parseCmd("a 1 move down");
+		        cmd->execute();
+	            break;
+            case Event::Down :
+	    		cmd = cmdFactory.parseCmd("a 1 move up");
+		        cmd->execute();
+                break;
 			default :
 				throw std::runtime_error("Could not proceed unknown event.");
 		}
