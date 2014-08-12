@@ -3,9 +3,9 @@
 
 #include <Box2D/Box2D.h>
 
-#include "Entity.hpp"
+#include "CollidableEntity.hpp"
 
-class Tank : public Entity
+class Tank : public CollidableEntity
 {
 	public:
 

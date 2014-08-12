@@ -9,7 +9,7 @@
 
 
 Tank::Tank(const EntityID id, const b2Vec2& startPos) :
-		Entity(id), m_health(100), m_body(nullptr, PhysicWorld::destroyBody), m_angularVelocity(
+		CollidableEntity(id), m_health(100), m_body(nullptr, PhysicWorld::destroyBody), m_angularVelocity(
 				0.f), m_velocity(0.f)
 {
 	b2BodyDef bodyDef;

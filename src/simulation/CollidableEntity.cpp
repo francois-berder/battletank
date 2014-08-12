@@ -5,3 +5,8 @@ CollidableEntity::CollidableEntity(const EntityID id) :
 {
 }
 
+void CollidableEntity::handleCollision(const CollidableEntity &b)
+{
+
+}
+

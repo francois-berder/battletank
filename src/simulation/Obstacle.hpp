@@ -4,9 +4,9 @@
 #include <Box2D/Box2D.h>
 #include <memory>
 
-#include "Entity.hpp"
+#include "CollidableEntity.hpp"
 
-class Obstacle : public Entity
+class Obstacle : public CollidableEntity
 {
 	public:
 

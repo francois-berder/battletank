@@ -10,7 +10,7 @@ class CollidableEntity : public Entity
 		CollidableEntity(const EntityID id);
 		virtual ~CollidableEntity() = default;
 
-		virtual void handleCollision(const CollidableEntity &b) = 0;
+		virtual void handleCollision(const CollidableEntity &b);
 };
 
 #endif /* __COLLIDABLE_ENTITY_H__ */
