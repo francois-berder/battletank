@@ -22,7 +22,7 @@ Obstacle::Obstacle(const EntityID id, const b2Vec2 &pos) :
 	}
 
 	b2PolygonShape shape;
-	shape.SetAsBox(0.1f, 0.1f);
+	shape.SetAsBox(0.5f, 0.5f);
 	body->CreateFixture(&shape, 1.0f);
 	body->SetUserData(this);
 	m_body = std::unique_ptr<b2Body, void (*)(b2Body*)>(body,

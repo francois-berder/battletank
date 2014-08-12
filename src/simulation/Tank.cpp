@@ -26,7 +26,7 @@ Tank::Tank(const EntityID id, const b2Vec2& startPos) :
 	}
 
 	b2PolygonShape shape;
-	shape.SetAsBox(0.15f, 0.15f);
+	shape.SetAsBox(0.62f, 0.88f);
 	body->CreateFixture(&shape, 1.0f);
 	body->SetUserData(this);
 	m_body = std::unique_ptr<b2Body, void (*)(b2Body*)>(body,
