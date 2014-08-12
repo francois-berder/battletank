@@ -90,7 +90,7 @@ std::string Tank::print()
 
 	// Convert rad to deg
 	float angle = m_body->GetAngle();
-	angle = convertGradToDeg(angle);
+	angle = convertRadToDeg(angle);
 	ss << static_cast<int>(angle);
 	
 	return Entity::print() + "," + ss.str();

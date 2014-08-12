@@ -17,7 +17,7 @@ float toFloat(const std::string &str);
 std::list<std::string> split(const std::string &str, const char sep);
 std::string concat(std::list<std::string> &elems, const char sep);
 
-float convertGradToDeg(float angle);
+float convertRadToDeg(float angle);
 
 #endif /* __UTILS_HPP__ */
 
