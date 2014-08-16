@@ -59,9 +59,9 @@ void Tank::applyChange(const Change &change)
 		std::string dirName = change.getArgs().front();
 
 		if(dirName == "down")
-			m_velocity -= 2.f;
-		else if(dirName == "up")
 			m_velocity += 2.f;
+		else if(dirName == "up")
+			m_velocity -= 2.f;
 		else if(dirName == "left")
 			m_angularVelocity -= 2.f;
 		else if(dirName == "right")
