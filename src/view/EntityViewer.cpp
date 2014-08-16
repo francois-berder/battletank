@@ -58,8 +58,8 @@ void EntityViewer::drawObstacle(float x, float y)
 void EntityViewer::drawTank(float x, float y, int angle, unsigned int health)
 {
     // Draw lower part
-    TexturePtr tex = TextureManager::instance().get("tank_lower_part.png");
-    sf::Sprite lowerPartSprite(*tex);
+    TexturePtr lowerPartTex = TextureManager::instance().get("tank_lower_part.png");
+    sf::Sprite lowerPartSprite(*lowerPartTex);
     lowerPartSprite.setPosition(x, y);
     float a = angle;
     a += 5.6f;
@@ -74,7 +74,14 @@ void EntityViewer::drawTank(float x, float y, int angle, unsigned int health)
 
     m_renderWindow.draw(lowerPartSprite);
     
-    // TODO: Draw upper part
+    // Draw upper part
+    TexturePtr upperPartTex = TextureManager::instance().get("tank_upper_part.png");
+    sf::Sprite upperPartSprite(*upperPartTex);
+    upperPartSprite.setPosition(x, y);
+    upperPartSprite.setTextureRect(sf::IntRect(rectX * 160, rectY * 160, 160, 160));
+    upperPartSprite.setOrigin(80, 80);
+    m_renderWindow.draw(upperPartSprite);
+    
     // TODO: Draw health bar
 }
 
