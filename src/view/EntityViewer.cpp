@@ -61,7 +61,7 @@ void EntityViewer::drawTank(float x, float y, int angle, unsigned int health)
     TexturePtr lowerPartTex = TextureManager::instance().get("tank_lower_part.png");
     sf::Sprite lowerPartSprite(*lowerPartTex);
     lowerPartSprite.setPosition(x, y);
-    float a = angle;
+    float a = static_cast<float>(angle);
     a += 5.6f;
     while(a < 0.f)
         a += 360.f;
@@ -82,6 +82,14 @@ void EntityViewer::drawTank(float x, float y, int angle, unsigned int health)
     upperPartSprite.setOrigin(80, 80);
     m_renderWindow.draw(upperPartSprite);
     
+    // Draw upper part shadow
+    TexturePtr upperPartShadowTex = TextureManager::instance().get("tank_upper_part_shadow.png");
+    sf::Sprite upperPartShadowSprite(*upperPartShadowTex);
+    upperPartShadowSprite.setPosition(x, y);
+    upperPartShadowSprite.setTextureRect(sf::IntRect(rectX * 160, rectY * 160, 160, 160));
+    upperPartShadowSprite.setOrigin(80, 80);
+    m_renderWindow.draw(upperPartShadowSprite);
+
     // TODO: Draw health bar
 }
 
