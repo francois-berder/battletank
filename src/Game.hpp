@@ -20,7 +20,7 @@ class Game
 
 		void exit();
 
-		void pushEvent(const Event& event);
+		void pushEvent(const Event event);
 
 	private:
 

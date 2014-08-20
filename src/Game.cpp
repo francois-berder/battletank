@@ -40,7 +40,7 @@ void Game::exit()
 	m_exit = true;
 }
 
-void Game::pushEvent(const Event& event)
+void Game::pushEvent(const Event event)
 {
 	m_events.push(event);
 }
@@ -97,25 +97,33 @@ void Game::proceedEvents()
 	CommandPtr cmd;
 	while (!m_events.empty())
 	{
-		switch (m_events.front())
+        std::stringstream cmdStr;
+	    Event e = m_events.front();
+		switch (e.type)
 		{
-			case Event::Quit :
+			case EventType::Quit :
 				exit();
 				break;
-			case Event::Left :
+			case EventType::Left :
 	    		cmd = cmdFactory.parseCmd("a 1 move left");
 		        cmd->execute();
 			    break;
-		    case Event::Right :
+		    case EventType::Right :
 	    		cmd = cmdFactory.parseCmd("a 1 move right");
 		        cmd->execute();
 		        break;
-	        case Event::Up :
+	        case EventType::Up :
 	    		cmd = cmdFactory.parseCmd("a 1 move down");
 		        cmd->execute();
 	            break;
-            case Event::Down :
+            case EventType::Down :
 	    		cmd = cmdFactory.parseCmd("a 1 move up");
+		        cmd->execute();
+                break;
+            case EventType::Mouse :
+                cmdStr << "a 1 dir ";
+                cmdStr << e.x << " " << e.y;
+	    		cmd = cmdFactory.parseCmd(cmdStr.str());
 		        cmd->execute();
                 break;
 			default :

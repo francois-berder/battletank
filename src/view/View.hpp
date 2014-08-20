@@ -13,6 +13,9 @@ class View
 
 		void update(const std::string& gameState);
 
+        static float gfxToGame(float);
+        static float gameToGfx(float);
+        
 	private:
 
 		void proceedEvents();

@@ -21,6 +21,7 @@ class Tank : public CollidableEntity
 		std::unique_ptr<b2Body, void (*)(b2Body*)> m_body;
 		float m_angularVelocity;
 		float m_velocity;
+		float m_cannonAngle;
 };
 
 #endif /* __TANK_H__ */

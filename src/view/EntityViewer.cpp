@@ -1,12 +1,8 @@
 #include "EntityViewer.hpp"
 #include "TextureManager.hpp"
+#include "View.hpp"
 #include "Utils.hpp"
 
-
-namespace
-{
-    const float GAME_TO_GFX_COORD = 40.f;
-}
 
 EntityViewer::EntityViewer(sf::RenderWindow &renderWindow, Array &entities):
 m_renderWindow(renderWindow),
@@ -26,8 +22,8 @@ void EntityViewer::drawAll()
             Map &pos = entity["pos"]->asMap();
             float x = toFloat(pos["x"]->asData().getValue());
             float y = toFloat(pos["y"]->asData().getValue());
-            x *= GAME_TO_GFX_COORD;
-            y *= GAME_TO_GFX_COORD;
+            x = View::gameToGfx(x);
+            y = View::gameToGfx(y);
             drawObstacle(x, y);
         }
         else if(type == "tank")
@@ -35,11 +31,12 @@ void EntityViewer::drawAll()
             Map &pos = entity["pos"]->asMap();
             float x = toFloat(pos["x"]->asData().getValue());
             float y = toFloat(pos["y"]->asData().getValue());
-            x *= GAME_TO_GFX_COORD;
-            y *= GAME_TO_GFX_COORD;
+            x = View::gameToGfx(x);
+            y = View::gameToGfx(y);
             int angle = toInteger(entity["angle"]->asData().getValue());
+            int cannonAngle = toInteger(entity["cannonAngle"]->asData().getValue());
             unsigned int health = toUInteger(entity["health"]->asData().getValue());
-            drawTank(x, y, angle, health);
+            drawTank(x, y, angle, cannonAngle, health);
         }
     }
 }
@@ -55,7 +52,7 @@ void EntityViewer::drawObstacle(float x, float y)
     m_renderWindow.draw(sprite);
 }
 
-void EntityViewer::drawTank(float x, float y, int angle, unsigned int health)
+void EntityViewer::drawTank(float x, float y, int angle, int cannonAngle, unsigned int health)
 {
     // Draw lower part
     TexturePtr lowerPartTex = TextureManager::instance().get("tank_lower_part.png");
@@ -78,6 +75,14 @@ void EntityViewer::drawTank(float x, float y, int angle, unsigned int health)
     TexturePtr upperPartTex = TextureManager::instance().get("tank_upper_part.png");
     sf::Sprite upperPartSprite(*upperPartTex);
     upperPartSprite.setPosition(x, y);
+    a = static_cast<float>(cannonAngle);
+    a += 5.6f;
+    while(a < 0.f)
+        a += 360.f;
+    while(a >= 360.f)
+        a -= 360.f;
+    rectY = static_cast<unsigned int>(a / 56.25f);
+    rectX = static_cast<unsigned int>((a - static_cast<float>(rectY) * 56.25f) / 11.25);
     upperPartSprite.setTextureRect(sf::IntRect(rectX * 160, rectY * 160, 160, 160));
     upperPartSprite.setOrigin(80, 80);
     m_renderWindow.draw(upperPartSprite);

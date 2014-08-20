@@ -1,5 +1,6 @@
 #include <sstream>
 #include <stdexcept>
+#include <cmath>
 
 #include "Tank.hpp"
 #include "Change.hpp"
@@ -10,7 +11,7 @@
 
 Tank::Tank(const EntityID id, const b2Vec2& startPos) :
 		CollidableEntity(id), m_health(100), m_body(nullptr, PhysicWorld::destroyBody), m_angularVelocity(
-				0.f), m_velocity(0.f)
+				0.f), m_velocity(0.f), m_cannonAngle(0.f)
 {
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
@@ -51,7 +52,6 @@ void Tank::applyChange(const Change &change)
 
 	if(change.getName() == "move")
 	{
-
 		if(change.getArgs().empty())
 			throw std::runtime_error(
 					"Missing direction to apply move change to tank.");
@@ -71,12 +71,51 @@ void Tank::applyChange(const Change &change)
 					<< "Ignored move change, could not recognize direction "
 					<< dirName << '\n';
 	}
+	else if(change.getName() == "dir")
+	{
+		std::list<std::string> args = change.getArgs();
+		if(args.size() < 2)
+			throw std::runtime_error(
+					"Missing coordinates to apply dir change to tank.");
+        
+        // b = (x,y)
+		double x = toFloat(args.front());
+		args.pop_front();
+		double y = toFloat(args.front());
+
+        // Relative to tank origin        
+    	b2Vec2 posTank = m_body->GetPosition();
+    	x -= posTank.x;
+    	y -= posTank.y;
+
+        // Normalize b
+        double l = sqrt((x*x) + (y*y));
+        x /= l;
+        y /= l;
+
+	    double angle = m_body->GetAngle();
+	    double sign = x * cos(angle) + y * sin(angle);
+	    // zero-angle is actually -90°, needs to compensate for it
+	    angle += 3.14f/2.f;
+        
+	    // d = dot(a,b)
+        double d = x * cos(angle) + y * sin(angle); 
+        m_cannonAngle = convertRadToDeg(static_cast<float>(acos(d)));
+
+        while(m_cannonAngle < 0.f)
+            m_cannonAngle += 360.f;
+        while(m_cannonAngle >= 360.f)
+            m_cannonAngle -= 360.f;
+        if(sign > 0.f)
+            m_cannonAngle = 360.f - m_cannonAngle;
+        m_cannonAngle += convertRadToDeg(m_body->GetAngle());
+	}
 	else
 		Logger::instance() << "Ignored change " << change.getName() << '\n';
 }
 
 std::string Tank::print()
-{
+{ 
 	b2Vec2 pos = m_body->GetPosition();
 	std::stringstream ss;
 	ss << "type:tank,";
@@ -87,11 +126,12 @@ std::string Tank::print()
 	ss << ",y:";
 	ss << pos.y;
 	ss << "},angle:";
-
-	// Convert rad to deg
 	float angle = m_body->GetAngle();
 	angle = convertRadToDeg(angle);
 	ss << static_cast<int>(angle);
+	
+	ss << ",cannonAngle:";
+	ss << static_cast<int>(m_cannonAngle);
 	
 	return Entity::print() + "," + ss.str();
 }

@@ -20,25 +20,44 @@ void View::update(const std::string& gameState)
 void View::proceedEvents()
 {
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		m_game.pushEvent(Event::Left);
+		m_game.pushEvent(EventType::Left);
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		m_game.pushEvent(Event::Right);
+		m_game.pushEvent(EventType::Right);
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		m_game.pushEvent(Event::Down);
+		m_game.pushEvent(EventType::Down);
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		m_game.pushEvent(Event::Up);
+		m_game.pushEvent(EventType::Up);
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-		m_game.pushEvent(Event::Quit);
+		m_game.pushEvent(EventType::Quit);
 
 	sf::Event e;
 	while(m_window.pollEvent(e))
 	{
 		if(e.type == sf::Event::Closed)
-			m_game.pushEvent(Event::Quit);
+			m_game.pushEvent(EventType::Quit);
+			
+		if(e.type == sf::Event::MouseMoved)
+		{
+		    float x = static_cast<float>(e.mouseMove.x);
+		    float y = static_cast<float>(e.mouseMove.y);
+		    x = gfxToGame(x);
+		    y = gfxToGame(y);
+		    m_game.pushEvent(Event(x, y));
+	    }
 	}
 }
 
+float View::gfxToGame(float a)
+{
+    return a / 40.f;
+}
+
+float View::gameToGfx(float a)
+{
+    return a * 40.f;
+}
+        
 void View::draw(const std::string &gameState)
 {
 	m_window.clear();
@@ -61,5 +80,4 @@ void View::drawState(const std::string &state)
     EntityViewer v(m_window, entities);
     v.drawAll();
 }
-
 
