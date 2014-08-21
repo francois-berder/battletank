@@ -23,7 +23,16 @@ void Game::setOptions(std::list<Option>& options)
 		else if(opt == "-x")
 			m_execFile = opt.getValue();
 		else if(opt == "-s" || opt == "--save")
-			m_gameWorld.saveToFile(opt.getValue());
+		{
+		    try
+		    {
+			    m_gameWorld.saveToFile(opt.getValue());
+            }
+            catch(std::exception &e)
+            {
+                Logger::instance() << "ERROR: " << e.what() << ". Save option ignored.\n";
+            }
+        }
 	}
 }
 
