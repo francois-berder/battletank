@@ -15,6 +15,10 @@ class Logger
 
 		static Logger& instance();
 
+		static Logger& info();
+		static Logger& warning();
+		static Logger& error();
+		
 		template<typename T>
 		Logger& operator<<(T msg)
 		{

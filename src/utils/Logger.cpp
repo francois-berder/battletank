@@ -11,6 +11,27 @@ Logger& Logger::instance()
 	return l;
 }
 
+Logger& Logger::info()
+{
+    Logger &l = instance();
+    l << "INFO: ";
+    return l;
+}
+
+Logger& Logger::warning()
+{
+    Logger &l = instance();
+    l << "WARN: ";
+    return l;
+}
+
+Logger& Logger::error()
+{
+    Logger &l = instance();
+    l << "ERROR: ";
+    return l;
+}
+		
 void Logger::setEnabled(const bool enabled)
 {
 	m_enabled = enabled;
@@ -30,3 +51,4 @@ void Logger::writeToConsole()
 {
 	m_file.close();
 }
+
