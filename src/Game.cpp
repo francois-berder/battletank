@@ -1,4 +1,3 @@
-#include <fstream>
 #include <stdexcept>
 #include <sstream>
 
@@ -7,7 +6,7 @@
 #include "CommandFactory.hpp"
 
 Game::Game() :
-		m_isInteractive(false), m_exit(false), m_gameWorld(), m_view(*this), m_events(), m_execFile()
+		m_isInteractive(false), m_exit(false), m_gameWorld(), m_view(*this), m_events(), m_execFile(), m_replayFile()
 {
 }
 
@@ -34,6 +33,13 @@ void Game::setOptions(std::list<Option>& options)
                 Logger::error() << e.what() << ". Save option ignored.\n";
             }
         }
+        else if(opt == "-r" || opt == "--replay")
+        {
+            std::string replayFileName = opt.getValue().c_str();
+            m_replayFile.open(replayFileName);
+            if(!m_replayFile)
+                Logger::error() << "Could not open file " << replayFileName << ". Replay option ignored.\n";
+        }            
 	}
 }
 

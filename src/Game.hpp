@@ -1,6 +1,7 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
+#include <fstream>
 #include <queue>
 
 #include "Option.hpp"
@@ -37,6 +38,7 @@ class Game
 		View m_view;
 		std::queue<Event> m_events;
 		std::string m_execFile;
+		std::ifstream m_replayFile;
 };
 
 #endif /* __GAME_H__ */
