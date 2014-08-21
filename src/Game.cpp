@@ -1,5 +1,6 @@
 #include <fstream>
 #include <stdexcept>
+#include <sstream>
 
 #include "Game.hpp"
 #include "Logger.hpp"
@@ -38,8 +39,15 @@ void Game::setOptions(std::list<Option>& options)
 
 void Game::run()
 {
-    if(!m_execFile.empty())
-        executeFile();
+    try
+    {
+        if(!m_execFile.empty())
+            executeFile();
+    }
+    catch(std::exception &e)
+    {
+        Logger::error() << "Error while trying to execute a file. Reason: " << e.what() << ".\n";
+    }
         
 	if(m_isInteractive)
 		runInteractiveMode();
@@ -88,8 +96,9 @@ void Game::executeFile()
 	std::ifstream file(m_execFile.c_str());
 	if(!file)
 	{
-		Logger::error() << "Could not execute file " << m_execFile << ".\n";
-		return;
+        std::stringstream ss;
+        ss << "could not open file " << m_execFile;
+	    throw std::runtime_error(ss.str());
 	}
 
 	CommandFactory cmdFactory(*this, m_gameWorld);
