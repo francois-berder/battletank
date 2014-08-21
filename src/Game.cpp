@@ -20,12 +20,14 @@ void Game::setOptions(std::list<Option>& options)
 			m_isInteractive = true;
 		else if(opt == "--enable-log")
 			LOG.setEnabled(true);
-			else if(opt == "--log-file")
+		else if(opt == "--log-file")
 			LOG.writeToFile(opt.getValue());
-			else if(opt == "-x")
+		else if(opt == "-x")
 			executeFile(opt.getValue());
-		}
+		else if(opt == "-s" || opt == "--save")
+			m_gameWorld.saveToFile(opt.getValue());
 	}
+}
 
 void Game::run()
 {

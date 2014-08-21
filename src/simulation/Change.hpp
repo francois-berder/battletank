@@ -18,6 +18,8 @@ class Change
 		std::string getName() const;
 		std::list<std::string> getArgs() const;
 
+        std::string toString() const;
+        
 	private:
 
 		const EntityID m_id;

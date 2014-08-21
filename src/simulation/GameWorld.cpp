@@ -6,7 +6,7 @@
 #include "Logger.hpp"
 
 GameWorld::GameWorld() :
-		m_currentStep(0), m_entities(), m_factory()
+		m_currentStep(0), m_entities(), m_factory(), m_saveFile()
 {
 }
 
@@ -22,6 +22,9 @@ void GameWorld::step()
 
 void GameWorld::applyChange(const Change &change)
 {
+    if(m_saveFile.is_open())
+        m_saveFile << m_currentStep << ' ' << change.toString() << '\n';        
+    
 	const EntityID id = change.getTargetID();
 	if(id != 0)
 		m_entities[id]->applyChange(change);
@@ -99,3 +102,12 @@ unsigned int GameWorld::getCurrentStep() const
 {
 	return m_currentStep;
 }
+
+void GameWorld::saveToFile(const std::string& fileName)
+{
+    m_saveFile.open(fileName.c_str(), std::ofstream::out | std::ofstream::trunc);
+    
+    if(!m_saveFile.is_open())
+        throw std::runtime_error("Could not open file for saving changes");
+}
+

@@ -1,4 +1,7 @@
+#include <sstream>
+
 #include "Change.hpp"
+
 
 Change::Change(const EntityID id, const std::string &name,
 		const std::list<std::string> &args) :
@@ -19,5 +22,14 @@ std::string Change::getName() const
 std::list<std::string> Change::getArgs() const
 {
 	return m_args;
+}
+
+std::string Change::toString() const
+{
+    std::stringstream ss;
+    ss << m_id << ' ' << m_name;
+    for(std::string arg : m_args)
+        ss << ' ' << arg;
+    return ss.str();
 }
 
