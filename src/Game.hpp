@@ -25,9 +25,6 @@ class Game
 
 	private:
 
-		void runInteractiveMode();
-		void runNonInteractiveMode();
-
 		void executeFile();
 
 		void proceedEvents();

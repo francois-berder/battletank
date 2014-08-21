@@ -55,10 +55,23 @@ void Game::run()
         Logger::error() << "Error while trying to execute a file. Reason: " << e.what() << ".\n";
     }
         
-	if(m_isInteractive)
-		runInteractiveMode();
-	else
-		runNonInteractiveMode();
+	CommandFactory cmdFactory(*this, m_gameWorld);
+	while(!m_gameWorld.isFinished() && !m_exit)
+	{
+    	if(m_isInteractive)
+	    {
+		    std::cout << "> ";
+		    std::string cmdStr;
+		    std::getline(std::cin, cmdStr);
+    		CommandPtr cmd = cmdFactory.parseCmd(cmdStr);
+	        cmd->execute();
+        }
+        else
+    		m_gameWorld.step();
+	
+		m_view.update(m_gameWorld.print());
+		proceedEvents();
+	}
 }
 
 void Game::exit()
@@ -69,32 +82,6 @@ void Game::exit()
 void Game::pushEvent(const Event event)
 {
 	m_events.push(event);
-}
-
-void Game::runInteractiveMode()
-{
-	CommandFactory cmdFactory(*this, m_gameWorld);
-	while (!m_gameWorld.isFinished() && !m_exit)
-	{
-		std::cout << "> ";
-		std::string cmdStr;
-		std::getline(std::cin, cmdStr);
-
-		CommandPtr cmd = cmdFactory.parseCmd(cmdStr);
-		cmd->execute();
-		m_view.update(m_gameWorld.print());
-		proceedEvents();
-	}
-}
-
-void Game::runNonInteractiveMode()
-{
-	while (!m_gameWorld.isFinished() && !m_exit)
-	{
-		m_gameWorld.step();
-		m_view.update(m_gameWorld.print());
-		proceedEvents();
-	}
 }
 
 void Game::executeFile()
