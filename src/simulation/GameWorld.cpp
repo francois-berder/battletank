@@ -60,7 +60,7 @@ void GameWorld::proceedChange(const std::string &name,
 		m_entities.erase(id);
 	}
 	else
-		Logger::instance() << "Ignored change " << name << '\n';
+		Logger::warning() << "Ignored change " << name << '\n';
 }
 
 bool GameWorld::isFinished()

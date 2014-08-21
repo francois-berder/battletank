@@ -20,7 +20,7 @@ void Entity::update()
 
 void Entity::applyChange(const Change &change)
 {
-	Logger::instance() << "Ignored " << change.getName() << " change.\n";
+	Logger::warning() << "Ignored " << change.getName() << " change.\n";
 }
 
 std::string Entity::print()

@@ -67,7 +67,7 @@ void Tank::applyChange(const Change &change)
 		else if(dirName == "right")
 			m_angularVelocity += 2.f;
 		else
-			Logger::instance()
+			Logger::warning()
 					<< "Ignored move change, could not recognize direction "
 					<< dirName << '\n';
 	}
@@ -111,7 +111,7 @@ void Tank::applyChange(const Change &change)
         m_cannonAngle += convertRadToDeg(m_body->GetAngle());
 	}
 	else
-		Logger::instance() << "Ignored change " << change.getName() << '\n';
+		Logger::warning() << "Ignored change " << change.getName() << '\n';
 }
 
 std::string Tank::print()

@@ -38,6 +38,6 @@ TexturePtr TextureManager::load(const std::string &path)
 		msg << "Could not load texture from file " << path;
 		throw std::runtime_error(msg.str());
 	}
-    Logger::instance() << "Loaded texture from path " << path << "\n";
+    Logger::info() << "Loaded texture from path " << path << "\n";
 	return TexturePtr(tex);
 }

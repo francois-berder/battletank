@@ -30,7 +30,7 @@ void Game::setOptions(std::list<Option>& options)
             }
             catch(std::exception &e)
             {
-                Logger::instance() << "ERROR: " << e.what() << ". Save option ignored.\n";
+                Logger::error() << e.what() << ". Save option ignored.\n";
             }
         }
 	}
@@ -88,7 +88,7 @@ void Game::executeFile()
 	std::ifstream file(m_execFile.c_str());
 	if(!file)
 	{
-		Logger::instance() << "Could not execute file " << m_execFile << ".\n";
+		Logger::error() << "Could not execute file " << m_execFile << ".\n";
 		return;
 	}
 
