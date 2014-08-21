@@ -12,10 +12,8 @@ Game::Game() :
 
 void Game::setOptions(std::list<Option>& options)
 {
-	for(auto it = options.begin(); it != options.end(); ++it)
+	for(Option opt :options)
 	{
-		Option opt = *it;
-
 		if(opt == "-i" || opt == "--interactive")
 			m_isInteractive = true;
 		else if(opt == "--enable-log")

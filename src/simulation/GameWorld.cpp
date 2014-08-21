@@ -14,8 +14,8 @@ void GameWorld::step()
 {
 	++m_currentStep;
 
-	for(auto it = m_entities.begin(); it != m_entities.end(); ++it)
-		it->second->update();
+	for(auto ety : m_entities)
+		ety.second->update();
 
 	PhysicWorld::update();
 }
