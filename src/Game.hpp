@@ -27,7 +27,7 @@ class Game
 		void runInteractiveMode();
 		void runNonInteractiveMode();
 
-		void executeFile(const std::string& path);
+		void executeFile();
 
 		void proceedEvents();
 
@@ -36,6 +36,7 @@ class Game
 		GameWorld m_gameWorld;
 		View m_view;
 		std::queue<Event> m_events;
+		std::string m_execFile;
 };
 
 #endif /* __GAME_H__ */

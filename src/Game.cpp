@@ -6,7 +6,7 @@
 #include "CommandFactory.hpp"
 
 Game::Game() :
-		m_isInteractive(false), m_exit(false), m_gameWorld(), m_view(*this), m_events()
+		m_isInteractive(false), m_exit(false), m_gameWorld(), m_view(*this), m_events(), m_execFile()
 {
 }
 
@@ -21,7 +21,7 @@ void Game::setOptions(std::list<Option>& options)
 		else if(opt == "--log-file")
 			LOG.writeToFile(opt.getValue());
 		else if(opt == "-x")
-			executeFile(opt.getValue());
+			m_execFile = opt.getValue();
 		else if(opt == "-s" || opt == "--save")
 			m_gameWorld.saveToFile(opt.getValue());
 	}
@@ -29,6 +29,9 @@ void Game::setOptions(std::list<Option>& options)
 
 void Game::run()
 {
+    if(!m_execFile.empty())
+        executeFile();
+        
 	if(m_isInteractive)
 		runInteractiveMode();
 	else
@@ -71,12 +74,12 @@ void Game::runNonInteractiveMode()
 	}
 }
 
-void Game::executeFile(const std::string& path)
+void Game::executeFile()
 {
-	std::ifstream file(path.c_str());
+	std::ifstream file(m_execFile.c_str());
 	if(!file)
 	{
-		Logger::instance() << "Could not execute file " << path << ".\n";
+		Logger::instance() << "Could not execute file " << m_execFile << ".\n";
 		return;
 	}
 
