@@ -25,6 +25,8 @@ class Game
 
 	private:
 
+        void displayOptionsList();
+    
 		void executeFile();
 
 		void proceedEvents();

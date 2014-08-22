@@ -18,6 +18,11 @@ void Game::setOptions(std::list<Option>& options)
 	{
 		if(opt == "-i" || opt == "--interactive")
 			m_isInteractive = true;
+		else if(opt == "-h" || opt == "--help")
+		{
+		    displayOptionsList();
+		    exit();
+		}
 		else if(opt == "--enable-log")
 			LOG.setEnabled(true);
 		else if(opt == "--log-file")
@@ -108,6 +113,16 @@ void Game::exit()
 void Game::pushEvent(const Event event)
 {
 	m_events.push(event);
+}
+
+void Game::displayOptionsList()
+{
+    std::cout << "[-i | --interactive]\t\tEnable interactive mode\n";
+    std::cout << "[--enable-log | --disable-log]\tEnable/disable logging\n";
+    std::cout << "[--log-file]\t\t\tLog will be saved in specified file\n";
+    std::cout << "[-x]\t\t\t\tExecute commands from specified file\n";
+    std::cout << "[-s | --save]\t\t\tSave all changes made to simulation in given file\n";
+    std::cout << "[-r | --replay]\t\t\tReplay all commands from specified file\n";
 }
 
 void Game::executeFile()
