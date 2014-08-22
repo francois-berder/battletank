@@ -36,7 +36,7 @@ class Game
 		GameWorld m_gameWorld;
 		View m_view;
 		std::queue<Event> m_events;
-		std::string m_execFile;
+		std::string m_execFileName;
 		std::ifstream m_replayFile;
 };
 

@@ -8,7 +8,7 @@
 
 
 Game::Game() :
-		m_isInteractive(false), m_exit(false), m_gameWorld(), m_view(*this), m_events(), m_execFile(), m_replayFile()
+		m_isInteractive(false), m_exit(false), m_gameWorld(), m_view(*this), m_events(), m_execFileName(), m_replayFile()
 {
 }
 
@@ -32,7 +32,7 @@ void Game::setOptions(std::list<Option>& options)
 		else if(opt == "--disable-input")
 		    m_view.disableUserInput();
 		else if(opt == "-x")
-			m_execFile = opt.getValue();
+			m_execFileName = opt.getValue();
 		else if(opt == "-s" || opt == "--save")
 		{
 		    try
@@ -58,7 +58,7 @@ void Game::run()
 {
     try
     {
-        if(!m_execFile.empty())
+        if(!m_execFileName.empty())
             executeFile();
     }
     catch(std::exception &e)
@@ -131,11 +131,11 @@ void Game::displayOptionsList()
 
 void Game::executeFile()
 {
-	std::ifstream file(m_execFile.c_str());
+	std::ifstream file(m_execFileName.c_str());
 	if(!file)
 	{
         std::stringstream ss;
-        ss << "could not open file " << m_execFile;
+        ss << "could not open file " << m_execFileName;
 	    throw std::runtime_error(ss.str());
 	}
 
