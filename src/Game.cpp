@@ -4,6 +4,8 @@
 #include "Game.hpp"
 #include "Logger.hpp"
 #include "CommandFactory.hpp"
+#include "Utils.hpp"
+
 
 Game::Game() :
 		m_isInteractive(false), m_exit(false), m_gameWorld(), m_view(*this), m_events(), m_execFile(), m_replayFile()
@@ -58,6 +60,30 @@ void Game::run()
 	CommandFactory cmdFactory(*this, m_gameWorld);
 	while(!m_gameWorld.isFinished() && !m_exit)
 	{
+	    if(m_replayFile.is_open())
+	    {
+	        while(true)
+	        {
+		        std::string cmdStr;
+	            std::getline(m_replayFile, cmdStr, ' ');
+	            unsigned int cmdStep = toUInteger(cmdStr);
+	            
+	            if(cmdStep == m_gameWorld.getCurrentStep())
+	            {	        
+	                std::getline(m_replayFile, cmdStr);
+	                cmdStr = "a " + cmdStr;
+	        	    CommandFactory cmdFactory2(*this, m_gameWorld);
+        		    CommandPtr cmd = cmdFactory2.parseCmd(cmdStr);
+	                cmd->execute();
+	            }
+	            else
+	            {
+	                m_replayFile.seekg(-cmdStr.size()-1, std::ios_base::cur);
+	                break;
+	            }
+	        }
+	    }
+	    
     	if(m_isInteractive)
 	    {
 		    std::cout << "> ";
