@@ -13,8 +13,8 @@ int main(int argc, char **argv)
 	}
 	catch (std::exception &e)
 	{
-		LOG<< e.what() << "\n";
-		LOG << "Abort.\n";
+		Logger::error() << e.what() << "\n";
+		Logger::instance() << "Abort.\n";
 		return -1;
 	}
 

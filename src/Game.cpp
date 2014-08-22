@@ -24,11 +24,11 @@ void Game::setOptions(std::list<Option>& options)
 		    exit();
 		}
 		else if(opt == "--enable-log")
-			LOG.setEnabled(true);
+			Logger::instance().setEnabled(true);
 		else if(opt == "--disable-log")
-			LOG.setEnabled(false);
+			Logger::instance().setEnabled(false);
 		else if(opt == "--log-file")
-			LOG.writeToFile(opt.getValue());
+			Logger::instance().writeToFile(opt.getValue());
 		else if(opt == "--disable-input")
 		    m_view.disableUserInput();
 		else if(opt == "-x")

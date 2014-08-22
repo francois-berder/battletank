@@ -5,8 +5,6 @@
 #include <fstream>
 #include <sstream>
 
-#define LOG Logger::instance()
-
 class Logger
 {
 	public:
