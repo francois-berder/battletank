@@ -25,6 +25,8 @@ void Game::setOptions(std::list<Option>& options)
 		}
 		else if(opt == "--enable-log")
 			LOG.setEnabled(true);
+		else if(opt == "--disable-log")
+			LOG.setEnabled(false);
 		else if(opt == "--log-file")
 			LOG.writeToFile(opt.getValue());
 		else if(opt == "-x")
