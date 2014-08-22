@@ -7,7 +7,7 @@
 
 
 View::View(Game &game) :
-		m_game(game), m_window(sf::VideoMode(800, 600), "Battle Tank")
+		m_game(game), m_window(sf::VideoMode(800, 600), "Battle Tank"), m_disableUserInput(false)
 {
 }
 
@@ -19,15 +19,18 @@ void View::update(const std::string& gameState)
 
 void View::proceedEvents()
 {
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		m_game.pushEvent(EventType::Left);
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		m_game.pushEvent(EventType::Right);
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		m_game.pushEvent(EventType::Down);
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		m_game.pushEvent(EventType::Up);
-
+    if(!m_disableUserInput)
+    {
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		    m_game.pushEvent(EventType::Left);
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		    m_game.pushEvent(EventType::Right);
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		    m_game.pushEvent(EventType::Down);
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		    m_game.pushEvent(EventType::Up);
+    }
+    
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 		m_game.pushEvent(EventType::Quit);
 
@@ -37,7 +40,7 @@ void View::proceedEvents()
 		if(e.type == sf::Event::Closed)
 			m_game.pushEvent(EventType::Quit);
 			
-		if(e.type == sf::Event::MouseMoved)
+		if(e.type == sf::Event::MouseMoved && !m_disableUserInput)
 		{
 		    float x = static_cast<float>(e.mouseMove.x);
 		    float y = static_cast<float>(e.mouseMove.y);
@@ -81,3 +84,7 @@ void View::drawState(const std::string &state)
     v.drawAll();
 }
 
+void View::disableUserInput()
+{
+    m_disableUserInput = true;
+}

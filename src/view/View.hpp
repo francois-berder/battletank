@@ -16,6 +16,8 @@ class View
         static float gfxToGame(float);
         static float gameToGfx(float);
         
+        void disableUserInput();
+        
 	private:
 
 		void proceedEvents();
@@ -25,6 +27,7 @@ class View
 
 		Game &m_game;
 		sf::RenderWindow m_window;
+		bool m_disableUserInput;
 };
 
 #endif /* __VIEW_H__ */

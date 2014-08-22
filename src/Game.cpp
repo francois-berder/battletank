@@ -29,6 +29,8 @@ void Game::setOptions(std::list<Option>& options)
 			LOG.setEnabled(false);
 		else if(opt == "--log-file")
 			LOG.writeToFile(opt.getValue());
+		else if(opt == "--disable-input")
+		    m_view.disableUserInput();
 		else if(opt == "-x")
 			m_execFile = opt.getValue();
 		else if(opt == "-s" || opt == "--save")
@@ -48,7 +50,7 @@ void Game::setOptions(std::list<Option>& options)
             m_replayFile.open(replayFileName);
             if(!m_replayFile)
                 Logger::error() << "Could not open file " << replayFileName << ". Replay option ignored.\n";
-        }            
+        }
 	}
 }
 
