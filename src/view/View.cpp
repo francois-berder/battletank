@@ -11,6 +11,7 @@ m_window(sf::VideoMode(800, 600), "Battle Tank"),
 m_disableUserInput(false),
 m_events()
 {
+    m_window.setFramerateLimit(60);
 }
 
 void View::update(const std::string& gameState)
