@@ -43,6 +43,7 @@ class Game
         Server m_server;
         Client m_client;
         bool m_disableClient;
+        bool m_runServer;
         std::list<NetworkEvent> m_events;
 };
 

@@ -17,6 +17,7 @@ m_replayFile(),
 m_server(),
 m_client(),
 m_disableClient(false),
+m_runServer(false),
 m_events()
 {
 }
@@ -67,7 +68,10 @@ void Game::setOptions(std::list<Option>& options)
                 Logger::error() << "Could not open file " << replayFileName << ". Replay option ignored.\n";
         }
         else if(opt == "--run-server")
+        {
+            m_runServer = true;
             m_server.startAcceptingClients();
+        }
         else if(opt == "--disable-client")
             m_disableClient = true;
 	}
@@ -96,9 +100,11 @@ void Game::run()
         Logger::error() << "Error while trying to connect to server. Reason: " << e.what() << ".\n";
         exit();
     }
-    m_server.stopAcceptingClients();
-
-    m_server.initWorld();
+    if(m_runServer)
+    {
+        m_server.stopAcceptingClients();
+        m_server.initWorld();
+    }
     std::list<std::string> initCmds = m_client.getWorld();
     CommandFactory initCmdFactory(*this, m_gameWorld);
     for(auto &cmdStr : initCmds) 
@@ -106,8 +112,8 @@ void Game::run()
 	    CommandPtr cmd = initCmdFactory.parseCmd(cmdStr);
         cmd->execute();
     }
-
-    m_server.start();
+    if(m_runServer)
+        m_server.start();
 
     CommandFactory cmdFactory(*this, m_gameWorld);
 	while(!m_gameWorld.isFinished() && !m_exit)
