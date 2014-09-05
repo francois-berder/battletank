@@ -220,45 +220,38 @@ void Game::proceedNetworkEvents()
     const unsigned int currentStep = m_gameWorld.getCurrentStep();
 
 	CommandFactory cmdFactory(*this, m_gameWorld);
-	CommandPtr cmd;
+
     while(m_events.front().stepID <= currentStep)
     {
         NetworkEvent e = m_events.front();
         std::stringstream cmdStr;
+        cmdStr << "a " << e.clientID;
 		switch (e.type)
 		{
 			case EventType::Quit :
 				exit();
 				break;
 			case EventType::Left :
-	    		cmd = cmdFactory.parseCmd("a 1 move left");
-                if(!m_disableClient)
-    		        cmd->execute();
+                cmdStr << " move left";
 			    break;
 		    case EventType::Right :
-	    		cmd = cmdFactory.parseCmd("a 1 move right");
-                if(!m_disableClient)
-    		        cmd->execute();
+                cmdStr << " move right";
 		        break;
 	        case EventType::Up :
-	    		cmd = cmdFactory.parseCmd("a 1 move down");
-                if(!m_disableClient)
-    		        cmd->execute();
+                cmdStr << " move up";
 	            break;
             case EventType::Down :
-	    		cmd = cmdFactory.parseCmd("a 1 move up");
-                if(!m_disableClient)
-    		        cmd->execute();
+                cmdStr << " move down";
                 break;
             case EventType::Mouse :
-                cmdStr << "a 1 dir ";
-                cmdStr << e.x << " " << e.y;
-	    		cmd = cmdFactory.parseCmd(cmdStr.str());
-		        cmd->execute();
+                cmdStr << " dir " << e.x << " " << e.y;
                 break;
 			default :
 				throw std::runtime_error("Could not proceed unknown event.");
 		}
+		CommandPtr cmd = cmdFactory.parseCmd(cmdStr.str());
+        if(!m_disableClient || (m_disableClient && e.clientID != e.clientID))
+	        cmd->execute();
         m_events.erase(m_events.begin());
 	}
 }
