@@ -13,7 +13,7 @@ m_dataThread(),
 m_acceptClients(false),
 m_control(false),
 m_running(false),
-m_id(0),
+m_id(1),
 m_clients(),
 m_clientMutex(),
 m_sendWorld(false),
@@ -32,6 +32,7 @@ void Server::startAcceptingClients()
     if(m_acceptClients)
         return;
 
+    m_id = 1;
     m_acceptClients = true;
     m_control = true;
     std::thread init(&Server::runInit, this);
@@ -61,9 +62,6 @@ void Server::start()
         return;
 
     m_running = true;
-    m_id = 1;
-
-
     std::thread data(&Server::runData, this);
     m_dataThread.swap(data);
     
