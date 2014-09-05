@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <queue>
+#include <list>
 
 #include "Option.hpp"
 #include "GameWorld.hpp"
@@ -42,6 +43,7 @@ class Game
         Server m_server;
         Client m_client;
         bool m_disableClient;
+        std::list<NetworkEvent> m_events;
 };
 
 #endif /* __GAME_H__ */

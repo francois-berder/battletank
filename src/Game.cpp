@@ -16,7 +16,8 @@ m_execFileName(),
 m_replayFile(),
 m_server(),
 m_client(),
-m_disableClient(false)
+m_disableClient(false),
+m_events()
 {
 }
 
@@ -206,13 +207,19 @@ void Game::proceedViewEvents()
 
 void Game::proceedNetworkEvents()
 {
-	CommandFactory cmdFactory(*this, m_gameWorld);
-	CommandPtr cmd;
     NetworkEvent netEvent;
 	while(m_client.pollEvent(netEvent))
-	{
+        m_events.push_back(netEvent); // FIXME: ensure order of events according to stepID
+
+    const unsigned int currentStep = m_gameWorld.getCurrentStep();
+
+	CommandFactory cmdFactory(*this, m_gameWorld);
+	CommandPtr cmd;
+    while(m_events.front().stepID <= currentStep)
+    {
+        NetworkEvent e = m_events.front();
         std::stringstream cmdStr;
-		switch (netEvent.type)
+		switch (e.type)
 		{
 			case EventType::Quit :
 				exit();
@@ -239,13 +246,14 @@ void Game::proceedNetworkEvents()
                 break;
             case EventType::Mouse :
                 cmdStr << "a 1 dir ";
-                cmdStr << netEvent.x << " " << netEvent.y;
+                cmdStr << e.x << " " << e.y;
 	    		cmd = cmdFactory.parseCmd(cmdStr.str());
 		        cmd->execute();
                 break;
 			default :
 				throw std::runtime_error("Could not proceed unknown event.");
 		}
+        m_events.erase(m_events.begin());
 	}
 }
 
