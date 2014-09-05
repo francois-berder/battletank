@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <mutex>
 
 class Logger
 {
@@ -25,6 +26,7 @@ class Logger
 
 			if(m_file.is_open())
 			{
+                std::lock_guard<std::mutex> lock(m_mutex);
 				std::stringstream ss;
 				ss << msg;
 				std::string s = ss.str();
@@ -45,6 +47,7 @@ class Logger
 
 		bool m_enabled;
 		std::ofstream m_file;
+        std::mutex m_mutex;
 };
 
 #endif /* __LOGGER_H__ */

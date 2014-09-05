@@ -2,6 +2,9 @@
 #define __VIEW_H__
 
 #include <SFML/Graphics.hpp>
+#include <queue>
+
+#include "Event.hpp"
 
 class Game;
 
@@ -9,7 +12,7 @@ class View
 {
 	public:
 
-		View(Game &game);
+		View();
 
 		void update(const std::string& gameState);
 
@@ -18,6 +21,8 @@ class View
         
         void disableUserInput();
         
+        bool pollEvent(Event &evt);
+
 	private:
 
 		void proceedEvents();
@@ -25,9 +30,9 @@ class View
 		void drawBackground();
 		void drawState(const std::string &state);
 
-		Game &m_game;
 		sf::RenderWindow m_window;
 		bool m_disableUserInput;
+        std::queue<Event> m_events;
 };
 
 #endif /* __VIEW_H__ */

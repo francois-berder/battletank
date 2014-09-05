@@ -7,21 +7,21 @@
 #include "Option.hpp"
 #include "GameWorld.hpp"
 #include "View.hpp"
-#include "Event.hpp"
+#include "Server.hpp"
+#include "Client.hpp"
 
 class Game
 {
 	public:
 
 		Game();
+        virtual ~Game();
 
 		void setOptions(std::list<Option>& options);
 
 		void run();
 
 		void exit();
-
-		void pushEvent(const Event event);
 
 	private:
 
@@ -30,14 +30,18 @@ class Game
 		void executeFile();
 
 		void proceedEvents();
+        void proceedViewEvents();
+        void proceedNetworkEvents();
 
 		bool m_isInteractive;
 		bool m_exit;
 		GameWorld m_gameWorld;
 		View m_view;
-		std::queue<Event> m_events;
 		std::string m_execFileName;
 		std::ifstream m_replayFile;
+        Server m_server;
+        Client m_client;
+        bool m_disableClient;
 };
 
 #endif /* __GAME_H__ */

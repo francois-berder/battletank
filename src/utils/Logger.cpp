@@ -1,7 +1,9 @@
 #include "Logger.hpp"
 
 Logger::Logger() :
-		m_enabled(true), m_file()
+m_enabled(true), 
+m_file(), 
+m_mutex()
 {
 }
 

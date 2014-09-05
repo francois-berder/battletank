@@ -3,6 +3,9 @@
 #include "Option.hpp"
 #include "Logger.hpp"
 #include "Game.hpp"
+#include "Server.hpp"
+#include "Client.hpp"
+#include <unistd.h>
 
 int main(int argc, char **argv)
 {
@@ -21,6 +24,6 @@ int main(int argc, char **argv)
 	Game game;
 	game.setOptions(options);
 	game.run();
-
+    
 	return 0;
 }

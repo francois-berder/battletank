@@ -6,8 +6,10 @@
 #include "EntityParser.hpp"
 
 
-View::View(Game &game) :
-		m_game(game), m_window(sf::VideoMode(800, 600), "Battle Tank"), m_disableUserInput(false)
+View::View():
+m_window(sf::VideoMode(800, 600), "Battle Tank"), 
+m_disableUserInput(false),
+m_events()
 {
 }
 
@@ -17,28 +19,39 @@ void View::update(const std::string& gameState)
 	draw(gameState);
 }
 
+bool View::pollEvent(Event &evt)
+{
+    if(m_events.empty())
+        return false;
+
+    evt = m_events.front();
+    m_events.pop();
+
+    return true;
+}
+
 void View::proceedEvents()
 {
     if(!m_disableUserInput)
     {
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		    m_game.pushEvent(EventType::Left);
+		    m_events.push(EventType::Left);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		    m_game.pushEvent(EventType::Right);
+		    m_events.push(EventType::Right);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		    m_game.pushEvent(EventType::Down);
+		    m_events.push(EventType::Down);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		    m_game.pushEvent(EventType::Up);
+		    m_events.push(EventType::Up);
     }
     
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-		m_game.pushEvent(EventType::Quit);
+		m_events.push(EventType::Quit);
 
 	sf::Event e;
 	while(m_window.pollEvent(e))
 	{
 		if(e.type == sf::Event::Closed)
-			m_game.pushEvent(EventType::Quit);
+			m_events.push(EventType::Quit);
 			
 		if(e.type == sf::Event::MouseMoved && !m_disableUserInput)
 		{
@@ -46,7 +59,7 @@ void View::proceedEvents()
 		    float y = static_cast<float>(e.mouseMove.y);
 		    x = gfxToGame(x);
 		    y = gfxToGame(y);
-		    m_game.pushEvent(Event(x, y));
+		    m_events.push(Event(x, y));
 	    }
 	}
 }

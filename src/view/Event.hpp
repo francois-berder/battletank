@@ -11,31 +11,32 @@ enum class EventType
 	Mouse
 };
 
-class Event
+struct Event
 {
-    public :
+    Event():
+    type(EventType::Quit),
+    x(-1),
+    y(-1)
+    {
+    }
+
+    Event(const EventType evtType):
+    type(evtType),
+    x(-1),
+    y(-1)
+    {
+    }
+
+    Event(const float posX, const float posY):
+    type(EventType::Mouse),
+    x(posX),
+    y(posY)
+    {
+    }
     
-        Event() = delete;
-    
-        Event(const EventType evtType):
-        type(evtType),
-        x(-1),
-        y(-1)
-        {
-        }
-    
-        Event(const float posX, const float posY):
-        type(EventType::Mouse),
-        x(posX),
-        y(posY)
-        {
-        }
-    
-        virtual ~Event() = default;
-    
-        const EventType type;
-        const float x;
-        const float y;
+    EventType type;
+    float x;
+    float y;
 };
 
 #endif /* __EVENT_H__ */

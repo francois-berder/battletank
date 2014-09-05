@@ -8,8 +8,22 @@
 
 
 Game::Game() :
-		m_isInteractive(false), m_exit(false), m_gameWorld(), m_view(*this), m_events(), m_execFileName(), m_replayFile()
+m_isInteractive(false),
+m_exit(false),
+m_gameWorld(),
+m_view(),
+m_execFileName(),
+m_replayFile(),
+m_server(),
+m_client(),
+m_disableClient(false)
 {
+}
+
+Game::~Game()
+{
+    m_client.disconnect();
+    m_server.stop();
 }
 
 void Game::setOptions(std::list<Option>& options)
@@ -51,6 +65,10 @@ void Game::setOptions(std::list<Option>& options)
             if(!m_replayFile)
                 Logger::error() << "Could not open file " << replayFileName << ". Replay option ignored.\n";
         }
+        else if(opt == "--run-server")
+            m_server.startAcceptingClients();
+        else if(opt == "--disable-client")
+            m_disableClient = true;
 	}
 }
 
@@ -64,9 +82,33 @@ void Game::run()
     catch(std::exception &e)
     {
         Logger::error() << "Error while trying to execute a file. Reason: " << e.what() << ".\n";
+        exit();
     }
-        
-	CommandFactory cmdFactory(*this, m_gameWorld);
+    
+    try
+    {
+        if(!m_disableClient)
+            m_client.connect("localhost");
+    }
+    catch(std::exception &e)
+    {
+        Logger::error() << "Error while trying to connect to server. Reason: " << e.what() << ".\n";
+        exit();
+    }
+    m_server.stopAcceptingClients();
+
+    m_server.initWorld();
+    std::list<std::string> initCmds = m_client.getWorld();
+    CommandFactory initCmdFactory(*this, m_gameWorld);
+    for(auto &cmdStr : initCmds) 
+    {
+	    CommandPtr cmd = initCmdFactory.parseCmd(cmdStr);
+        cmd->execute();
+    }
+
+    m_server.start();
+
+    CommandFactory cmdFactory(*this, m_gameWorld);
 	while(!m_gameWorld.isFinished() && !m_exit)
 	{
 	    if(m_replayFile.is_open())
@@ -114,11 +156,6 @@ void Game::exit()
 	m_exit = true;
 }
 
-void Game::pushEvent(const Event event)
-{
-	m_events.push(event);
-}
-
 void Game::displayOptionsList()
 {
     std::cout << "[-i | --interactive]\t\tEnable interactive mode\n";
@@ -152,43 +189,63 @@ void Game::executeFile()
 
 void Game::proceedEvents()
 {
+    proceedViewEvents();
+    proceedNetworkEvents();
+}
+
+// Forward events from view to client
+void Game::proceedViewEvents()
+{
+    Event viewEvent;
+    while(m_view.pollEvent(viewEvent))
+    {
+        NetworkEvent event(m_client.getID(), m_gameWorld.getCurrentStep(), viewEvent);
+        m_client.pushEvent(event);
+    }    
+}
+
+void Game::proceedNetworkEvents()
+{
 	CommandFactory cmdFactory(*this, m_gameWorld);
 	CommandPtr cmd;
-	while (!m_events.empty())
+    NetworkEvent netEvent;
+	while(m_client.pollEvent(netEvent))
 	{
         std::stringstream cmdStr;
-	    Event e = m_events.front();
-		switch (e.type)
+		switch (netEvent.type)
 		{
 			case EventType::Quit :
 				exit();
 				break;
 			case EventType::Left :
 	    		cmd = cmdFactory.parseCmd("a 1 move left");
-		        cmd->execute();
+                if(!m_disableClient)
+    		        cmd->execute();
 			    break;
 		    case EventType::Right :
 	    		cmd = cmdFactory.parseCmd("a 1 move right");
-		        cmd->execute();
+                if(!m_disableClient)
+    		        cmd->execute();
 		        break;
 	        case EventType::Up :
 	    		cmd = cmdFactory.parseCmd("a 1 move down");
-		        cmd->execute();
+                if(!m_disableClient)
+    		        cmd->execute();
 	            break;
             case EventType::Down :
 	    		cmd = cmdFactory.parseCmd("a 1 move up");
-		        cmd->execute();
+                if(!m_disableClient)
+    		        cmd->execute();
                 break;
             case EventType::Mouse :
                 cmdStr << "a 1 dir ";
-                cmdStr << e.x << " " << e.y;
+                cmdStr << netEvent.x << " " << netEvent.y;
 	    		cmd = cmdFactory.parseCmd(cmdStr.str());
 		        cmd->execute();
                 break;
 			default :
 				throw std::runtime_error("Could not proceed unknown event.");
 		}
-		m_events.pop();
 	}
 }
 
