@@ -105,12 +105,15 @@ void Game::run()
         m_server.stopAcceptingClients();
         m_server.initWorld();
     }
-    std::list<std::string> initCmds = m_client.getWorld();
-    CommandFactory initCmdFactory(*this, m_gameWorld);
-    for(auto &cmdStr : initCmds) 
+    if(!m_disableClient)
     {
-	    CommandPtr cmd = initCmdFactory.parseCmd(cmdStr);
-        cmd->execute();
+        std::list<std::string> initCmds = m_client.getWorld();
+        CommandFactory initCmdFactory(*this, m_gameWorld);
+        for(auto &cmdStr : initCmds) 
+        {
+	        CommandPtr cmd = initCmdFactory.parseCmd(cmdStr);
+            cmd->execute();
+        }
     }
     if(m_runServer)
         m_server.start();
@@ -141,7 +144,7 @@ void Game::run()
 	            }
 	        }
 	    }
-	    
+
     	if(m_isInteractive)
 	    {
 		    std::cout << "> ";
@@ -152,7 +155,7 @@ void Game::run()
         }
         else
     		m_gameWorld.step();
-	
+
 		m_view.update(m_gameWorld.print());
 		proceedEvents();
 	}
