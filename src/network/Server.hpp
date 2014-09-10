@@ -45,6 +45,7 @@ class Server
         bool m_running;
         unsigned int m_id;
         std::map<unsigned int, std::unique_ptr<sf::TcpSocket>> m_clients;
+        sf::SocketSelector m_selector;
         std::mutex m_clientMutex;
         bool m_sendWorld;
         std::list<std::string> m_world;

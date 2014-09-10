@@ -15,6 +15,7 @@ m_control(false),
 m_running(false),
 m_id(1),
 m_clients(),
+m_selector(),
 m_clientMutex(),
 m_sendWorld(false),
 m_world()
@@ -78,7 +79,8 @@ void Server::stop()
     m_controlThread.join();
     m_dataThread.join();
     m_clients.clear();
-    
+    m_selector.clear();
+
     Logger::info() << "Server stopped.\n";
 }
 
@@ -198,47 +200,52 @@ void Server::addClient(const unsigned int clientID)
     if(listener.accept(*clientSocket) != sf::Socket::Done)
         throw std::runtime_error("Could not accept client");
     listener.close();
-    clientSocket->setBlocking(false);
-    
     {
         std::lock_guard<std::mutex> lock(m_clientMutex);
         m_clients[clientID] = std::move(clientSocket);
+        m_selector.add(*m_clients[clientID]);
     }
+
 }
 
 void Server::runControl()
 {
     while(m_control)
     {
+        if(m_selector.wait(sf::milliseconds(20)))
         {
             std::lock_guard<std::mutex> lock(m_clientMutex);
             for(auto it = m_clients.begin(); it != m_clients.end(); ++it)
             {
                 auto& c = it->second;
-                sf::Packet packet;
-                if(c->receive(packet) == sf::Socket::Done) // TODO: handle error
+                if(m_selector.isReady(*c))
                 {
-                    std::string str;
-                    unsigned int clientID;
-                    packet >> str >> clientID;
-                    if(m_clients.find(clientID) == m_clients.end())
+                    sf::Packet packet;
+                    if(c->receive(packet) == sf::Socket::Done) // TODO: handle error
                     {
-                        Logger::warning() << "Received data from unknown client.\n";
-                        continue;
-                    }
+                        std::string str;
+                        unsigned int clientID;
+                        packet >> str >> clientID;
+                        if(m_clients.find(clientID) == m_clients.end())
+                        {
+                            Logger::warning() << "Received data from unknown client.\n";
+                            continue;
+                        }
 
-                    if(str == "REQUEST_QUIT")
-                    {
-                        packet.clear();
-                        packet << "QUIT" << clientID;
-                        c->send(packet);
+                        if(str == "REQUEST_QUIT")
+                        {
+                            packet.clear();
+                            packet << "QUIT" << clientID;
+                            c->send(packet);
 
-                        // TODO: Broadcast to all other clients         
-                        
-                        // remove client
-                        c->disconnect();
-                        m_clients.erase(it);
-                        break;
+                            // TODO: Broadcast to all other clients         
+                            
+                            // remove client
+                            c->disconnect();
+                            m_selector.remove(*c);
+                            m_clients.erase(it);
+                            break;
+                        }
                     }
                 }
             }
