@@ -210,6 +210,8 @@ void Client::sendExitSequence()
 
 void Client::runData()
 {
+    sf::UdpSocket sendSocket;
+    sendSocket.setBlocking(false);
     while(m_isConnected)
     {
         sf::Packet packet;
@@ -235,7 +237,7 @@ void Client::runData()
                 NetworkEvent e = m_toSendEvents.front();
                 e.toPacket(packet);
                 unsigned short port = static_cast<unsigned short>(Server::getDataPort() - m_id);
-                m_dataSocket.send(packet, "localhost", port);
+                sendSocket.send(packet, "localhost", port);
                 m_toSendEvents.pop();
             }
         }
