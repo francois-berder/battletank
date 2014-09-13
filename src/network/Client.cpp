@@ -210,12 +210,11 @@ void Client::sendExitSequence()
 
 void Client::runData()
 {
-    sf::IpAddress remoteAddress;
-    unsigned short remotePort;
-
     while(m_isConnected)
     {
         sf::Packet packet;
+        sf::IpAddress remoteAddress;
+        unsigned short remotePort;
         sf::Socket::Status ret = m_dataSocket.receive(packet, remoteAddress, remotePort);
         if(ret == sf::Socket::Error)
             Logger::warning() << "Failed to receive some data.\n";
@@ -235,7 +234,8 @@ void Client::runData()
                 packet.clear();
                 NetworkEvent e = m_toSendEvents.front();
                 e.toPacket(packet);
-                m_dataSocket.send(packet, "localhost", Server::getDataPort());
+                unsigned short port = static_cast<unsigned short>(Server::getDataPort() - m_id);
+                m_dataSocket.send(packet, "localhost", port);
                 m_toSendEvents.pop();
             }
         }

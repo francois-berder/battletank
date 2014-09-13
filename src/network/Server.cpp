@@ -286,50 +286,63 @@ void Server::runControl()
 
 void Server::runData()
 {
- 	sf::UdpSocket socket;
- 	const unsigned short serverPort = Server::getDataPort();
- 	if(socket.bind(serverPort) != sf::Socket::Done)
-    {
-        std::stringstream ss;
-        ss << "Could not bind socket to port " << serverPort;
-        throw std::runtime_error(ss.str());
-    }
-    socket.setBlocking(false);
     sf::IpAddress clientAddress;
     unsigned short clientPort;
+    std::map<unsigned int, std::unique_ptr<sf::UdpSocket>> recvSockets;
+    sf::SocketSelector s;
+    for(auto &c : m_clients)
+    {
+        unsigned int clientID = c.first;
+        std::unique_ptr<sf::UdpSocket> ptr(new sf::UdpSocket());
+        unsigned short port = static_cast<unsigned short>(Server::getDataPort() - clientID);
+        ptr->bind(port); // TODO: Check return value
+        recvSockets[clientID] = std::move(ptr);
+        s.add(*recvSockets[clientID]);
+    }
+    std::map<unsigned int, std::unique_ptr<sf::UdpSocket>> sendSockets;
+    for(auto &c : m_clients)
+    {
+        std::unique_ptr<sf::UdpSocket> ptr(new sf::UdpSocket());
+        ptr->setBlocking(false);
+        sendSockets[c.first] = std::move(ptr);
+    }
     while(m_running)
     {
-        sf::Packet packet;
-        sf::Socket::Status ret = socket.receive(packet, clientAddress, clientPort);
-        if(ret == sf::Socket::NotReady)
-            continue;
-        if(ret != sf::Socket::Done)
+        if(s.wait())
         {
-            Logger::warning() << "Could not receive data from client\n";
-            continue;
-        }
-        NetworkEvent e;
-        e.fromPacket(packet);
-        packet.clear();
-        
-        // Change stepNumber to handle latency
-        e.stepID += 3;  // TODO: change number depending on clients' latency
-        e.toPacket(packet);
-
-        // Broadcast event to all other clients
-        {
-            std::lock_guard<std::mutex> lock(m_clientMutex);
-            for(auto& c : m_clients)
+            for(auto &r : recvSockets)
             {
-                sf::IpAddress address = c.second->getRemoteAddress();
-                unsigned int id = c.first;
-                unsigned short port = static_cast<unsigned short>(Server::getDataPort() + id);
-                socket.send(packet, address, port);
+                std::unique_ptr<sf::UdpSocket> &socket = r.second;
+                if(s.isReady(*socket))
+                {
+                    sf::Packet packet;
+                    socket->receive(packet, clientAddress, clientPort);
+
+                    NetworkEvent e;
+                    e.fromPacket(packet);
+                    packet.clear();
+
+                    // Change stepNumber to handle latency
+                    e.stepID += 5;  // TODO: change number depending on clients' latency
+                    e.toPacket(packet);
+
+                    // Broadcast event to all other clients
+                    {
+                        std::lock_guard<std::mutex> lock(m_clientMutex);
+                        for(auto &c : m_clients)
+                        {
+                            sf::IpAddress address = c.second->getRemoteAddress();
+                            unsigned int id = c.first;
+                            unsigned short port = static_cast<unsigned short>(Server::getDataPort() + id);
+                            sendSockets[id]->send(packet, address, port);
+                        }
+                    }
+                }
             }
         }
     }
-    
-    socket.unbind();
+    for(auto &c : recvSockets)
+        c.second->unbind();
 }
 
 unsigned short Server::getInitPort()
