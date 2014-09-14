@@ -1,6 +1,6 @@
 #include <sstream>
 #include <stdexcept>
-#include <unistd.h>
+#include <chrono>
 
 #include "Client.hpp"
 #include "Server.hpp"
@@ -42,8 +42,7 @@ unsigned int Client::connect(const std::string ipAddress)
     }
     
     // wait 100ms to allow server to create listener
-    struct timespec tv = { 0, 100000000 };
-    while(nanosleep(&tv, &tv) != 0);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     unsigned short controlPort = static_cast<unsigned short>(Server::getControlPort() + m_id);
     if(m_controlSocket.connect(ipAddress, controlPort, sf::seconds(2.f)) != sf::Socket::Done)
