@@ -95,6 +95,20 @@ void EntityViewer::drawTank(float x, float y, int angle, int cannonAngle, unsign
     upperPartShadowSprite.setOrigin(80, 80);
     m_renderWindow.draw(upperPartShadowSprite);
 
-    // TODO: Draw health bar
+    // Draw health bar
+	sf::RectangleShape greenBar;
+	greenBar.setFillColor(sf::Color::Green);
+	greenBar.setSize(sf::Vector2f(50, 4));
+	greenBar.setOrigin(sf::Vector2f(25, 2));
+	greenBar.setPosition(x, y - 60);
+	m_renderWindow.draw(greenBar);
+
+	sf::RectangleShape redBar;
+	redBar.setFillColor(sf::Color::Red);
+	float sizeRedBarX = (100.f - static_cast<float>(health)) / 2.f;
+	redBar.setSize(sf::Vector2f(sizeRedBarX, 4));
+	redBar.setOrigin(sf::Vector2f(sizeRedBarX, 2));
+	redBar.setPosition(x + 25, y - 60);
+	m_renderWindow.draw(redBar);
 }
 
