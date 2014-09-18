@@ -72,7 +72,7 @@ void Game::setOptions(std::list<Option>& options)
             m_runServer = true;
             m_server.startAcceptingClients();
         }
-        else if(opt == "--disable-client")
+        else if(opt == "--disable-network-client")
             m_disableClient = true;
 	}
 }
