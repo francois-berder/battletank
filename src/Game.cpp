@@ -204,22 +204,31 @@ void Game::proceedEvents()
 }
 
 // Forward events from view to client
+// If client is disabled, add it to the events list
 void Game::proceedViewEvents()
 {
     Event viewEvent;
     while(m_view.pollEvent(viewEvent))
     {
-        NetworkEvent event(m_client.getID(), m_gameWorld.getCurrentStep(), viewEvent);
-        m_client.pushEvent(event);
-    }    
+        unsigned int myID = 1;
+        if(!m_disableClient)
+            myID = m_client.getID();
+        NetworkEvent event(myID, m_gameWorld.getCurrentStep(), viewEvent);
+        if(m_disableClient)
+            m_events.push_back(event);
+        else
+            m_client.pushEvent(event);
+    }
 }
 
 void Game::proceedNetworkEvents()
 {
-    NetworkEvent netEvent;
-	while(m_client.pollEvent(netEvent))
-        m_events.push_back(netEvent); // FIXME: ensure order of events according to stepID
-
+    if(!m_disableClient)
+    {
+        NetworkEvent netEvent;
+	    while(m_client.pollEvent(netEvent))
+            m_events.push_back(netEvent); // FIXME: ensure order of events according to stepID
+    }
     const unsigned int currentStep = m_gameWorld.getCurrentStep();
 
 	CommandFactory cmdFactory(*this, m_gameWorld);
@@ -256,8 +265,7 @@ void Game::proceedNetworkEvents()
 				throw std::runtime_error("Could not proceed unknown event.");
 		}
 		CommandPtr cmd = cmdFactory.parseCmd(cmdStr.str());
-        if(!m_disableClient || (m_disableClient && e.clientID != e.clientID))
-	        cmd->execute();
+        cmd->execute();
         m_events.erase(m_events.begin());
 	}
 }
