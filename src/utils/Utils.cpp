@@ -93,4 +93,9 @@ float convertRadToDeg(float angle)
     return angle * 360.f / (2.f*3.14f);
 }
 
+float convertDegToRad(float angle)
+{
+    return (angle * 2.f * 3.14f) / 360.f;
+}
+
 

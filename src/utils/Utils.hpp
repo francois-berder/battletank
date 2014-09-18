@@ -27,6 +27,7 @@ std::list<std::string> split(const std::string &str, const char sep);
 std::string concat(std::list<std::string> &elems, const char sep);
 
 float convertRadToDeg(float angle);
+float convertDegToRad(float angle);
 
 #endif /* __UTILS_HPP__ */
 
