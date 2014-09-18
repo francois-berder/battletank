@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 
+class GameWorld;
 class Change;
 
 typedef unsigned int EntityID;
@@ -12,7 +13,7 @@ class Entity
 {
 	public:
 
-		Entity(const EntityID id);
+		Entity(GameWorld &world, const EntityID id);
 		virtual ~Entity();
 
 		virtual void update();
@@ -22,9 +23,11 @@ class Entity
 		virtual std::string print();
 
 		EntityID getID() const;
+        GameWorld& getWorld();
 
 	private:
 
+        GameWorld &m_world;
 		const EntityID m_id;
 };
 

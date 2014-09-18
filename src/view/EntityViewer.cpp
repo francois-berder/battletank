@@ -38,6 +38,16 @@ void EntityViewer::drawAll()
             unsigned int health = toUInteger(entity["health"]->asData().getValue());
             drawTank(x, y, angle, cannonAngle, health);
         }
+        else if(type == "bullet")
+        {
+            Map &pos = entity["pos"]->asMap();
+            float x = toFloat(pos["x"]->asData().getValue());
+            float y = toFloat(pos["y"]->asData().getValue());
+            x = View::gameToGfx(x);
+            y = View::gameToGfx(y);
+            int angle = toInteger(entity["angle"]->asData().getValue());
+            drawBullet(x, y, angle);
+        }
     }
 }
 
@@ -110,5 +120,15 @@ void EntityViewer::drawTank(float x, float y, int angle, int cannonAngle, unsign
 	redBar.setOrigin(sf::Vector2f(sizeRedBarX, 2));
 	redBar.setPosition(x + 25, y - 60);
 	m_renderWindow.draw(redBar);
+}
+
+void EntityViewer::drawBullet(float x, float y, int angle)
+{
+    TexturePtr tex = TextureManager::instance().get("bullet.png");
+    sf::Sprite bullet(*tex);
+    bullet.setOrigin(6, 2);
+    bullet.setPosition(x, y);
+    bullet.rotate(angle);
+    m_renderWindow.draw(bullet);
 }
 

@@ -3,14 +3,15 @@
 #include <cmath>
 
 #include "Tank.hpp"
+#include "GameWorld.hpp"
 #include "Change.hpp"
 #include "PhysicWorld.hpp"
 #include "Logger.hpp"
 #include "Utils.hpp"
 
 
-Tank::Tank(const EntityID id, const b2Vec2& startPos) :
-		CollidableEntity(id), m_health(100), m_body(nullptr, PhysicWorld::destroyBody), m_angularVelocity(
+Tank::Tank(GameWorld &world, const EntityID id, const b2Vec2& startPos) :
+		CollidableEntity(world, id), m_health(100), m_body(nullptr, PhysicWorld::destroyBody), m_angularVelocity(
 				0.f), m_velocity(0.f), m_cannonAngle(0.f)
 {
 	b2BodyDef bodyDef;
@@ -27,7 +28,7 @@ Tank::Tank(const EntityID id, const b2Vec2& startPos) :
 	}
 
 	b2PolygonShape shape;
-	shape.SetAsBox(0.62f, 0.88f);
+	shape.SetAsBox(0.7f, 0.825f);
 	body->CreateFixture(&shape, 1.0f);
 	body->SetUserData(this);
 	m_body = std::unique_ptr<b2Body, void (*)(b2Body*)>(body,
@@ -50,7 +51,8 @@ void Tank::applyChange(const Change &change)
 	if(getID() != change.getTargetID())
 		throw std::runtime_error("Delivered change to wrong entity.");
 
-	if(change.getName() == "move")
+    const std::string &changeName = change.getName();
+	if(changeName == "move")
 	{
 		if(change.getArgs().empty())
 			throw std::runtime_error(
@@ -71,7 +73,7 @@ void Tank::applyChange(const Change &change)
 					<< "Ignored move change, could not recognize direction "
 					<< dirName << '\n';
 	}
-	else if(change.getName() == "dir")
+	else if(changeName == "dir")
 	{
 		std::list<std::string> args = change.getArgs();
 		if(args.size() < 2)
@@ -110,6 +112,25 @@ void Tank::applyChange(const Change &change)
             m_cannonAngle = 360.f - m_cannonAngle;
         m_cannonAngle += convertRadToDeg(m_body->GetAngle());
 	}
+    else if(changeName == "shoot")
+    {
+    	b2Vec2 pos = m_body->GetPosition();
+        double angle = convertDegToRad(m_cannonAngle);
+        double a = convertDegToRad(m_cannonAngle + 90);
+        b2Vec2 dir(cos(a), sin(a));
+        dir.Normalize();
+        pos += 2.f*dir;
+
+        std::list<std::string> args;
+        args.push_back("bullet");
+        args.push_back(toString(getID()));
+        args.push_back(toString(pos.x));
+        args.push_back(toString(pos.y));
+        args.push_back(toString(angle));
+
+        Change c(0, "new", args);
+        getWorld().applyChange(c);
+    }
 	else
 		Logger::warning() << "Ignored change " << change.getName() << '\n';
 }

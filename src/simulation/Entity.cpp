@@ -3,9 +3,11 @@
 #include "Entity.hpp"
 #include "Change.hpp"
 #include "Logger.hpp"
+#include "GameWorld.hpp"
 
-Entity::Entity(const EntityID id) :
-		m_id(id)
+Entity::Entity(GameWorld &world, const EntityID id):
+m_world(world),
+m_id(id)
 {
 }
 
@@ -34,5 +36,10 @@ std::string Entity::print()
 EntityID Entity::getID() const
 {
 	return m_id;
+}
+
+GameWorld& Entity::getWorld()
+{
+    return m_world;
 }
 

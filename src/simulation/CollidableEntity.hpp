@@ -7,7 +7,7 @@ class CollidableEntity : public Entity
 {
 	public:
 
-		CollidableEntity(const EntityID id);
+		CollidableEntity(GameWorld &world, const EntityID id);
 		virtual ~CollidableEntity() = default;
 
 		virtual void handleCollision(const CollidableEntity &b);

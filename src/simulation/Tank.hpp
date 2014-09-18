@@ -9,7 +9,7 @@ class Tank : public CollidableEntity
 {
 	public:
 
-		Tank(const EntityID id, const b2Vec2& startPos);
+		Tank(GameWorld &world, const EntityID id, const b2Vec2& startPos);
 
 		virtual void update();
 		virtual void applyChange(const Change &change);

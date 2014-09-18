@@ -10,13 +10,14 @@ class EntityFactory
 {
 	public:
 
-		EntityFactory();
+		EntityFactory(GameWorld &world);
 
 		EntityPtr createFromName(const std::string &name,
 				std::list<std::string> args = std::list<std::string>());
 
 	private:
 
+        GameWorld &m_world;
 		EntityID m_currentID;
 };
 

@@ -9,7 +9,8 @@
 View::View():
 m_window(sf::VideoMode(800, 600), "Battle Tank"), 
 m_disableUserInput(false),
-m_events()
+m_events(),
+m_canShoot(true)
 {
     m_window.setVerticalSyncEnabled(true);
     m_window.setFramerateLimit(60);
@@ -44,6 +45,13 @@ void View::proceedEvents()
 		    m_events.push(EventType::Down);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		    m_events.push(EventType::Up);
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && m_canShoot)
+        {
+		    m_events.push(EventType::Shoot);
+            m_canShoot = false;
+        }
+        if(!sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+            m_canShoot = true;
     }
     
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))

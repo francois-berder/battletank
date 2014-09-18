@@ -8,7 +8,8 @@ enum class EventType
 	Right,
 	Up,
 	Down,
-	Mouse
+	Mouse,
+    Shoot
 };
 
 struct Event

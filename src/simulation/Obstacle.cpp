@@ -4,8 +4,8 @@
 #include "Obstacle.hpp"
 #include "PhysicWorld.hpp"
 
-Obstacle::Obstacle(const EntityID id, const b2Vec2 &pos) :
-		CollidableEntity(id), m_body(nullptr, PhysicWorld::destroyBody)
+Obstacle::Obstacle(GameWorld &world, const EntityID id, const b2Vec2 &pos) :
+		CollidableEntity(world, id), m_body(nullptr, PhysicWorld::destroyBody)
 {
 
 	b2BodyDef bodyDef;

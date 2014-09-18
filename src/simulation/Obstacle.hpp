@@ -10,7 +10,7 @@ class Obstacle : public CollidableEntity
 {
 	public:
 
-		Obstacle(const EntityID id, const b2Vec2 &pos);
+		Obstacle(GameWorld &world, const EntityID id, const b2Vec2 &pos);
 
 		virtual std::string print();
 

@@ -249,6 +249,9 @@ void Game::proceedNetworkEvents()
             case EventType::Mouse :
                 cmdStr << " dir " << e.x << " " << e.y;
                 break;
+            case EventType::Shoot :
+                cmdStr << " shoot";
+                break;
 			default :
 				throw std::runtime_error("Could not proceed unknown event.");
 		}

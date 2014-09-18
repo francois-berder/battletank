@@ -33,6 +33,7 @@ class View
 		sf::RenderWindow m_window;
 		bool m_disableUserInput;
         std::queue<Event> m_events;
+        bool m_canShoot;
 };
 
 #endif /* __VIEW_H__ */

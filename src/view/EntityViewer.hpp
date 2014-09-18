@@ -18,7 +18,8 @@ class EntityViewer
     
         void drawObstacle(float x, float y);
         void drawTank(float x, float y, int angle, int cannonAngle, unsigned int health);
-        
+        void drawBullet(float x, float y, int angle);
+
         sf::RenderWindow &m_renderWindow;
         Array &m_entities;
 };
