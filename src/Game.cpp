@@ -242,7 +242,7 @@ void Game::proceedNetworkEvents()
 		{
 			case EventType::Quit :
 				exit();
-				break;
+				return;
 			case EventType::Left :
                 cmdStr << " move left";
 			    break;
