@@ -44,6 +44,18 @@ void Bullet::update()
 {
     const float speed = 15.f;
     m_body->SetLinearVelocity(speed * m_dir);
+
+    b2Vec2 pos = m_body->GetPosition();
+    
+    // Check if bullet is outside game space
+    if(pos.x < -1.f || pos.x > 21.f
+    || pos.y < -1.f || pos.y > 16.f)
+    {
+        std::list<std::string> args;
+        args.push_back(toString(getID()));
+        Change c(GameWorld::getID(), "delete", args);
+        getWorld().applyChange(c);
+    }
 }
 
 std::string Bullet::print()
@@ -69,6 +81,8 @@ void Bullet::handleCollision(const CollidableEntity &b)
     args.push_back(toString(getID()));
     Change c(GameWorld::getID(), "delete", args);
     getWorld().applyChange(c);
+
+    // TODO: add explosion
 }
 
 
