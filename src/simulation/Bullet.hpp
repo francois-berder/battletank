@@ -21,6 +21,8 @@ class Bullet : public CollidableEntity
 
     private :
 
+        void destroy();
+
         EntityID m_tankID;
 		std::unique_ptr<b2Body, void (*)(b2Body*)> m_body;        
         b2Vec2 m_dir;

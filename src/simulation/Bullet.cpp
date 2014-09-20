@@ -83,25 +83,20 @@ void Bullet::handleCollision(CollidableEntity &b)
 
 void Bullet::handleCollision(Bullet &b)
 {
-    std::list<std::string> args;
-    args.push_back(toString(getID()));
-    Change c(GameWorld::getID(), "delete", args);
-    getWorld().applyChange(c);
-
-    // TODO: add explosion
+    destroy();
 }
 
 void Bullet::handleCollision(Tank &b)
 {
-    std::list<std::string> args;
-    args.push_back(toString(getID()));
-    Change c(GameWorld::getID(), "delete", args);
-    getWorld().applyChange(c);
-
-    // TODO: add explosion
+    destroy();
 }
 
 void Bullet::handleCollision(Obstacle &b)
+{
+    destroy();
+}
+
+void Bullet::destroy()
 {
     std::list<std::string> args;
     args.push_back(toString(getID()));
