@@ -35,8 +35,8 @@ m_dir()
 			PhysicWorld::destroyBody);
     
     angle += 3.14f / 2.f;
-    m_dir.x = cos(angle);
-    m_dir.y = sin(angle);
+    m_dir.x = static_cast<float>(cos(angle));
+    m_dir.y = static_cast<float>(sin(angle));
     m_dir.Normalize();
 }
 

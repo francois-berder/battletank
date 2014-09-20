@@ -117,7 +117,7 @@ void Tank::applyChange(const Change &change)
     	b2Vec2 pos = m_body->GetPosition();
         double angle = convertDegToRad(m_cannonAngle);
         double a = convertDegToRad(m_cannonAngle + 90);
-        b2Vec2 dir(cos(a), sin(a));
+        b2Vec2 dir(static_cast<float>(cos(a)), static_cast<float>(sin(a)));
         dir.Normalize();
         pos += 2.f*dir;
 

@@ -128,7 +128,7 @@ void EntityViewer::drawBullet(float x, float y, int angle)
     sf::Sprite bullet(*tex);
     bullet.setOrigin(6, 2);
     bullet.setPosition(x, y);
-    bullet.rotate(angle);
+    bullet.rotate(static_cast<float>(angle));
     m_renderWindow.draw(bullet);
 }
 
