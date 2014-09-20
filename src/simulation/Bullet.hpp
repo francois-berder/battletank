@@ -14,7 +14,10 @@ class Bullet : public CollidableEntity
 		virtual void update();
 		virtual std::string print();
 
-		virtual void handleCollision(const CollidableEntity &b);
+		virtual void handleCollision(CollidableEntity &b);
+		virtual void handleCollision(Bullet &b);
+		virtual void handleCollision(Tank &b);
+		virtual void handleCollision(Obstacle &b);
 
     private :
 

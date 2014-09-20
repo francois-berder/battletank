@@ -156,3 +156,22 @@ std::string Tank::print()
 	
 	return Entity::print() + "," + ss.str();
 }
+
+void Tank::handleCollision(CollidableEntity &b)
+{
+    b.handleCollision(*this);
+}
+
+void Tank::handleCollision(Bullet &b)
+{
+    m_health -= 10;
+}
+
+void Tank::handleCollision(Tank &b)
+{
+}
+
+void Tank::handleCollision(Obstacle &b)
+{
+}
+

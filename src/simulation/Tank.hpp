@@ -5,6 +5,7 @@
 
 #include "CollidableEntity.hpp"
 
+
 class Tank : public CollidableEntity
 {
 	public:
@@ -14,6 +15,11 @@ class Tank : public CollidableEntity
 		virtual void update();
 		virtual void applyChange(const Change &change);
 		virtual std::string print();
+
+		virtual void handleCollision(CollidableEntity &b);
+		virtual void handleCollision(Bullet &b);
+		virtual void handleCollision(Tank &b);
+		virtual void handleCollision(Obstacle &b);
 
 	private:
 

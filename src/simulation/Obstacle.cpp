@@ -41,3 +41,20 @@ std::string Obstacle::print()
 	return Entity::print() + "," + ss.str();
 }
 
+void Obstacle::handleCollision(CollidableEntity &b)
+{
+    b.handleCollision(*this);
+}
+
+void Obstacle::handleCollision(Bullet &b)
+{
+}
+
+void Obstacle::handleCollision(Tank &b)
+{
+}
+
+void Obstacle::handleCollision(Obstacle &b)
+{
+}
+

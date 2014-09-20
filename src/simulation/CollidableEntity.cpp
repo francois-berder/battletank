@@ -5,8 +5,24 @@ CollidableEntity::CollidableEntity(GameWorld &world, const EntityID id) :
 {
 }
 
-void CollidableEntity::handleCollision(const CollidableEntity &b)
+void CollidableEntity::handleCollision(CollidableEntity &b)
 {
 
 }
+
+void CollidableEntity::handleCollision(Bullet &b)
+{
+
+}
+
+void CollidableEntity::handleCollision(Obstacle &b)
+{
+
+}
+
+void CollidableEntity::handleCollision(Tank &b)
+{
+
+}
+
 

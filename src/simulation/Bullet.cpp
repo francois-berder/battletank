@@ -75,7 +75,13 @@ std::string Bullet::print()
 	return Entity::print() + "," + ss.str();
 }
 
-void Bullet::handleCollision(const CollidableEntity &b)
+void Bullet::handleCollision(CollidableEntity &b)
+{
+    b.handleCollision(*this);
+}
+
+
+void Bullet::handleCollision(Bullet &b)
 {
     std::list<std::string> args;
     args.push_back(toString(getID()));
@@ -85,4 +91,22 @@ void Bullet::handleCollision(const CollidableEntity &b)
     // TODO: add explosion
 }
 
+void Bullet::handleCollision(Tank &b)
+{
+    std::list<std::string> args;
+    args.push_back(toString(getID()));
+    Change c(GameWorld::getID(), "delete", args);
+    getWorld().applyChange(c);
 
+    // TODO: add explosion
+}
+
+void Bullet::handleCollision(Obstacle &b)
+{
+    std::list<std::string> args;
+    args.push_back(toString(getID()));
+    Change c(GameWorld::getID(), "delete", args);
+    getWorld().applyChange(c);
+
+    // TODO: add explosion
+}

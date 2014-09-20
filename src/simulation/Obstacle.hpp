@@ -6,6 +6,7 @@
 
 #include "CollidableEntity.hpp"
 
+
 class Obstacle : public CollidableEntity
 {
 	public:
@@ -13,6 +14,11 @@ class Obstacle : public CollidableEntity
 		Obstacle(GameWorld &world, const EntityID id, const b2Vec2 &pos);
 
 		virtual std::string print();
+
+		virtual void handleCollision(CollidableEntity &b);
+		virtual void handleCollision(Bullet &b);
+		virtual void handleCollision(Tank &b);
+		virtual void handleCollision(Obstacle &b);
 
 	private:
 

@@ -3,6 +3,10 @@
 
 #include "Entity.hpp"
 
+class Bullet;
+class Tank;
+class Obstacle;
+
 class CollidableEntity : public Entity
 {
 	public:
@@ -10,7 +14,10 @@ class CollidableEntity : public Entity
 		CollidableEntity(GameWorld &world, const EntityID id);
 		virtual ~CollidableEntity() = default;
 
-		virtual void handleCollision(const CollidableEntity &b);
+		virtual void handleCollision(CollidableEntity &b);
+		virtual void handleCollision(Bullet &b);
+		virtual void handleCollision(Tank &b);
+		virtual void handleCollision(Obstacle &b);
 };
 
 #endif /* __COLLIDABLE_ENTITY_H__ */
