@@ -67,7 +67,7 @@ void Bullet::handleCollision(const CollidableEntity &b)
 {
     std::list<std::string> args;
     args.push_back(toString(getID()));
-    Change c(0, "delete", args);
+    Change c(GameWorld::getID(), "delete", args);
     getWorld().applyChange(c);
 }
 

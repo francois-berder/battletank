@@ -28,6 +28,8 @@ class GameWorld
 
         void saveToFile(const std::string& fileName);
 
+        static unsigned int getID();
+
 	private:
 
 		void proceedChange(const std::string &name,

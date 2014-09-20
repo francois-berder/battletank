@@ -33,7 +33,7 @@ void GameWorld::applyChange(const Change &change)
         m_saveFile << m_currentStep << ' ' << change.toString() << '\n';        
     
 	const EntityID id = change.getTargetID();
-	if(id != 0)
+	if(id != getID())
 		m_entities[id]->applyChange(change);
 	else
 		proceedChange(change.getName(), change.getArgs());
@@ -121,5 +121,10 @@ void GameWorld::saveToFile(const std::string& fileName)
     
     if(!m_saveFile.is_open())
         throw std::runtime_error("Could not open file for saving changes");
+}
+
+unsigned int GameWorld::getID()
+{
+    return 0;
 }
 
