@@ -2,6 +2,8 @@
 
 #include "Bullet.hpp"
 #include "PhysicWorld.hpp"
+#include "Change.hpp"
+#include "GameWorld.hpp"
 #include "Utils.hpp"
 
 
@@ -60,4 +62,13 @@ std::string Bullet::print()
 	
 	return Entity::print() + "," + ss.str();
 }
+
+void Bullet::handleCollision(const CollidableEntity &b)
+{
+    std::list<std::string> args;
+    args.push_back(toString(getID()));
+    Change c(0, "delete", args);
+    getWorld().applyChange(c);
+}
+
 

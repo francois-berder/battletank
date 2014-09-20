@@ -3,10 +3,15 @@
 
 #include "EntityFactory.hpp"
 #include "GameWorld.hpp"
+#include "Utils.hpp"
 #include "Logger.hpp"
 
 GameWorld::GameWorld() :
-		m_currentStep(0), m_entities(), m_factory(*this), m_saveFile()
+m_currentStep(0),
+m_entities(),
+m_toRemove(),
+m_factory(*this),
+m_saveFile()
 {
 }
 
@@ -18,6 +23,8 @@ void GameWorld::step()
 		ety.second->update();
 
 	PhysicWorld::update();
+
+    m_toRemove.clear();
 }
 
 void GameWorld::applyChange(const Change &change)
@@ -51,13 +58,18 @@ void GameWorld::proceedChange(const std::string &name,
 		if(args.empty())
 			throw std::runtime_error("Missing entity ID to delete entity.\n");
 
-		// Convert string to EntityID
-		std::stringstream ss;
-		ss << args.front();
-		EntityID id;
-		ss >> id;
-
-		m_entities.erase(id);
+		EntityID id = toUInteger(args.front());
+        auto it = m_entities.find(id);
+        if(it == m_entities.end())
+            Logger::warning() << "Tried to delete unknown entity (id=" << it->first << ")\n";
+        else
+        {
+            // Keep a list of deleted entities such that their destructor
+            // is called only at the end of GameWorld::update when we clear
+            // this list.
+            m_toRemove.push_back(m_entities[id]);
+		    m_entities.erase(id);
+        }
 	}
 	else
 		Logger::warning() << "Ignored change " << name << '\n';

@@ -14,6 +14,8 @@ class Bullet : public CollidableEntity
 		virtual void update();
 		virtual std::string print();
 
+		virtual void handleCollision(const CollidableEntity &b);
+
     private :
 
         EntityID m_tankID;

@@ -35,6 +35,7 @@ class GameWorld
 
 		unsigned int m_currentStep;
 		std::map<EntityID, EntityPtr> m_entities;
+        std::list<EntityPtr> m_toRemove;
 		EntityFactory m_factory;
 		std::ofstream m_saveFile;
 };
