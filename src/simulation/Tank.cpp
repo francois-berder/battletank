@@ -165,6 +165,7 @@ void Tank::handleCollision(CollidableEntity &b)
 void Tank::handleCollision(Bullet &b)
 {
     m_health -= 10;
+    // TODO: add explosion if m_health == 0
 }
 
 void Tank::handleCollision(Tank &b)
