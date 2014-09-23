@@ -5,6 +5,7 @@
 #include "Tank.hpp"
 #include "Obstacle.hpp"
 #include "Bullet.hpp"
+#include "Explosion.hpp"
 #include "Utils.hpp"
 
 EntityFactory::EntityFactory(GameWorld &world) :
@@ -56,6 +57,18 @@ EntityPtr EntityFactory::createFromName(const std::string &name,
         float angle = toFloat(args.front());
 
 		return EntityPtr(new Bullet(m_world, m_currentID, tankID, pos, angle));
+    }
+    else if(name == "explosion")
+    {
+        if(args.size() < 2)
+			throw std::runtime_error(
+					"Not enough arguments given to create explosion.\n");
+
+        float x = toFloat(args.front());
+        args.pop_front();
+        float y = toFloat(args.front());
+
+		return EntityPtr(new Explosion(m_world, m_currentID, x, y));
     }
 	else
 	{

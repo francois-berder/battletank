@@ -48,6 +48,16 @@ void EntityViewer::drawAll()
             int angle = toInteger(entity["angle"]->asData().getValue());
             drawBullet(x, y, angle);
         }
+        else if(type == "explosion")
+        {
+            Map &pos = entity["pos"]->asMap();
+            float x = toFloat(pos["x"]->asData().getValue());
+            float y = toFloat(pos["y"]->asData().getValue());
+            x = View::gameToGfx(x);
+            y = View::gameToGfx(y);
+            unsigned int timer = toUInteger(entity["timer"]->asData().getValue());
+            drawExplosion(x, y, timer);
+        }
     }
 }
 
@@ -130,5 +140,18 @@ void EntityViewer::drawBullet(float x, float y, int angle)
     bullet.setPosition(x, y);
     bullet.rotate(static_cast<float>(angle));
     m_renderWindow.draw(bullet);
+}
+
+void EntityViewer::drawExplosion(float x, float y, unsigned int timer)
+{
+    TexturePtr tex = TextureManager::instance().get("tank_explosion.png");
+    sf::Sprite explosion(*tex);
+    timer /= 4;
+    unsigned int rectY = 3 - timer / 4;
+    unsigned int rectX = 3 - timer % 4;
+    explosion.setTextureRect(sf::IntRect(rectX * 64, rectY * 64, 64, 64));
+    explosion.setOrigin(32, 32);
+    explosion.setPosition(x, y);
+    m_renderWindow.draw(explosion);
 }
 
