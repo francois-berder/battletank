@@ -18,7 +18,8 @@ m_server(),
 m_client(),
 m_disableClient(false),
 m_runServer(false),
-m_events()
+m_events(),
+m_serverHostname("localhost")
 {
 }
 
@@ -74,6 +75,8 @@ void Game::setOptions(std::list<Option>& options)
         }
         else if(opt == "--disable-network-client")
             m_disableClient = true;
+        else if(opt == "--server-address")
+            m_serverHostname = opt.getValue();
 	}
 }
 
@@ -93,7 +96,7 @@ void Game::run()
     try
     {
         if(!m_disableClient)
-            m_client.connect("localhost");
+            m_client.connect(m_serverHostname);
     }
     catch(std::exception &e)
     {

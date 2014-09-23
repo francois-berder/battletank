@@ -45,6 +45,7 @@ class Game
         bool m_disableClient;
         bool m_runServer;
         std::list<NetworkEvent> m_events;
+        std::string m_serverHostname;
 };
 
 #endif /* __GAME_H__ */
