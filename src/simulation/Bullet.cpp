@@ -11,7 +11,8 @@ Bullet::Bullet(GameWorld &world, const EntityID id, const EntityID tankID, const
 CollidableEntity(world, id),
 m_tankID(tankID),
 m_body(nullptr, PhysicWorld::destroyBody),
-m_dir()
+m_dir(),
+m_touchSomething(false)
 {
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
@@ -42,19 +43,16 @@ m_dir()
 
 void Bullet::update()
 {
-    const float speed = 15.f;
-    m_body->SetLinearVelocity(speed * m_dir);
-
     b2Vec2 pos = m_body->GetPosition();
-    
-    // Check if bullet is outside game space
-    if(pos.x < -1.f || pos.x > 21.f
+    if(pos.x < -1.f || pos.x > 21.f     // Check if bullet is outside game space
     || pos.y < -1.f || pos.y > 16.f)
+        destroy();
+    else if(m_touchSomething)
+        destroy();
+    else
     {
-        std::list<std::string> args;
-        args.push_back(toString(getID()));
-        Change c(GameWorld::getID(), "delete", args);
-        getWorld().applyChange(c);
+        const float speed = 15.f;
+        m_body->SetLinearVelocity(speed * m_dir);
     }
 }
 
@@ -83,17 +81,17 @@ void Bullet::handleCollision(CollidableEntity &b)
 
 void Bullet::handleCollision(Bullet &b)
 {
-    destroy();
+    m_touchSomething = true;
 }
 
 void Bullet::handleCollision(Tank &b)
 {
-    destroy();
+    m_touchSomething = true;
 }
 
 void Bullet::handleCollision(Obstacle &b)
 {
-    destroy();
+    m_touchSomething = true;
 }
 
 void Bullet::destroy()
@@ -102,6 +100,4 @@ void Bullet::destroy()
     args.push_back(toString(getID()));
     Change c(GameWorld::getID(), "delete", args);
     getWorld().applyChange(c);
-
-    // TODO: add explosion
 }
