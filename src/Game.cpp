@@ -112,10 +112,9 @@ void Game::init()
     if(!m_disableClient)
     {
         std::list<std::string> initCmds = m_client.getWorld();
-        CommandFactory initCmdFactory(*this, m_gameWorld);
         for(auto &cmdStr : initCmds) 
         {
-	        CommandPtr cmd = initCmdFactory.parseCmd(cmdStr);
+	        CommandPtr cmd = CommandFactory::parseCmd(*this, m_gameWorld, cmdStr);
             cmd->execute();
         }
     }
@@ -142,8 +141,7 @@ void Game::loop()
 	            {	        
 	                std::getline(m_replayFile, cmdStr);
 	                cmdStr = "a " + cmdStr;
-	        	    CommandFactory cmdFactory2(*this, m_gameWorld);
-        		    CommandPtr cmd = cmdFactory2.parseCmd(cmdStr);
+        		    CommandPtr cmd = CommandFactory::parseCmd(*this, m_gameWorld, cmdStr);
 	                cmd->execute();
 	            }
 	            else
@@ -159,7 +157,7 @@ void Game::loop()
 		    std::cout << "> ";
 		    std::string cmdStr;
 		    std::getline(std::cin, cmdStr);
-    		CommandPtr cmd = cmdFactory.parseCmd(cmdStr);
+    		CommandPtr cmd = cmdFactory.getCmd(cmdStr);
 	        cmd->execute();
         }
         else
@@ -201,11 +199,10 @@ void Game::executeFile()
 	    throw std::runtime_error(ss.str());
 	}
 
-	CommandFactory cmdFactory(*this, m_gameWorld);
 	std::string cmdStr;
 	while (std::getline(file, cmdStr))
 	{
-		CommandPtr cmd = cmdFactory.parseCmd(cmdStr);
+		CommandPtr cmd = CommandFactory::parseCmd(*this, m_gameWorld, cmdStr);
 		cmd->execute();
 	}
 
@@ -246,8 +243,6 @@ void Game::proceedNetworkEvents()
     }
     const unsigned int currentStep = m_gameWorld.getCurrentStep();
 
-	CommandFactory cmdFactory(*this, m_gameWorld);
-
     while(m_events.front().stepID <= currentStep)
     {
         NetworkEvent e = m_events.front();
@@ -279,7 +274,7 @@ void Game::proceedNetworkEvents()
 			default :
 				throw std::runtime_error("Could not proceed unknown event.");
 		}
-		CommandPtr cmd = cmdFactory.parseCmd(cmdStr.str());
+		CommandPtr cmd = CommandFactory::parseCmd(*this, m_gameWorld, cmdStr.str());
         cmd->execute();
         m_events.erase(m_events.begin());
 	}

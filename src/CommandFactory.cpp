@@ -9,24 +9,29 @@ CommandFactory::CommandFactory(Game &game, GameWorld &gameWorld) :
 {
 }
 
-CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
+CommandPtr CommandFactory::getCmd(const std::string &cmdStr)
 {
 	std::list<std::string> args;
 
 	if(isEmpty(cmdStr))
-		args = split(m_lastCmd, ' ');
-	else
-	{
-		args = split(cmdStr, ' ');
-		m_lastCmd = cmdStr;
-	}
+        return parseCmd(m_game, m_gameWorld, m_lastCmd);
+
+    m_lastCmd = cmdStr;
+    return parseCmd(m_game, m_gameWorld, cmdStr);
+}
+
+CommandPtr CommandFactory::parseCmd(Game &game, GameWorld &gameWorld, const std::string &cmdStr)
+{
+	std::list<std::string> args;
+
+	args = split(cmdStr, ' ');
 
 	std::string cmdName = args.front();
 	args.pop_front();
 
 	CommandPtr cmd;
 	if(cmdName == "q" || cmdName == "quit")
-		cmd = CommandPtr(new QuitCommand(m_game));
+		cmd = CommandPtr(new QuitCommand(game));
 	else if(cmdName == "s" || cmdName == "step")
 	{
 		int nbSteps = 1;
@@ -40,7 +45,7 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
 		if(nbSteps < 0)
 			cmd = CommandPtr(new InvalidCommand);
 		else
-			cmd = CommandPtr(new StepCommand(m_gameWorld, nbSteps));
+			cmd = CommandPtr(new StepCommand(gameWorld, nbSteps));
 	}
 	else if(cmdName == "h" || cmdName == "help")
 		cmd = CommandPtr(new HelpCommand);
@@ -54,7 +59,7 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
 			ss >> id;
 			args.pop_front();
 		}
-		cmd = CommandPtr(new PrintCommand(m_gameWorld, id));
+		cmd = CommandPtr(new PrintCommand(gameWorld, id));
 	}
 	else if(cmdName == "a" || cmdName == "apply")
 	{
@@ -73,7 +78,7 @@ CommandPtr CommandFactory::parseCmd(const std::string &cmdStr)
 			}
 			std::string name = args.front();
 			args.pop_front();
-			cmd = CommandPtr(new ApplyCommand(m_gameWorld, id, name, args));
+			cmd = CommandPtr(new ApplyCommand(gameWorld, id, name, args));
 		}
 	}
 	else

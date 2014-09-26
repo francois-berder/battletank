@@ -11,7 +11,9 @@ class CommandFactory
 
 		CommandFactory(Game &game, GameWorld &m_gameWorld);
 
-		CommandPtr parseCmd(const std::string &cmdStr);
+        static CommandPtr parseCmd(Game &game, GameWorld &gameWorld, const std::string &cmdStr);
+
+        CommandPtr getCmd(const std::string &cmdStr);
 
 	private:
 
