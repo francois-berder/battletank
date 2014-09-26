@@ -12,8 +12,8 @@ m_isInteractive(false),
 m_exit(false),
 m_gameWorld(),
 m_view(),
-m_execFileName(),
-m_replayFile(),
+m_execFile(*this, m_gameWorld),
+m_replayFile(*this, m_gameWorld),
 m_server(),
 m_client(),
 m_disableClient(false),
@@ -49,7 +49,7 @@ void Game::setOptions(std::list<Option>& options)
 		else if(opt == "--disable-input")
 		    m_view.disableUserInput();
 		else if(opt == "-x")
-			m_execFileName = opt.getValue();
+			m_execFile.open(opt.getValue());
 		else if(opt == "-s" || opt == "--save")
 		{
 		    try
@@ -65,8 +65,6 @@ void Game::setOptions(std::list<Option>& options)
         {
             std::string replayFileName = opt.getValue().c_str();
             m_replayFile.open(replayFileName);
-            if(!m_replayFile)
-                Logger::error() << "Could not open file " << replayFileName << ". Replay option ignored.\n";
         }
         else if(opt == "--run-server")
         {
@@ -84,8 +82,7 @@ void Game::init()
 {
     try
     {
-        if(!m_execFileName.empty())
-            executeFile();
+        m_execFile.execute();
     }
     catch(std::exception &e)
     {
@@ -129,28 +126,7 @@ void Game::loop()
     CommandFactory cmdFactory(*this, m_gameWorld);
 	while(!m_gameWorld.isFinished() && !m_exit)
 	{
-	    if(m_replayFile.is_open())
-	    {
-	        while(true)
-	        {
-		        std::string cmdStr;
-	            std::getline(m_replayFile, cmdStr, ' ');
-	            unsigned int cmdStep = toUInteger(cmdStr);
-	            
-	            if(cmdStep == m_gameWorld.getCurrentStep())
-	            {	        
-	                std::getline(m_replayFile, cmdStr);
-	                cmdStr = "a " + cmdStr;
-        		    CommandPtr cmd = CommandFactory::parseCmd(*this, m_gameWorld, cmdStr);
-	                cmd->execute();
-	            }
-	            else
-	            {
-	                m_replayFile.seekg(-cmdStr.size()-1, std::ios_base::cur);
-	                break;
-	            }
-	        }
-	    }
+        m_replayFile.execute(m_gameWorld.getCurrentStep());
 
     	if(m_isInteractive)
 	    {
@@ -187,26 +163,6 @@ void Game::displayOptionsList()
     std::cout << "[-x]\t\t\t\tExecute commands from specified file\n";
     std::cout << "[-s | --save]\t\t\tSave all changes made to simulation in given file\n";
     std::cout << "[-r | --replay]\t\t\tReplay all commands from specified file\n";
-}
-
-void Game::executeFile()
-{
-	std::ifstream file(m_execFileName.c_str());
-	if(!file)
-	{
-        std::stringstream ss;
-        ss << "could not open file " << m_execFileName;
-	    throw std::runtime_error(ss.str());
-	}
-
-	std::string cmdStr;
-	while (std::getline(file, cmdStr))
-	{
-		CommandPtr cmd = CommandFactory::parseCmd(*this, m_gameWorld, cmdStr);
-		cmd->execute();
-	}
-
-	file.close();
 }
 
 void Game::proceedEvents()

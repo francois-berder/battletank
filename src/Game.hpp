@@ -10,6 +10,7 @@
 #include "View.hpp"
 #include "Server.hpp"
 #include "Client.hpp"
+#include "CommandFile.hpp"
 
 class Game
 {
@@ -31,8 +32,6 @@ class Game
 
         void displayOptionsList();
     
-		void executeFile();
-
 		void proceedEvents();
         void proceedViewEvents();
         void proceedNetworkEvents();
@@ -41,8 +40,8 @@ class Game
 		bool m_exit;
 		GameWorld m_gameWorld;
 		View m_view;
-		std::string m_execFileName;
-		std::ifstream m_replayFile;
+        CommandFile m_execFile;
+        CommandFile m_replayFile;
         Server m_server;
         Client m_client;
         bool m_disableClient;
