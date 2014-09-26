@@ -12,6 +12,7 @@ m_controlThread(),
 m_dataThread(),
 m_acceptClients(false),
 m_control(false),
+m_data(false),
 m_running(false),
 m_id(1),
 m_clients(),
@@ -30,9 +31,10 @@ Server::~Server()
 
 void Server::startAcceptingClients()
 {
-    if(m_acceptClients)
+    if(m_running)
         return;
 
+    m_running = true;
     m_id = 1;
     m_acceptClients = true;
     m_control = true;
@@ -46,14 +48,14 @@ void Server::startAcceptingClients()
 
 void Server::stopAcceptingClients()
 {
-    if(!m_acceptClients)
+    if(!m_acceptClients || !m_running)
         return;
     
     m_acceptClients = false;
     m_initThread.join();
     m_sendWorld = false;
     m_world.clear();
-
+    m_running = false;
     Logger::info() << "Server stops accepting clients.\n";
 }
 
@@ -63,6 +65,7 @@ void Server::start()
         return;
 
     m_running = true;
+    m_data = true;
     std::thread data(&Server::runData, this);
     m_dataThread.swap(data);
     
@@ -74,6 +77,7 @@ void Server::stop()
     if(!m_running)
         return;
 
+    m_data = false;
     m_running = false;
     m_control = false;
     m_controlThread.join();
@@ -306,7 +310,7 @@ void Server::runData()
         ptr->setBlocking(false);
         sendSockets[c.first] = std::move(ptr);
     }
-    while(m_running)
+    while(m_data)
     {
         if(s.wait())
         {
@@ -345,6 +349,16 @@ void Server::runData()
         c.second->unbind();
 }
 
+bool Server::isRunning() const
+{
+    return m_running;
+}
+
+bool Server::hasClients() const
+{
+    return m_id != 1;
+}
+
 unsigned short Server::getInitPort()
 {
     return 49999;
@@ -359,4 +373,5 @@ unsigned short Server::getDataPort()
 {
     return 29999;
 }
+
 

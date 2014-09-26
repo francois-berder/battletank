@@ -17,7 +17,6 @@ m_replayFile(*this, m_gameWorld),
 m_server(),
 m_client(),
 m_disableClient(false),
-m_runServer(false),
 m_events(),
 m_serverHostname("localhost")
 {
@@ -67,10 +66,7 @@ void Game::setOptions(std::list<Option>& options)
             m_replayFile.open(replayFileName);
         }
         else if(opt == "--run-server")
-        {
-            m_runServer = true;
             m_server.startAcceptingClients();
-        }
         else if(opt == "--disable-network-client")
             m_disableClient = true;
         else if(opt == "--server-address")
@@ -101,8 +97,8 @@ void Game::init()
         exit();
     }
 
-    if(m_runServer)
-    {
+    if(m_server.isRunning())
+    {   
         m_server.stopAcceptingClients();
         m_server.initWorld();
     }
@@ -116,9 +112,8 @@ void Game::init()
         }
     }
 
-    if(m_runServer)
+    if(m_server.hasClients())
         m_server.start();
-
 }
 
 void Game::loop()

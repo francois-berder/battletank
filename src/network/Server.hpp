@@ -26,6 +26,9 @@ class Server
         static unsigned short getControlPort();
         static unsigned short getDataPort();
 
+        bool isRunning() const;
+        bool hasClients() const;
+
     private :
     
         void runInit();
@@ -42,6 +45,7 @@ class Server
         
         bool m_acceptClients;
         bool m_control;
+        bool m_data;
         bool m_running;
         unsigned int m_id;
         std::map<unsigned int, std::unique_ptr<sf::TcpSocket>> m_clients;
