@@ -80,7 +80,7 @@ void Game::setOptions(std::list<Option>& options)
 	}
 }
 
-void Game::run()
+void Game::init()
 {
     try
     {
@@ -103,6 +103,7 @@ void Game::run()
         Logger::error() << "Error while trying to connect to server. Reason: " << e.what() << ".\n";
         exit();
     }
+
     if(m_runServer)
     {
         m_server.stopAcceptingClients();
@@ -118,9 +119,14 @@ void Game::run()
             cmd->execute();
         }
     }
+
     if(m_runServer)
         m_server.start();
 
+}
+
+void Game::loop()
+{
     CommandFactory cmdFactory(*this, m_gameWorld);
 	while(!m_gameWorld.isFinished() && !m_exit)
 	{
@@ -162,6 +168,12 @@ void Game::run()
 		m_view.update(m_gameWorld.print());
 		proceedEvents();
 	}
+}
+
+void Game::run()
+{
+    init();
+    loop();
 }
 
 void Game::exit()
