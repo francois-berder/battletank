@@ -12,7 +12,7 @@ CollidableEntity(world, id),
 m_tankID(tankID),
 m_body(nullptr, PhysicWorld::destroyBody),
 m_dir(),
-m_touchSomething(false)
+m_isDestroyed(false)
 {
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
@@ -47,8 +47,6 @@ void Bullet::update()
     if(pos.x < -1.f || pos.x > 21.f     // Check if bullet is outside game space
     || pos.y < -1.f || pos.y > 16.f)
         destroy();
-    else if(m_touchSomething)
-        destroy();
     else
     {
         const float speed = 15.f;
@@ -81,23 +79,29 @@ void Bullet::handleCollision(CollidableEntity &b)
 
 void Bullet::handleCollision(Bullet &b)
 {
-    m_touchSomething = true;
+    destroy();
 }
 
 void Bullet::handleCollision(Tank &b)
 {
-    m_touchSomething = true;
+    destroy();
 }
 
 void Bullet::handleCollision(Obstacle &b)
 {
-    m_touchSomething = true;
+    destroy();
 }
 
 void Bullet::destroy()
 {
+    if(m_isDestroyed)
+        return;
+
+    m_isDestroyed = true;
+
     std::list<std::string> args;
     args.push_back(toString(getID()));
     Change c(GameWorld::getID(), "delete", args);
     getWorld().applyChange(c);
 }
+

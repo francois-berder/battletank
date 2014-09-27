@@ -26,7 +26,7 @@ class Bullet : public CollidableEntity
         EntityID m_tankID;
 		std::unique_ptr<b2Body, void (*)(b2Body*)> m_body;        
         b2Vec2 m_dir;
-        bool m_touchSomething;
+        bool m_isDestroyed;
 };
 
 #endif /* __BULLET_HPP__ */
