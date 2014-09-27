@@ -183,7 +183,10 @@ void Tank::handleCollision(CollidableEntity &b)
 
 void Tank::handleCollision(Bullet &b)
 {
-    m_health -= 10;
+    if(m_health >= 10)
+        m_health -= 10;
+    else 
+        m_health = 0;
 }
 
 void Tank::handleCollision(Tank &b)
