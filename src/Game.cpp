@@ -158,6 +158,9 @@ void Game::displayOptionsList()
     std::cout << "[-x]\t\t\t\tExecute commands from specified file\n";
     std::cout << "[-s | --save]\t\t\tSave all changes made to simulation in given file\n";
     std::cout << "[-r | --replay]\t\t\tReplay all commands from specified file\n";
+    std::cout << "[--run-server]\t\t\tRun server on this computer\n";
+    std::cout << "[--disable-network-client]\tDisable client\n";
+    std::cout << "[--server-address]\t\tSet server address. This will be used by the client\n";
 }
 
 void Game::proceedEvents()
