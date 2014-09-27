@@ -41,6 +41,12 @@ m_cannonAngle(0.f)
 
 void Tank::update()
 {
+    if(isDestroyed())
+    {
+    	m_angularVelocity = 0.f;
+        m_velocity = 0.f;
+    }
+
 	m_body->SetAngularVelocity(m_angularVelocity);
 	m_angularVelocity = 0.f;
 
@@ -54,6 +60,9 @@ void Tank::applyChange(const Change &change)
 {
 	if(getID() != change.getTargetID())
 		throw std::runtime_error("Delivered change to wrong entity.");
+
+    if(isDestroyed())
+        return;
 
     const std::string &changeName = change.getName();
 	if(changeName == "move")
@@ -193,5 +202,10 @@ void Tank::handleCollision(Tank &b)
 
 void Tank::handleCollision(Obstacle &b)
 {
+}
+
+bool Tank::isDestroyed() const
+{
+    return m_health == 0;
 }
 

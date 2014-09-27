@@ -21,6 +21,8 @@ class Tank : public CollidableEntity
 		virtual void handleCollision(Tank &b);
 		virtual void handleCollision(Obstacle &b);
 
+        bool isDestroyed() const;
+
 	private:
 
 		int m_health;
