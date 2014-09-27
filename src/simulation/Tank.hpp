@@ -23,7 +23,6 @@ class Tank : public CollidableEntity
 
 	private:
 
-        bool m_isDestroyed;
 		int m_health;
 		std::unique_ptr<b2Body, void (*)(b2Body*)> m_body;
 		float m_angularVelocity;

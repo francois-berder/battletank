@@ -12,7 +12,6 @@
 
 Tank::Tank(GameWorld &world, const EntityID id, const b2Vec2& startPos) :
 CollidableEntity(world, id),
-m_isDestroyed(false),
 m_health(100),
 m_body(nullptr, PhysicWorld::destroyBody),
 m_angularVelocity(0.f),
@@ -42,20 +41,6 @@ m_cannonAngle(0.f)
 
 void Tank::update()
 {
-    if(m_health == 0 && !m_isDestroyed)
-    {
-        m_isDestroyed = true;
- 
-        // add explosion
-        std::list<std::string> args;
-        args.push_back("explosion");
-        b2Vec2 pos = m_body->GetPosition();
-        args.push_back(toString(pos.x));
-        args.push_back(toString(pos.y));
-        Change c(GameWorld::getID(), "new", args);
-        getWorld().applyChange(c);
-    }
-
 	m_body->SetAngularVelocity(m_angularVelocity);
 	m_angularVelocity = 0.f;
 
@@ -183,10 +168,23 @@ void Tank::handleCollision(CollidableEntity &b)
 
 void Tank::handleCollision(Bullet &b)
 {
-    if(m_health >= 10)
+    if(m_health > 10)
         m_health -= 10;
-    else 
+    else
+    {
+        if(m_health > 0)
+        {
+            // add explosion
+            std::list<std::string> args;
+            args.push_back("explosion");
+            b2Vec2 pos = m_body->GetPosition();
+            args.push_back(toString(pos.x));
+            args.push_back(toString(pos.y));
+            Change c(GameWorld::getID(), "new", args);
+            getWorld().applyChange(c);
+        }
         m_health = 0;
+    }
 }
 
 void Tank::handleCollision(Tank &b)
