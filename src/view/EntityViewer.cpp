@@ -89,6 +89,9 @@ void EntityViewer::drawTank(float x, float y, int angle, int cannonAngle, unsign
     lowerPartSprite.setTextureRect(sf::IntRect(rectX * 160, rectY * 160, 160, 160));
     lowerPartSprite.setOrigin(80, 80);
 
+    if(health == 0)
+        lowerPartSprite.setColor(sf::Color(100, 100, 100));
+
     m_renderWindow.draw(lowerPartSprite);
     
     // Draw upper part
@@ -105,6 +108,10 @@ void EntityViewer::drawTank(float x, float y, int angle, int cannonAngle, unsign
     rectX = static_cast<unsigned int>((a - static_cast<float>(rectY) * 56.25f) / 11.25);
     upperPartSprite.setTextureRect(sf::IntRect(rectX * 160, rectY * 160, 160, 160));
     upperPartSprite.setOrigin(80, 80);
+
+    if(health == 0)
+        upperPartSprite.setColor(sf::Color(100, 100, 100));
+
     m_renderWindow.draw(upperPartSprite);
     
     // Draw upper part shadow
