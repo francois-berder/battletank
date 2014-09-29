@@ -11,10 +11,11 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = battletank
 TEMPLATE = app
 
-QMAKE_CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -Wold-style-cast -Woverloaded-virtual -Wfloat-equal -Wwrite-strings -Wpointer-arith -Wcast-qual -Wcast-align -Wconversion -Wshadow -Weffc++ -Wredundant-decls -Winit-self -Wswitch-default -Wswitch-enum -Wundef -Wlogical-op -Winline -Wno-unused-parameter -ggdb3
+QMAKE_CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -Wold-style-cast -Woverloaded-virtual -Wfloat-equal -Wwrite-strings -Wpointer-arith -Wcast-qual -Wcast-align -Wconversion -Wshadow -Weffc++ -Wredundant-decls -Winit-self -Wswitch-default -Wswitch-enum -Wundef -Wlogical-op -Winline -Wno-unused-parameter
 
 CONFIG(release, debug|release): LIBS += -lsfml-graphics -lsfml-network -lsfml-window -lsfml-system -lBox2D
 CONFIG(debug, debug|release): LIBS += -lsfml-graphics -lsfml-network -lsfml-window -lsfml-system -lBox2D
+CONFIG(debug, debug|release): QMAKE_CXXFLAGS += -ggdb3
 
 INCLUDEPATH += src\
                src/ui\
