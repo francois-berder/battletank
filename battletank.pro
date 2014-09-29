@@ -61,7 +61,8 @@ SOURCES += src/main.cpp\
            src/view/TextureManager.cpp\
            src/view/Tree.cpp\
            src/view/View.cpp \
-    src/ui/MainMenu.cpp
+    src/ui/MainMenu.cpp \
+    src/ui/PlayMenu.cpp
 
 HEADERS  +=src/ui/MainWindow.hpp\
            src/core/Game.hpp\
@@ -92,7 +93,10 @@ HEADERS  +=src/ui/MainWindow.hpp\
            src/view/TextureManager.hpp\
            src/view/Tree.hpp\
            src/view/View.hpp \
-    src/ui/MainMenu.hpp
+    src/ui/MainMenu.hpp \
+    src/ui/PlayMenu.hpp \
+    src/ui/Menu.hpp
 
 FORMS += \
-    ui/MainMenu.ui
+    ui/MainMenu.ui \
+    ui/PlayMenu.ui

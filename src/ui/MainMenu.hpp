@@ -12,12 +12,21 @@ class MainMenu : public QWidget
 {
     Q_OBJECT
 
-    public:
+    public :
 
         explicit MainMenu(QWidget *parent = 0);
         virtual ~MainMenu();
 
-    private:
+    signals :
+
+        void changeInterface(int);
+
+    private slots :
+
+        void toPlayMenu();
+
+    private :
+
         Ui::MainMenu *ui;
 };
 

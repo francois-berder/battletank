@@ -2,18 +2,15 @@
 #define MAINWINDOW_H
 
 #include <QStackedWidget>
-#include "MainMenu.hpp"
 
-enum WINDOW_STATE
-{
-    MAIN_MENU
-};
+#include "MainMenu.hpp"
+#include "PlayMenu.hpp"
 
 class MainWindow : public QStackedWidget
 {
     Q_OBJECT
 
-    public:
+    public :
 
         MainWindow(QWidget *parent = 0);
         virtual ~MainWindow();
@@ -21,6 +18,7 @@ class MainWindow : public QStackedWidget
     private :
 
         MainMenu *m_mainMenu;
+        PlayMenu *m_playMenu;
 };
 
 #endif // MAINWINDOW_H
