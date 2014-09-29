@@ -1,14 +1,13 @@
 #include "MainWindow.hpp"
-#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+QStackedWidget(parent),
+m_mainMenu(new MainMenu)
 {
-    ui->setupUi(this);
+    insertWidget(MAIN_MENU, m_mainMenu);
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete m_mainMenu;
 }

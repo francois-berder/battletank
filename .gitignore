@@ -1,8 +1,2 @@
-Makefile
-CMakeCache.txt
-CMakeFiles
-cmake_install.cmake
-tank
-log
-.cproject
-.project
+build
+battletank.pro.user

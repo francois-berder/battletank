@@ -1,22 +1,26 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QStackedWidget>
+#include "MainMenu.hpp"
 
-namespace Ui {
-class MainWindow;
-}
+enum WINDOW_STATE
+{
+    MAIN_MENU
+};
 
-class MainWindow : public QMainWindow
+class MainWindow : public QStackedWidget
 {
     Q_OBJECT
 
-public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    public:
 
-private:
-    Ui::MainWindow *ui;
+        MainWindow(QWidget *parent = 0);
+        virtual ~MainWindow();
+
+    private :
+
+        MainMenu *m_mainMenu;
 };
 
 #endif // MAINWINDOW_H
