@@ -24,6 +24,7 @@ class PlayMenu : public QWidget
     private slots :
 
         void toMainMenu();
+        void connectToServer();
 
     private :
 
