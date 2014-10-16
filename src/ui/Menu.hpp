@@ -4,7 +4,8 @@
 enum
 {
     MAIN_MENU,
-    PLAY_MENU
+    PLAY_MENU,
+    CHAT_MENU
 };
 
 #endif // MENU_HPP

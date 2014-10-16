@@ -20,11 +20,14 @@ class PlayMenu : public QWidget
     signals :
 
         void changeInterface(int);
+        void createClient(QString, QString);
+        void createServer(QString);
 
     private slots :
 
         void toMainMenu();
         void connectToServer();
+        void hostGame();
 
     private :
 

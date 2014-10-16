@@ -1,11 +1,13 @@
-#include <QTcpSocket>
+#include <SFML/Network.hpp>
 #include <QMessageBox>
 #include "JoinDialog.hpp"
 #include "ui_JoinDialog.h"
 
 JoinDialog::JoinDialog(QWidget *parent):
 QDialog(parent),
-ui(new Ui::JoinDialog)
+ui(new Ui::JoinDialog),
+m_pseudo(),
+m_serverAddress()
 {
     ui->setupUi(this);
 }
@@ -18,18 +20,22 @@ JoinDialog::~JoinDialog()
 void JoinDialog::accept()
 {
     // Ping to server
-    QTcpSocket socket;
-    socket.connectToHost(ui->serverAddress->text(), 10000);
-    if(socket.state() == QAbstractSocket::ConnectedState)
+    sf::TcpSocket socket;
+    if(socket.connect(ui->serverAddress->text().toStdString(), 9999) == sf::Socket::Done)
     {
-        socket.write("EXIST_GAME");
-        QString correctAnswer = "GAME_EXIST";
-        char response[correctAnswer.size()+1];
-        socket.read(response, correctAnswer.size());
-        if(correctAnswer != response)
-            QMessageBox::critical(this, "Game inexistent", "No game is hosted on this server.");
+        sf::Packet packet;
+        packet << "PING_GAME" << ui->pseudo->text().toStdString();
+        socket.send(packet);
+        packet.clear();
+        socket.receive(packet);
+        std::string answer;
+        packet >> answer;
+        if(answer == "PSEUDO_ALREADY_IN_USE")
+            QMessageBox::critical(this, "Pseudo already in use", "This pseudo is already used by someone else. Change your pseudo and try again.");
         else
         {
+            m_pseudo = ui->pseudo->text();
+            m_serverAddress = ui->serverAddress->text();
             setResult(QDialog::Accepted);
             hide();
         }
@@ -37,4 +43,14 @@ void JoinDialog::accept()
     }
     else
         QMessageBox::critical(this, "Connection problem", "Failed to connect to server.");
+}
+
+QString JoinDialog::getPseudo()
+{
+    return m_pseudo;
+}
+
+QString JoinDialog::getServerAddress()
+{
+    return m_serverAddress;
 }

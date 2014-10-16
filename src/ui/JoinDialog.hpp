@@ -18,6 +18,9 @@ class JoinDialog : public QDialog
         explicit JoinDialog(QWidget *parent = 0);
         virtual ~JoinDialog();
 
+        QString getPseudo();
+        QString getServerAddress();
+
     public slots :
 
         virtual void accept();
@@ -25,6 +28,8 @@ class JoinDialog : public QDialog
     private :
 
         Ui::JoinDialog *ui;
+        QString m_pseudo;
+        QString m_serverAddress;
 };
 
 #endif // JOINDIALOG_HPP

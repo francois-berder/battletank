@@ -1,3 +1,5 @@
+#include <QInputDialog>
+#include <QDir>
 #include "PlayMenu.hpp"
 #include "ui_PlayMenu.h"
 #include "Menu.hpp"
@@ -9,6 +11,7 @@ ui(new Ui::PlayMenu)
 {
     ui->setupUi(this);
 
+    QObject::connect(ui->hostButton, SIGNAL(clicked()), this, SLOT(hostGame()));
     QObject::connect(ui->joinButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
     QObject::connect(ui->backButton, SIGNAL(clicked()), this, SLOT(toMainMenu()));
 }
@@ -28,7 +31,16 @@ void PlayMenu::connectToServer()
     JoinDialog dialog;
     int ret = dialog.exec();
     if(ret == QDialog::Accepted)
-    {
-        // goto chat menu
-    }
+        emit createClient(dialog.getPseudo(), dialog.getServerAddress());
 }
+
+void PlayMenu::hostGame()
+{
+    bool ok;
+    QString pseudo = QInputDialog::getText(this, "Enter your pseudo",
+                                          "Pseudo:", QLineEdit::Normal,
+                                          QDir::home().dirName(), &ok);
+    if(ok)
+        emit createServer(pseudo);
+}
+

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -67,7 +67,10 @@ SOURCES += \
     src/view/View.cpp \
     src/ui/MainMenu.cpp \
     src/ui/PlayMenu.cpp \
-    src/ui/JoinDialog.cpp
+    src/ui/JoinDialog.cpp \
+    src/ui/ChatMenu.cpp \
+    src/ui/Host.cpp \
+    src/ui/Player.cpp
 
 HEADERS  += \
     src/ui/MainWindow.hpp \
@@ -102,9 +105,13 @@ HEADERS  += \
     src/ui/MainMenu.hpp \
     src/ui/PlayMenu.hpp \
     src/ui/Menu.hpp \
-    src/ui/JoinDialog.hpp
+    src/ui/JoinDialog.hpp \
+    src/ui/ChatMenu.hpp \
+    src/ui/Host.hpp \
+    src/ui/Player.hpp
 
 FORMS += \
     ui/MainMenu.ui \
     ui/PlayMenu.ui \
-    ui/JoinDialog.ui
+    ui/JoinDialog.ui \
+    ui/ChatMenu.ui
