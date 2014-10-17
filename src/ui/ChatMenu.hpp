@@ -39,11 +39,13 @@ class ChatMenu : public QWidget
         void sendPlayerReadiness(int);
         void playerReady(QString pseudo);
         void playerNotReady(QString pseudo);
+        void startGame();
 
     private :
 
         void clean();
         void changePlayerReady(QString pseudo, bool isReady);
+        void checkCanStart();
 
         Ui::ChatMenu *ui;
         Player m_player;

@@ -18,14 +18,15 @@ m_host()
     {
         ui->players->setCellWidget(i, 0, new QLabel);
         QCheckBox *checkBox = new QCheckBox;
-        checkBox->setDisabled(true);
+        checkBox->setEnabled(false);
         ui->players->setCellWidget(i, 1, checkBox);
-     }
+    }
     ui->players->setHorizontalHeaderLabels(QStringList() << "name" << "ready?");
     ui->players->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 
     QObject::connect(ui->sendButton, SIGNAL(clicked()), this, SLOT(sendMessage()));
     QObject::connect(ui->leaveButton, SIGNAL(clicked()), this, SLOT(leave()));
+    QObject::connect(ui->startButton, SIGNAL(clicked()), this, SLOT(startGame()));
 
     QObject::connect(&m_player, SIGNAL(receivedMessage(QString, QString)), this, SLOT(printMessage(QString, QString)));
     QObject::connect(&m_player, SIGNAL(playerJoined(QString)), this, SLOT(addPlayer(QString)));
@@ -51,12 +52,16 @@ void ChatMenu::host(QString pseudo)
     QThread::msleep(100);
 
     join(pseudo, "localhost");
+    ui->startButton->show();
+    ui->startButton->setEnabled(false);
 }
 
 void ChatMenu::join(QString pseudo, QString serverAddress)
 {
     m_player.setPseudo(pseudo);
     m_player.join(serverAddress);
+
+    ui->startButton->hide();
 }
 
 void ChatMenu::sendMessage()
@@ -101,6 +106,7 @@ void ChatMenu::addPlayer(QString pseudo)
     }
 
     ui->text->append("<i>" + pseudo + " joined this game.</i>");
+    checkCanStart();
 }
 
 void ChatMenu::removePlayer(QString pseudo)
@@ -116,11 +122,12 @@ void ChatMenu::removePlayer(QString pseudo)
             if(pseudo == m_player.getPseudo())
                 QObject::disconnect(checkBox, SIGNAL(stateChanged(int)), this, SLOT(sendPlayerReadiness(int)));
             checkBox->setChecked(false);
-            checkBox->setDisabled(true);
+            checkBox->setEnabled(false);
             break;
         }
     }
     ui->text->append("<i>" + pseudo + " left this game.</i>");
+    checkCanStart();
 }
 
 void ChatMenu::cancel()
@@ -149,9 +156,6 @@ void ChatMenu::playerNotReady(QString pseudo)
 
 void ChatMenu::changePlayerReady(QString pseudo, bool isReady)
 {
-    if(pseudo == m_player.getPseudo())
-        return;
-
     for(int i = 0; i < 4; ++i)
     {
         QLabel *label = dynamic_cast<QLabel*>(ui->players->cellWidget(i,0));
@@ -159,9 +163,16 @@ void ChatMenu::changePlayerReady(QString pseudo, bool isReady)
         if(label->text() == pseudo)
         {
             dynamic_cast<QCheckBox*>(ui->players->cellWidget(i,1))->setChecked(isReady);
-            return;
+            break;
         }
     }
+
+    checkCanStart();
+}
+
+void ChatMenu::startGame()
+{
+    // TODO: add dialog
 }
 
 void ChatMenu::clean()
@@ -187,4 +198,31 @@ void ChatMenu::clean()
 
     ui->text->clear();
     ui->textToSend->clear();
+}
+
+/*
+ * Can start if:
+ * at least two players joined the game
+ * and all players are ready.
+ */
+void ChatMenu::checkCanStart()
+{
+    int nbPlayersJoined = 0, nbPlayersReady = 0;
+    for(int i = 0; i < 4; ++i)
+    {
+        QLabel *label = dynamic_cast<QLabel*>(ui->players->cellWidget(i,0));
+        QCheckBox *checkBox = dynamic_cast<QCheckBox*>(ui->players->cellWidget(i,1));
+        if(!label->text().isEmpty())
+        {
+            ++nbPlayersJoined;
+
+            if(checkBox->isChecked())
+                ++nbPlayersReady;
+        }
+    }
+
+    if(nbPlayersJoined >= 2 && nbPlayersJoined == nbPlayersReady)
+        ui->startButton->setEnabled(true);
+    else
+        ui->startButton->setEnabled(false);
 }
