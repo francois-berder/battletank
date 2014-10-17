@@ -20,6 +20,7 @@ class Player : public QObject
         void sendMessage(QString message);
 
         void setPseudo(QString pseudo);
+        QString getPseudo() const;
 
     signals :
 

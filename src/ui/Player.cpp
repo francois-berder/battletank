@@ -117,3 +117,8 @@ void Player::setPseudo(QString pseudo)
 {
     m_pseudo = pseudo;
 }
+
+QString Player::getPseudo() const
+{
+    return m_pseudo;
+}
