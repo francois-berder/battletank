@@ -44,13 +44,13 @@ void Host::run()
                 handleIncomingClient();
             else
             {
-                QMap<QString, sf::TcpSocket*>::iterator itor;
+                QMap<QString, QPair<sf::TcpSocket*, bool>>::iterator itor;
                 for(itor = m_players.begin();
                     itor != m_players.end();
                     ++itor)
                 {
-                    if(m_selector.isReady(*itor.value()))
-                        handleData(itor.key(), *itor.value());
+                    if(m_selector.isReady(*itor.value().first))
+                        handleData(itor.key(), *itor.value().first);
                 }
                 QList<QString>::iterator itor2;
                 for(itor2 = m_playersToRemove.begin();
@@ -66,14 +66,15 @@ void Host::run()
 
     sf::Packet packet;
     packet << "GAME_CANCELLED";
-    QList<sf::TcpSocket*>::iterator itor;
-    for(itor = m_players.values().begin();
-        itor != m_players.values().end();
+    QMap<QString, QPair<sf::TcpSocket*, bool>>::iterator itor;
+    for(itor = m_players.begin();
+        itor != m_players.end();
         ++itor)
     {
-        (*itor)->send(packet);
-        (*itor)->disconnect();
-        delete (*itor);
+        sf::TcpSocket *socket = itor.value().first;
+        socket->send(packet);
+        socket->disconnect();
+        delete socket;
     }
     m_players.clear();
     m_playersToRemove.clear();
@@ -114,13 +115,13 @@ void Host::handleIncomingClient()
             packet.clear();
             packet << "EXISTING_PLAYERS";
             packet << (unsigned int)m_players.size();
-            QMap<QString, sf::TcpSocket*>::iterator itor;
+            QMap<QString, QPair<sf::TcpSocket*, bool>>::iterator itor;
             for(itor = m_players.begin();
                 itor != m_players.end();
                 ++itor)
-                packet << itor.key().toStdString();
+                packet << itor.key().toStdString() << itor.value().second;
             client->send(packet);
-            m_players[QString::fromStdString(pseudo)] = client;
+            m_players[QString::fromStdString(pseudo)] = QPair<sf::TcpSocket*, bool>(client, false);
             m_selector.add(*client);
 
             // Send to all players that another player joined
@@ -130,8 +131,7 @@ void Host::handleIncomingClient()
             for(itor = m_players.begin();
                 itor != m_players.end();
                 ++itor)
-                itor.value()->send(packet);
-
+                itor.value().first->send(packet);
         }
         else
         {
@@ -159,32 +159,50 @@ void Host::handleData(QString pseudo, sf::TcpSocket &socket)
         packet << "MESSAGE";
         packet << pseudo.toStdString();
         packet << str;
-        QList<sf::TcpSocket*>::iterator itor;
-        for(itor = m_players.values().begin();
-            itor != m_players.values().end();
+        QMap<QString, QPair<sf::TcpSocket*, bool>>::iterator itor;
+        for(itor = m_players.begin();
+            itor != m_players.end();
             ++itor)
-            (*itor)->send(packet);
+                itor.value().first->send(packet);
     }
     else if(cmdName == "LEAVE")  // One player left
     {
         std::string pseudo;
         packet >> pseudo;
         QString p = QString::fromStdString(pseudo);
-        m_selector.remove(*m_players[p]);
-        m_players[p]->disconnect();
-        delete m_players[p];
+        m_selector.remove(*m_players[p].first);
+        m_players[p].first->disconnect();
+        delete m_players[p].first;
         m_playersToRemove.append(p);
 
         // Send this information to all other players
         packet.clear();
         packet << "PLAYER_LEFT";
         packet << pseudo;
-        QMap<QString, sf::TcpSocket*>::iterator itor;
+        QMap<QString, QPair<sf::TcpSocket*, bool>>::iterator itor;
         for(itor = m_players.begin();
             itor != m_players.end();
             ++itor)
             if(itor.key() != p)
-                itor.value()->send(packet);
+                itor.value().first->send(packet);
+    }
+    else if(cmdName == "PLAYER_READY"
+         || cmdName == "PLAYER_NOT_READY")
+    {
+        if(cmdName == "PLAYER_READY")
+            m_players[pseudo].second = true;
+        else
+            m_players[pseudo].second = false;
+
+        // Send this message to everyone
+        packet.clear();
+        packet << cmdName;
+        packet << pseudo.toStdString();
+        QMap<QString, QPair<sf::TcpSocket*, bool>>::iterator itor;
+        for(itor = m_players.begin();
+            itor != m_players.end();
+            ++itor)
+                itor.value().first->send(packet);
     }
 }
 

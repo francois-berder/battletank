@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <QPair>
 #include <QList>
 #include <QString>
 #include <thread>
@@ -26,7 +27,7 @@ class Host
         std::thread m_thread;
         sf::TcpListener m_listener;
         sf::SocketSelector m_selector;
-        QMap<QString, sf::TcpSocket*> m_players;
+        QMap<QString, QPair<sf::TcpSocket*, bool> > m_players;
         QList<QString> m_playersToRemove;
         bool m_running;
 };

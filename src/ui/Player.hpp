@@ -18,15 +18,19 @@ class Player : public QObject
         void leave();
 
         void sendMessage(QString message);
+        void setReadiness(bool isReady);
 
         void setPseudo(QString pseudo);
         QString getPseudo() const;
+
 
     signals :
 
         void receivedMessage(QString, QString);
         void playerJoined(QString);
         void playerLeft(QString);
+        void playerReady(QString);
+        void playerNotReady(QString);
         void gameCancelled();
 
     private :

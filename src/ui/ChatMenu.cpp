@@ -20,7 +20,8 @@ m_host()
         QCheckBox *checkBox = new QCheckBox;
         checkBox->setDisabled(true);
         ui->players->setCellWidget(i, 1, checkBox);
-    }
+     }
+    ui->players->setHorizontalHeaderLabels(QStringList() << "name" << "ready?");
 
     QObject::connect(ui->sendButton, SIGNAL(clicked()), this, SLOT(sendMessage()));
     QObject::connect(ui->leaveButton, SIGNAL(clicked()), this, SLOT(leave()));
@@ -28,8 +29,9 @@ m_host()
     QObject::connect(&m_player, SIGNAL(receivedMessage(QString, QString)), this, SLOT(printMessage(QString, QString)));
     QObject::connect(&m_player, SIGNAL(playerJoined(QString)), this, SLOT(addPlayer(QString)));
     QObject::connect(&m_player, SIGNAL(playerLeft(QString)), this, SLOT(removePlayer(QString)));
+    QObject::connect(&m_player, SIGNAL(playerReady(QString)), this, SLOT(playerReady(QString)));
+    QObject::connect(&m_player, SIGNAL(playerNotReady(QString)), this, SLOT(playerNotReady(QString)));
     QObject::connect(&m_player, SIGNAL(gameCancelled()), this, SLOT(cancel()));
-
 }
 
 ChatMenu::~ChatMenu()
@@ -88,8 +90,11 @@ void ChatMenu::addPlayer(QString pseudo)
         {
             label->setText(pseudo);
             if(pseudo == m_player.getPseudo())
-                dynamic_cast<QCheckBox*>(ui->players->cellWidget(i,1))->setEnabled(true);
-
+            {
+                QCheckBox *checkBox = dynamic_cast<QCheckBox*>(ui->players->cellWidget(i,1));
+                QObject::connect(checkBox, SIGNAL(stateChanged(int)), this, SLOT(sendPlayerReadiness(int)));
+                checkBox->setEnabled(true);
+            }
             break;
         }
     }
@@ -107,6 +112,8 @@ void ChatMenu::removePlayer(QString pseudo)
         {
             label->clear();
             QCheckBox *checkBox = dynamic_cast<QCheckBox*>(ui->players->cellWidget(i,1));
+            if(pseudo == m_player.getPseudo())
+                QObject::disconnect(checkBox, SIGNAL(stateChanged(int)), this, SLOT(sendPlayerReadiness(int)));
             checkBox->setChecked(false);
             checkBox->setDisabled(true);
             break;
@@ -121,6 +128,41 @@ void ChatMenu::cancel()
     leave();
 }
 
+void ChatMenu::sendPlayerReadiness(int isReady)
+{
+    if(isReady == Qt::Checked)
+        m_player.setReadiness(true);
+    else
+        m_player.setReadiness(false);
+}
+
+void ChatMenu::playerReady(QString pseudo)
+{
+    changePlayerReady(pseudo, true);
+}
+
+void ChatMenu::playerNotReady(QString pseudo)
+{
+    changePlayerReady(pseudo, false);
+}
+
+void ChatMenu::changePlayerReady(QString pseudo, bool isReady)
+{
+    if(pseudo == m_player.getPseudo())
+        return;
+
+    for(int i = 0; i < 4; ++i)
+    {
+        QLabel *label = dynamic_cast<QLabel*>(ui->players->cellWidget(i,0));
+
+        if(label->text() == pseudo)
+        {
+            dynamic_cast<QCheckBox*>(ui->players->cellWidget(i,1))->setChecked(isReady);
+            return;
+        }
+    }
+}
+
 void ChatMenu::clean()
 {
     m_player.leave();
@@ -133,8 +175,11 @@ void ChatMenu::clean()
 
     for(int i = 0; i < 4; ++i)
     {
-        dynamic_cast<QLabel*>(ui->players->cellWidget(i,0))->clear();
+        QLabel *label = dynamic_cast<QLabel*>(ui->players->cellWidget(i,0));
         QCheckBox *checkBox = dynamic_cast<QCheckBox*>(ui->players->cellWidget(i,1));
+        if(label->text() == m_player.getPseudo())
+            QObject::disconnect(checkBox, SIGNAL(stateChanged(int)), this, SLOT(sendPlayerReadiness(int)));
+        label->clear();
         checkBox->setChecked(false);
         checkBox->setEnabled(false);
     }

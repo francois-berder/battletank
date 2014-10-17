@@ -37,9 +37,16 @@ void Player::join(QString serverAddress)
     packet >> nbPlayers;
     for(unsigned int i = 0; i < nbPlayers; ++i)
     {
-        std::string name;
-        packet >> name;
-        emit playerJoined(QString::fromStdString(name));
+        std::string pseudo;
+        packet >> pseudo;
+        QString p = QString::fromStdString(pseudo);
+        emit playerJoined(p);
+        bool isReady;
+        packet >> isReady;
+        if(isReady)
+            emit playerReady(p);
+        else
+            emit playerNotReady(p);
     }
 
     m_joinedGame = true;
@@ -62,6 +69,16 @@ void Player::sendMessage(QString message)
     sf::Packet packet;
     packet << "MESSAGE";
     packet << message.toStdString();
+    m_socket.send(packet);
+}
+
+void Player::setReadiness(bool isReady)
+{
+    sf::Packet packet;
+    if(isReady)
+        packet << "PLAYER_READY";
+    else
+        packet << "PLAYER_NOT_READY";
     m_socket.send(packet);
 }
 
@@ -121,6 +138,18 @@ void Player::handleData(sf::Packet &packet)
     {
         m_gameCancelled = true;
         emit gameCancelled();
+    }
+    else if(cmdName == "PLAYER_READY")
+    {
+        std::string pseudo;
+        packet >> pseudo;
+        emit playerReady(QString::fromStdString(pseudo));
+    }
+    else if(cmdName == "PLAYER_NOT_READY")
+    {
+        std::string pseudo;
+        packet >> pseudo;
+        emit playerNotReady(QString::fromStdString(pseudo));
     }
 }
 

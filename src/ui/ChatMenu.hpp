@@ -36,10 +36,14 @@ class ChatMenu : public QWidget
         void sendMessage();
         void leave();
         void cancel();
+        void sendPlayerReadiness(int);
+        void playerReady(QString pseudo);
+        void playerNotReady(QString pseudo);
 
     private :
 
         void clean();
+        void changePlayerReady(QString pseudo, bool isReady);
 
         Ui::ChatMenu *ui;
         Player m_player;
