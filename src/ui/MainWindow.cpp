@@ -7,6 +7,9 @@ m_mainMenu(new MainMenu(this)),
 m_playMenu(new PlayMenu(this)),
 m_chatMenu(new ChatMenu(this))
 {
+    this->setFixedWidth(800);
+    this->setFixedHeight(600);
+
     insertWidget(MAIN_MENU, m_mainMenu);
     insertWidget(PLAY_MENU, m_playMenu);
     insertWidget(CHAT_MENU, m_chatMenu);

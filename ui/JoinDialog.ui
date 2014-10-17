@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>336</width>
+    <height>153</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>240</y>
-     <width>341</width>
+     <y>110</y>
+     <width>281</width>
      <height>32</height>
     </rect>
    </property>
@@ -32,8 +32,8 @@
   <widget class="QWidget" name="formLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>60</y>
+     <x>20</x>
+     <y>20</y>
      <width>291</width>
      <height>71</height>
     </rect>
@@ -46,9 +46,6 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="serverAddress"/>
-    </item>
     <item row="0" column="0">
      <widget class="QLabel" name="label_2">
       <property name="text">
@@ -59,12 +56,14 @@
     <item row="0" column="1">
      <widget class="QLineEdit" name="pseudo"/>
     </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="serverAddress"/>
+    </item>
    </layout>
   </widget>
  </widget>
  <tabstops>
   <tabstop>pseudo</tabstop>
-  <tabstop>serverAddress</tabstop>
  </tabstops>
  <resources/>
  <connections>
