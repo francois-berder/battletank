@@ -1,3 +1,4 @@
+#include <QMessageBox>
 #include <QCheckBox>
 #include <QLabel>
 #include <QThread>
@@ -27,6 +28,8 @@ m_host()
     QObject::connect(&m_player, SIGNAL(receivedMessage(QString, QString)), this, SLOT(printMessage(QString, QString)));
     QObject::connect(&m_player, SIGNAL(playerJoined(QString)), this, SLOT(addPlayer(QString)));
     QObject::connect(&m_player, SIGNAL(playerLeft(QString)), this, SLOT(removePlayer(QString)));
+    QObject::connect(&m_player, SIGNAL(gameCancelled()), this, SLOT(cancel()));
+
 }
 
 ChatMenu::~ChatMenu()
@@ -110,6 +113,12 @@ void ChatMenu::removePlayer(QString pseudo)
         }
     }
     ui->text->append("<i>" + pseudo + " left this game.</i>");
+}
+
+void ChatMenu::cancel()
+{
+    QMessageBox::information(this, "Game cancelled", "This game has been cancelled by the host.");
+    leave();
 }
 
 void ChatMenu::clean()

@@ -4,6 +4,7 @@ Player::Player():
 QObject(),
 m_pseudo(),
 m_joinedGame(false),
+m_gameCancelled(false),
 m_thread(),
 m_selector(),
 m_socket()
@@ -41,7 +42,6 @@ void Player::join(QString serverAddress)
         emit playerJoined(QString::fromStdString(name));
     }
 
-    m_selector.add(m_socket);
     m_joinedGame = true;
     std::thread thread(&Player::run, this);
     m_thread.swap(thread);
@@ -54,7 +54,7 @@ void Player::leave()
 
     m_joinedGame = false;
     m_thread.join();
-    m_selector.clear();
+    m_gameCancelled = false;
 }
 
 void Player::sendMessage(QString message)
@@ -67,6 +67,8 @@ void Player::sendMessage(QString message)
 
 void Player::run()
 {
+    m_selector.add(m_socket);
+
     while(m_joinedGame)
     {
         if(m_selector.wait(sf::milliseconds(100)))
@@ -81,11 +83,15 @@ void Player::run()
     }
 
     // Send leave message
-    sf::Packet packet;
-    packet << "LEAVE";
-    packet << m_pseudo.toStdString();
-    m_socket.send(packet);
+    if(!m_gameCancelled)
+    {
+        sf::Packet packet;
+        packet << "LEAVE";
+        packet << m_pseudo.toStdString();
+        m_socket.send(packet);
+    }
     m_socket.disconnect();
+    m_selector.clear();
 }
 
 void Player::handleData(sf::Packet &packet)
@@ -110,6 +116,11 @@ void Player::handleData(sf::Packet &packet)
         std::string pseudo;
         packet >> pseudo;
         emit playerLeft(QString::fromStdString(pseudo));
+    }
+    else if(cmdName == "GAME_CANCELLED")
+    {
+        m_gameCancelled = true;
+        emit gameCancelled();
     }
 }
 

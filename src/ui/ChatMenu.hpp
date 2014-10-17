@@ -35,6 +35,7 @@ class ChatMenu : public QWidget
         void removePlayer(QString pseudo);
         void sendMessage();
         void leave();
+        void cancel();
 
     private :
 

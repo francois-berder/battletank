@@ -64,11 +64,14 @@ void Host::run()
     m_selector.clear();
     m_listener.close();
 
+    sf::Packet packet;
+    packet << "GAME_CANCELLED";
     QList<sf::TcpSocket*>::iterator itor;
     for(itor = m_players.values().begin();
         itor != m_players.values().end();
         ++itor)
     {
+        (*itor)->send(packet);
         (*itor)->disconnect();
         delete (*itor);
     }

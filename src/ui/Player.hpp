@@ -27,6 +27,7 @@ class Player : public QObject
         void receivedMessage(QString, QString);
         void playerJoined(QString);
         void playerLeft(QString);
+        void gameCancelled();
 
     private :
 
@@ -35,6 +36,7 @@ class Player : public QObject
 
         QString m_pseudo;
         bool m_joinedGame;
+        bool m_gameCancelled;
         std::thread m_thread;
         sf::SocketSelector m_selector;
         sf::TcpSocket m_socket;
