@@ -22,6 +22,7 @@ m_host()
         ui->players->setCellWidget(i, 1, checkBox);
      }
     ui->players->setHorizontalHeaderLabels(QStringList() << "name" << "ready?");
+    ui->players->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 
     QObject::connect(ui->sendButton, SIGNAL(clicked()), this, SLOT(sendMessage()));
     QObject::connect(ui->leaveButton, SIGNAL(clicked()), this, SLOT(leave()));
