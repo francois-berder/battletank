@@ -5,6 +5,7 @@ QObject(),
 m_pseudo(),
 m_joinedGame(false),
 m_gameCancelled(false),
+m_gameLaunchStarted(false),
 m_thread(),
 m_selector(),
 m_socket()
@@ -96,6 +97,16 @@ void Player::setReadiness(bool isReady)
     m_socket.send(packet);
 }
 
+void Player::abortLaunch()
+{
+    if(!m_gameLaunchStarted)
+        return;
+
+    sf::Packet packet;
+    packet << "ABORT_LAUNCH";
+    m_socket.send(packet);
+}
+
 void Player::run()
 {
     m_selector.add(m_socket);
@@ -164,6 +175,18 @@ void Player::handleData(sf::Packet &packet)
         std::string pseudo;
         packet >> pseudo;
         emit playerNotReady(QString::fromStdString(pseudo));
+    }
+    else if(cmdName == "LAUNCH_GAME")
+    {
+        m_gameLaunchStarted = true;
+        emit gameLaunchStarted();
+    }
+    else if(cmdName == "ABORT_LAUNCH")
+    {
+        m_gameLaunchStarted = false;
+        std::string pseudo;
+        packet >> pseudo;
+        emit gameLaunchAborted(QString::fromStdString(pseudo));
     }
 }
 

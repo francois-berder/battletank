@@ -5,6 +5,7 @@
 #include "ChatMenu.hpp"
 #include "ui_ChatMenu.h"
 #include "Menu.hpp"
+#include "LaunchGameDialog.hpp"
 
 ChatMenu::ChatMenu(QWidget *parent):
 QWidget(parent),
@@ -27,7 +28,7 @@ m_data()
 
     QObject::connect(ui->sendButton, SIGNAL(clicked()), this, SLOT(sendMessage()));
     QObject::connect(ui->leaveButton, SIGNAL(clicked()), this, SLOT(leave()));
-    QObject::connect(ui->startButton, SIGNAL(clicked()), this, SLOT(startGame()));
+    QObject::connect(ui->startButton, SIGNAL(clicked()), &m_host, SLOT(launchGame()));
 
     QObject::connect(&m_player, SIGNAL(receivedMessage(QString, QString)), this, SLOT(printMessage(QString, QString)));
     QObject::connect(&m_player, SIGNAL(playerJoined(QString)), this, SLOT(addPlayer(QString)));
@@ -36,6 +37,8 @@ m_data()
     QObject::connect(&m_player, SIGNAL(playerNotReady(QString)), this, SLOT(playerNotReady(QString)));
     QObject::connect(&m_player, SIGNAL(gameCancelled()), this, SLOT(cancel()));
     QObject::connect(&m_player, SIGNAL(existingText(QString)), ui->text, SLOT(setText(QString)));
+    QObject::connect(&m_player, SIGNAL(gameLaunchStarted()), this, SLOT(reportGameLaunchStarted()));
+    QObject::connect(&m_player, SIGNAL(gameLaunchAborted(QString)), this, SLOT(reportGameLaunchAborted(QString)));
 }
 
 ChatMenu::~ChatMenu()
@@ -188,9 +191,23 @@ void ChatMenu::changePlayerReady(QString pseudo, bool isReady)
     checkCanStart();
 }
 
-void ChatMenu::startGame()
+void ChatMenu::reportGameLaunchStarted()
 {
-    // TODO: add dialog
+    LaunchGameDialog dialog;
+    QObject::connect(&m_player, SIGNAL(gameLaunchAborted(QString)), &dialog, SLOT(close()));
+    int ret = dialog.exec();
+    if(ret == QDialog::Accepted)
+        emit changeInterface(GAME_MENU);
+    else
+        m_player.abortLaunch();
+}
+
+void ChatMenu::reportGameLaunchAborted(QString pseudo)
+{
+    if(pseudo == m_player.getPseudo())
+        return;
+
+    QMessageBox::information(this, "Game launch aborted", pseudo + " has aborted the launch of this game");
 }
 
 void ChatMenu::clean()

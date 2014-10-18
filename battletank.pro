@@ -71,7 +71,8 @@ SOURCES += \
     src/ui/ChatMenu.cpp \
     src/ui/Host.cpp \
     src/ui/Player.cpp \
-    src/ui/GameData.cpp
+    src/ui/GameData.cpp \
+    src/ui/LaunchGameDialog.cpp
 
 HEADERS  += \
     src/ui/MainWindow.hpp \
@@ -110,10 +111,12 @@ HEADERS  += \
     src/ui/ChatMenu.hpp \
     src/ui/Host.hpp \
     src/ui/Player.hpp \
-    src/ui/GameData.hpp
+    src/ui/GameData.hpp \
+    src/ui/LaunchGameDialog.hpp
 
 FORMS += \
     ui/MainMenu.ui \
     ui/PlayMenu.ui \
     ui/JoinDialog.ui \
-    ui/ChatMenu.ui
+    ui/ChatMenu.ui \
+    ui/LaunchGameDialog.ui

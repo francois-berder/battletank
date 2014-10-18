@@ -1,6 +1,7 @@
 #ifndef HOST_HPP
 #define HOST_HPP
 
+#include <QObject>
 #include <QMap>
 #include <QPair>
 #include <QList>
@@ -10,8 +11,10 @@
 #include "GameData.hpp"
 
 
-class Host
+class Host : public QObject
 {
+
+    Q_OBJECT
 
     public :
 
@@ -19,6 +22,10 @@ class Host
 
         void start();
         void stop();
+
+    public slots :
+
+        void launchGame();
 
     private :
 

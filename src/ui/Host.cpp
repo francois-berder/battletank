@@ -1,6 +1,7 @@
 #include "Host.hpp"
 
 Host::Host(GameData &data):
+QObject(),
 m_thread(),
 m_listener(),
 m_selector(),
@@ -30,6 +31,17 @@ void Host::stop()
 
     m_running = false;
     m_thread.join();
+}
+
+void Host::launchGame()
+{
+    sf::Packet packet;
+    packet << "LAUNCH_GAME";
+    QMap<QString, sf::TcpSocket*>::iterator itor;
+    for(itor = m_sockets.begin();
+        itor != m_sockets.end();
+        ++itor)
+        itor.value()->send(packet);
 }
 
 void Host::run()
@@ -198,6 +210,18 @@ void Host::handleData(QString pseudo, sf::TcpSocket &socket)
     }
     else if(cmdName == "PLAYER_READY"
          || cmdName == "PLAYER_NOT_READY")
+    {
+        // Send this message to everyone
+        packet.clear();
+        packet << cmdName;
+        packet << pseudo.toStdString();
+        QMap<QString, sf::TcpSocket*>::iterator itor;
+        for(itor = m_sockets.begin();
+            itor != m_sockets.end();
+            ++itor)
+                itor.value()->send(packet);
+    }
+    else if(cmdName == "ABORT_LAUNCH")
     {
         // Send this message to everyone
         packet.clear();
