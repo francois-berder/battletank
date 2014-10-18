@@ -23,6 +23,7 @@ class Player : public QObject
         void setPseudo(QString pseudo);
         QString getPseudo() const;
 
+        QString getIPAddress() const;
 
     signals :
 

@@ -56,6 +56,10 @@ void ChatMenu::host(QString pseudo)
     join(pseudo, "localhost");
     ui->startButton->show();
     ui->startButton->setEnabled(false);
+    ui->IPAddress->show();
+    ui->labelIPAdress->show();
+
+    ui->IPAddress->setText(m_player.getIPAddress());
 }
 
 void ChatMenu::join(QString pseudo, QString serverAddress)
@@ -64,6 +68,8 @@ void ChatMenu::join(QString pseudo, QString serverAddress)
     m_player.join(serverAddress);
 
     ui->startButton->hide();
+    ui->IPAddress->hide();
+    ui->labelIPAdress->hide();
 }
 
 void ChatMenu::sendMessage()

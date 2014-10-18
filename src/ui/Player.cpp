@@ -176,3 +176,13 @@ QString Player::getPseudo() const
 {
     return m_pseudo;
 }
+
+QString Player::getIPAddress() const
+{
+    sf::IpAddress ipAddress = sf::IpAddress::getPublicAddress(sf::milliseconds(200));
+    if(ipAddress.toString() == "0.0.0.0")
+        ipAddress = sf::IpAddress::getLocalAddress();
+    if(ipAddress.toString() == "0.0.0.0")
+        return "127.0.0.1";
+    return ipAddress.toString().c_str();
+}
