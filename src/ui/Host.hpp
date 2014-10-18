@@ -1,19 +1,21 @@
 #ifndef HOST_HPP
 #define HOST_HPP
 
-#include <QObject>
 #include <QMap>
 #include <QPair>
 #include <QList>
 #include <QString>
 #include <thread>
 #include <SFML/Network.hpp>
+#include "GameData.hpp"
+
 
 class Host
 {
+
     public :
 
-        Host();
+        Host(GameData &data);
 
         void start();
         void stop();
@@ -27,8 +29,9 @@ class Host
         std::thread m_thread;
         sf::TcpListener m_listener;
         sf::SocketSelector m_selector;
-        QMap<QString, QPair<sf::TcpSocket*, bool> > m_players;
-        QList<QString> m_playersToRemove;
+        QMap<QString, sf::TcpSocket*> m_sockets;
+        QList<QString> m_socketsToRemove;
+        GameData &m_data;
         bool m_running;
 };
 

@@ -70,7 +70,8 @@ SOURCES += \
     src/ui/JoinDialog.cpp \
     src/ui/ChatMenu.cpp \
     src/ui/Host.cpp \
-    src/ui/Player.cpp
+    src/ui/Player.cpp \
+    src/ui/GameData.cpp
 
 HEADERS  += \
     src/ui/MainWindow.hpp \
@@ -108,7 +109,8 @@ HEADERS  += \
     src/ui/JoinDialog.hpp \
     src/ui/ChatMenu.hpp \
     src/ui/Host.hpp \
-    src/ui/Player.hpp
+    src/ui/Player.hpp \
+    src/ui/GameData.hpp
 
 FORMS += \
     ui/MainMenu.ui \

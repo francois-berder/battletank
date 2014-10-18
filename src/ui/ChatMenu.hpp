@@ -2,10 +2,9 @@
 #define CHATMENU_HPP
 
 #include <QWidget>
-#include <SFML/Network.hpp>
 #include "Host.hpp"
 #include "Player.hpp"
-
+#include "GameData.hpp"
 
 namespace Ui
 {
@@ -50,6 +49,7 @@ class ChatMenu : public QWidget
         Ui::ChatMenu *ui;
         Player m_player;
         Host m_host;
+        GameData m_data;
 };
 
 #endif // CHATMENU_HPP

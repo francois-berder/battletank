@@ -64,6 +64,7 @@
  </widget>
  <tabstops>
   <tabstop>pseudo</tabstop>
+  <tabstop>serverAddress</tabstop>
  </tabstops>
  <resources/>
  <connections>

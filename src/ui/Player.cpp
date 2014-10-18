@@ -49,6 +49,20 @@ void Player::join(QString serverAddress)
             emit playerNotReady(p);
     }
 
+    // receive existing text
+    std::string text;
+    packet.clear();
+    m_socket.receive(packet);
+    packet >> answer;
+    if(answer != "EXISTING_TEXT")
+    {
+        m_socket.disconnect();
+        // TODO: emit error
+    }
+    packet >> text;
+    emit existingText(QString::fromStdString(text));
+
+
     m_joinedGame = true;
     std::thread thread(&Player::run, this);
     m_thread.swap(thread);

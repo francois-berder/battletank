@@ -32,6 +32,7 @@ class Player : public QObject
         void playerReady(QString);
         void playerNotReady(QString);
         void gameCancelled();
+        void existingText(QString);
 
     private :
 
