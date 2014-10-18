@@ -5,7 +5,8 @@ MainWindow::MainWindow(QWidget *parent) :
 QStackedWidget(parent),
 m_mainMenu(new MainMenu(this)),
 m_playMenu(new PlayMenu(this)),
-m_chatMenu(new ChatMenu(this))
+m_chatMenu(new ChatMenu(this)),
+m_gameMenu(new GameMenu(this))
 {
     this->setFixedWidth(800);
     this->setFixedHeight(600);
@@ -13,6 +14,7 @@ m_chatMenu(new ChatMenu(this))
     insertWidget(MAIN_MENU, m_mainMenu);
     insertWidget(PLAY_MENU, m_playMenu);
     insertWidget(CHAT_MENU, m_chatMenu);
+    insertWidget(GAME_MENU, m_gameMenu);
 
     QObject::connect(m_mainMenu, SIGNAL(changeInterface(int)), this, SLOT(setCurrentIndex(int)));
     QObject::connect(m_playMenu, SIGNAL(changeInterface(int)), this, SLOT(setCurrentIndex(int)));

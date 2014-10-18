@@ -11,7 +11,9 @@ class Option
 		Option(const std::string &name = std::string(),
 				const std::string &value = std::string());
 
+        static std::list<Option> parse(std::list<std::string> args);
 		static std::list<Option> parse(int argc, char **argv);
+        static Option parseArg(const std::string &arg);
 		static Option parseArg(char *arg);
 
 		std::string getName() const;

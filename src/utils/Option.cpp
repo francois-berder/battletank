@@ -24,6 +24,14 @@ std::string Option::getValue() const
 	return m_value;
 }
 
+std::list<Option> Option::parse(std::list<std::string> args)
+{
+    std::list<Option> options;
+    for(auto& arg : args)
+        options.push_back(Option::parseArg(arg.c_str()));
+    return options;
+}
+
 std::list<Option> Option::parse(int argc, char **argv)
 {
 	if(argv == NULL)
@@ -39,6 +47,11 @@ std::list<Option> Option::parse(int argc, char **argv)
 		options.push_back(Option::parseArg(argv[i]));
 
 	return options;
+}
+
+Option Option::parseArg(const std::string &arg)
+{
+    return parseArg(const_cast<char*>(arg.c_str()));
 }
 
 Option Option::parseArg(char *arg)
