@@ -74,8 +74,16 @@ void Game::setOptions(std::list<Option>& options)
 	}
 }
 
-void Game::init()
+void Game::update()
 {
+    m_gameWorld.step();
+    m_view.update(m_gameWorld.print());
+}
+
+void Game::init(sf::WindowHandle handle)
+{
+    m_view.init(handle);
+
     try
     {
         m_execFile.execute();
@@ -114,35 +122,6 @@ void Game::init()
 
     if(m_server.hasClients())
         m_server.start();
-}
-
-void Game::loop()
-{
-    CommandFactory cmdFactory(*this, m_gameWorld);
-	while(!m_gameWorld.isFinished() && !m_exit)
-	{
-        m_replayFile.execute(m_gameWorld.getCurrentStep());
-
-    	if(m_isInteractive)
-	    {
-		    std::cout << "> ";
-		    std::string cmdStr;
-		    std::getline(std::cin, cmdStr);
-    		CommandPtr cmd = cmdFactory.getCmd(cmdStr);
-	        cmd->execute();
-        }
-        else
-    		m_gameWorld.step();
-
-		m_view.update(m_gameWorld.print());
-		proceedEvents();
-	}
-}
-
-void Game::run()
-{
-    init();
-    loop();
 }
 
 void Game::exit()

@@ -12,8 +12,9 @@ class View
 {
 	public:
 
-		View();
+        View();
 
+        void init(sf::WindowHandle handle);
 		void update(const std::string& gameState);
 
         static float gfxToGame(float);

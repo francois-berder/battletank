@@ -16,19 +16,17 @@ class Game
 {
 	public:
 
-		Game();
+        Game();
         virtual ~Game();
 
 		void setOptions(std::list<Option>& options);
+        void init(sf::WindowHandle handle);
 
-		void run();
+        void update();
 
 		void exit();
 
 	private:
-
-        void init();
-        void loop();
 
         void displayOptionsList();
     

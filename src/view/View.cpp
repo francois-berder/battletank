@@ -7,13 +7,16 @@
 
 
 View::View():
-m_window(sf::VideoMode(800, 600), "Battle Tank"), 
+m_window(),
 m_disableUserInput(false),
 m_events(),
 m_canShoot(true)
 {
-    m_window.setVerticalSyncEnabled(true);
-    m_window.setFramerateLimit(60);
+}
+
+void View::init(sf::WindowHandle handle)
+{
+    m_window.create(handle);
 }
 
 void View::update(const std::string& gameState)
