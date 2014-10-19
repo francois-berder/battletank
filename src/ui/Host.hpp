@@ -40,6 +40,7 @@ class Host : public QObject
         QList<QString> m_socketsToRemove;
         GameData &m_data;
         bool m_running;
+        bool m_gameStarted;
 };
 
 #endif // HOST_HPP

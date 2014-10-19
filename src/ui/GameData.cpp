@@ -27,6 +27,11 @@ QMap<QString, bool> GameData::getPlayers() const
     return m_players;
 }
 
+unsigned int GameData::getNbPlayers() const
+{
+    return m_players.size();
+}
+
 void GameData::appendText(const QString &text)
 {
     if(!m_text.isEmpty())

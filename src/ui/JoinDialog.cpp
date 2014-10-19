@@ -19,6 +19,9 @@ JoinDialog::~JoinDialog()
 
 void JoinDialog::accept()
 {
+    if(ui->pseudo->text().isEmpty())
+        QMessageBox::critical(this, "Invalid pseudo", "Your need to enter a valid pseudo.");
+
     // Ping to server
     sf::TcpSocket socket;
     if(socket.connect(ui->serverAddress->text().toStdString(), 9999) == sf::Socket::Done)
@@ -32,6 +35,10 @@ void JoinDialog::accept()
         packet >> answer;
         if(answer == "PSEUDO_ALREADY_IN_USE")
             QMessageBox::critical(this, "Pseudo already in use", "This pseudo is already used by someone else. Change your pseudo and try again.");
+        else if(answer == "GAME_ALREADY_STARTED")
+            QMessageBox::critical(this, "Game already started", "The game has already started.");
+        else if(answer == "GAME_ALREADY_FULL")
+            QMessageBox::critical(this, "Maximum players limit reached", "The host cannot accept anymore players.");
         else
         {
             m_pseudo = ui->pseudo->text();

@@ -8,6 +8,7 @@ m_selector(),
 m_sockets(),
 m_socketsToRemove(),
 m_running(false),
+m_gameStarted(false),
 m_data(data)
 {
 
@@ -35,6 +36,11 @@ void Host::stop()
 
 void Host::launchGame()
 {
+    if(m_gameStarted)
+        return;
+
+    m_gameStarted = true;
+
     sf::Packet packet;
     packet << "LAUNCH_GAME";
     QMap<QString, sf::TcpSocket*>::iterator itor;
@@ -109,6 +115,10 @@ void Host::handleIncomingClient()
             packet.clear();
             if(m_sockets.keys().contains(QString::fromStdString(pseudo)))
                 packet << "PSEUDO_ALREADY_IN_USE";
+            else if(m_data.getNbPlayers() == 4)
+                packet << "GAME_ALREADY_FULL";
+            else if(m_gameStarted)
+                packet << "GAME_ALREADY_STARTED";
             else
                 packet << "GAME_EXIST";
 
@@ -223,6 +233,8 @@ void Host::handleData(QString pseudo, sf::TcpSocket &socket)
     }
     else if(cmdName == "ABORT_LAUNCH")
     {
+        m_gameStarted = false;
+
         // Send this message to everyone
         packet.clear();
         packet << cmdName;
