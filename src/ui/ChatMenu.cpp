@@ -96,7 +96,8 @@ void ChatMenu::printMessage(QString pseudo, QString message)
 {
     QString msg = "<b>" + pseudo + ": </b>" + message;
     ui->text->append(msg);
-    m_data.appendText(msg);
+    if(m_host.isRunning())
+        m_data.appendText(msg);
 }
 
 void ChatMenu::addPlayer(QString pseudo)
@@ -114,13 +115,15 @@ void ChatMenu::addPlayer(QString pseudo)
                 QObject::connect(checkBox, SIGNAL(stateChanged(int)), this, SLOT(sendPlayerReadiness(int)));
                 checkBox->setEnabled(true);
             }
-            m_data.addPlayer(pseudo);
+            if(m_host.isRunning())
+                m_data.addPlayer(pseudo);
             break;
         }
     }
     QString msg = "<i>" + pseudo + " joined this game.</i>";
     ui->text->append(msg);
-    m_data.appendText(msg);
+    if(m_host.isRunning())
+        m_data.appendText(msg);
 
     checkCanStart();
 }
@@ -139,13 +142,15 @@ void ChatMenu::removePlayer(QString pseudo)
                 QObject::disconnect(checkBox, SIGNAL(stateChanged(int)), this, SLOT(sendPlayerReadiness(int)));
             checkBox->setChecked(false);
             checkBox->setEnabled(false);
-            m_data.removePlayer(pseudo);
+            if(m_host.isRunning())
+                m_data.removePlayer(pseudo);
             break;
         }
     }
     QString msg = "<i>" + pseudo + " left this game.</i>";
     ui->text->append(msg);
-    m_data.appendText(msg);
+    if(m_host.isRunning())
+        m_data.appendText(msg);
 
     checkCanStart();
 }
@@ -183,7 +188,8 @@ void ChatMenu::changePlayerReady(QString pseudo, bool isReady)
         if(label->text() == pseudo)
         {
             dynamic_cast<QCheckBox*>(ui->players->cellWidget(i,1))->setChecked(isReady);
-            m_data.setPlayerReadiness(pseudo, isReady);
+            if(m_host.isRunning())
+                m_data.setPlayerReadiness(pseudo, isReady);
             break;
         }
     }

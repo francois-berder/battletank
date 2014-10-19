@@ -34,6 +34,11 @@ void Host::stop()
     m_thread.join();
 }
 
+bool Host::isRunning() const
+{
+    return m_running;
+}
+
 void Host::launchGame()
 {
     if(m_gameStarted)

@@ -23,6 +23,8 @@ class Host : public QObject
         void start();
         void stop();
 
+        bool isRunning() const;
+
     public slots :
 
         void launchGame();
