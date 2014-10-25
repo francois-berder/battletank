@@ -15,6 +15,7 @@ class GameData
         void setPlayerReadiness(const QString &pseudo, const bool isReady);
         QMap<QString, bool> getPlayers() const;
         unsigned int getNbPlayers() const;
+        bool containsPlayer(QString pseudo) const;
 
         void appendText(const QString &text);
         QString getText() const;

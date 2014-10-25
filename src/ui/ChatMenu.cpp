@@ -39,6 +39,8 @@ m_data()
     QObject::connect(&m_player, SIGNAL(existingText(QString)), ui->text, SLOT(setText(QString)));
     QObject::connect(&m_player, SIGNAL(gameLaunchStarted()), this, SLOT(reportGameLaunchStarted()));
     QObject::connect(&m_player, SIGNAL(gameLaunchAborted(QString)), this, SLOT(reportGameLaunchAborted(QString)));
+    QObject::connect(&m_player, SIGNAL(errorJoined(QString)), this, SLOT(reportErrorJoined(QString)));
+
 }
 
 ChatMenu::~ChatMenu()
@@ -214,6 +216,12 @@ void ChatMenu::reportGameLaunchAborted(QString pseudo)
         return;
 
     QMessageBox::information(this, "Game launch aborted", pseudo + " has aborted the launch of this game");
+}
+
+void ChatMenu::reportErrorJoined(QString error)
+{
+    QMessageBox::information(this, "Error joining game", "Could not join game. Reason: " + error);
+    leave();
 }
 
 void ChatMenu::clean()

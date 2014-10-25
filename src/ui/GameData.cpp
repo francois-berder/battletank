@@ -32,6 +32,11 @@ unsigned int GameData::getNbPlayers() const
     return m_players.size();
 }
 
+bool GameData::containsPlayer(QString pseudo) const
+{
+    return m_players.contains(pseudo);
+}
+
 void GameData::appendText(const QString &text)
 {
     if(!m_text.isEmpty())

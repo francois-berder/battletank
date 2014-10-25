@@ -32,7 +32,8 @@ void Player::join(QString serverAddress)
     if(answer != "EXISTING_PLAYERS")
     {
         m_socket.disconnect();
-        // TODO: emit error
+        emit errorJoined(QString::fromStdString(answer));
+        return;
     }
     unsigned int nbPlayers;
     packet >> nbPlayers;
@@ -58,7 +59,8 @@ void Player::join(QString serverAddress)
     if(answer != "EXISTING_TEXT")
     {
         m_socket.disconnect();
-        // TODO: emit error
+        emit errorJoined(QString::fromStdString(answer));
+        return;
     }
     packet >> text;
     emit existingText(QString::fromStdString(text));

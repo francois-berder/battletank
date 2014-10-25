@@ -40,6 +40,7 @@ class ChatMenu : public QWidget
         void playerNotReady(QString pseudo);
         void reportGameLaunchStarted();
         void reportGameLaunchAborted(QString pseudo);
+        void reportErrorJoined(QString error);
 
     private :
 
