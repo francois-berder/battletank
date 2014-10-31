@@ -10,8 +10,9 @@
 #include "Utils.hpp"
 
 
-Tank::Tank(GameWorld &world, const EntityID id, const b2Vec2& startPos) :
+Tank::Tank(GameWorld &world, const EntityID id, const std::string& name, const b2Vec2& startPos) :
 CollidableEntity(world, id),
+m_name(name),
 m_health(100),
 m_body(nullptr, PhysicWorld::destroyBody),
 m_angularVelocity(0.f),
@@ -154,7 +155,7 @@ std::string Tank::print()
 	std::stringstream ss;
 	ss << "type:tank,";
 	ss << "health:";
-	ss << m_health;
+    ss << m_health;
 	ss << ",pos:{x:";
 	ss << pos.x;
 	ss << ",y:";
@@ -209,3 +210,7 @@ bool Tank::isDestroyed() const
     return m_health == 0;
 }
 
+std::string Tank::getName() const
+{
+    return m_name;
+}

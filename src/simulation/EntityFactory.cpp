@@ -21,14 +21,15 @@ EntityPtr EntityFactory::createFromName(const std::string &name,
 
 	if(name == "tank")
 	{
-		if(args.size() < 2)
+        if(args.size() < 3)
 			throw std::runtime_error(
 					"Not enough arguments given to create tank.\n");
-
+        std::string name = args.front();
+        args.pop_front();
 		float x = toFloat(args.front());
 		args.pop_front();
 		float y = toFloat(args.front());
-		return EntityPtr(new Tank(m_world, m_currentID, b2Vec2(x, y)));
+        return EntityPtr(new Tank(m_world, m_currentID, name, b2Vec2(x, y)));
 	}
 	else if(name == "obstacle")
 	{

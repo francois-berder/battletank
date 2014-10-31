@@ -10,7 +10,7 @@ class Tank : public CollidableEntity
 {
 	public:
 
-		Tank(GameWorld &world, const EntityID id, const b2Vec2& startPos);
+        Tank(GameWorld &world, const EntityID id, const std::string& name, const b2Vec2& startPos);
 
 		virtual void update();
 		virtual void applyChange(const Change &change);
@@ -22,9 +22,11 @@ class Tank : public CollidableEntity
 		virtual void handleCollision(Obstacle &b);
 
         bool isDestroyed() const;
+        std::string getName() const;
 
 	private:
 
+        std::string m_name;
 		int m_health;
 		std::unique_ptr<b2Body, void (*)(b2Body*)> m_body;
 		float m_angularVelocity;
