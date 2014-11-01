@@ -61,6 +61,5 @@ void GameMenu::start()
     // Setup the timer to trigger a refresh at specified framerate
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(repaint()));
     m_timer.start();
-    grabKeyboard();
 }
 
