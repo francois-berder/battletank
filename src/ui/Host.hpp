@@ -27,7 +27,9 @@ class Host : public QObject
 
     signals :
 
+        void created();
         void gameLaunched();
+        void errorListener();
 
     public slots :
 

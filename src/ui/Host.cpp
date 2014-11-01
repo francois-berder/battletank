@@ -32,7 +32,8 @@ void Host::stop()
         return;
 
     m_running = false;
-    m_thread.join();
+    if(m_thread.joinable())
+        m_thread.join();
 }
 
 bool Host::isRunning() const
@@ -60,8 +61,14 @@ void Host::launchGame()
 
 void Host::run()
 {
-    m_listener.listen(9999);
+    if(m_listener.listen(9999) != sf::Socket::Done)
+    {
+        emit errorListener();
+        return;
+    }
+
     m_selector.add(m_listener);
+    emit created();
 
     while(m_running)
     {

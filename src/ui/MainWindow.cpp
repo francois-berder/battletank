@@ -44,3 +44,4 @@ void MainWindow::createClient(QString pseudo, QString serverAddress)
     m_chatMenu->join(pseudo, serverAddress);
     setCurrentIndex(CHAT_MENU);
 }
+

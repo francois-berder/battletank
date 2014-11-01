@@ -44,6 +44,8 @@ class ChatMenu : public QWidget
         void reportGameLaunchStarted();
         void reportGameLaunchAborted(QString pseudo);
         void reportErrorJoined(QString error);
+        void reportErrorHostCreation();
+        void join2();
 
     private :
 
