@@ -31,6 +31,7 @@ MainWindow::~MainWindow()
     delete m_mainMenu;
     delete m_playMenu;
     delete m_chatMenu;
+    delete m_gameMenu;
 }
 
 void MainWindow::createServer(QString pseudo)
