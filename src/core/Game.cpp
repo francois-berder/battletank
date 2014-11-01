@@ -10,6 +10,7 @@
 Game::Game() :
 m_isInteractive(false),
 m_exit(false),
+m_isStarted(false),
 m_gameWorld(),
 m_view(),
 m_execFile(*this, m_gameWorld),
@@ -76,35 +77,39 @@ void Game::setOptions(std::list<Option>& options)
 
 void Game::update()
 {
-    m_gameWorld.step();
-    m_view.update(m_gameWorld.print());
+    if(m_isStarted)
+    {
+        proceedEvents();
+        m_gameWorld.step();
+        m_view.update(m_gameWorld.print());
+    }
 }
 
-void Game::init(sf::WindowHandle handle)
+void Game::initView(sf::WindowHandle handle)
 {
     m_view.init(handle);
+}
 
-    try
-    {
-        m_execFile.execute();
-    }
-    catch(std::exception &e)
-    {
-        Logger::error() << "Error while trying to execute a file. Reason: " << e.what() << ".\n";
-        exit();
-    }
-    
+void Game::startServer()
+{
+    m_server.startAcceptingClients();
+}
+
+void Game::join(const std::string serverAddress, const std::string playerName)
+{
     try
     {
         if(!m_disableClient)
-            m_client.connect(m_serverHostname);
+            m_client.connect(serverAddress, playerName);
     }
     catch(std::exception &e)
     {
         Logger::error() << "Error while trying to connect to server. Reason: " << e.what() << ".\n";
-        exit();
     }
+}
 
+void Game::start()
+{
     if(m_server.isRunning())
     {   
         m_server.stopAcceptingClients();
@@ -122,10 +127,13 @@ void Game::init(sf::WindowHandle handle)
 
     if(m_server.hasClients())
         m_server.start();
+
+    m_isStarted = true;
 }
 
 void Game::exit()
 {
+    m_isStarted = false;
 	m_exit = true;
 }
 

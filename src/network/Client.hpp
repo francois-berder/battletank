@@ -17,7 +17,7 @@ class Client
         Client();
         ~Client();
         
-        unsigned int connect(const std::string ipAddress);
+        unsigned int connect(const std::string ipAddress, const std::string name);
         void disconnect();
         
         bool pollEvent(NetworkEvent &evt);
@@ -25,6 +25,7 @@ class Client
 
         unsigned int getID() const;
         std::list<std::string> getWorld();
+        std::string getName() const;
 
     private :
         
@@ -40,6 +41,7 @@ class Client
         std::thread m_dataThread;
         bool m_isConnected;
         unsigned int m_id;
+        std::string m_name;
         std::queue<NetworkEvent> m_events;
         std::mutex m_eventsMutex;
         std::queue<NetworkEvent> m_toSendEvents;

@@ -26,6 +26,9 @@ class ChatMenu : public QWidget
     signals :
 
         void changeInterface(int);
+        void hostLaunchedGame();
+        void playerReceivedGameLaunch(QString, QString);
+        void gameStarted();
 
     private slots :
 

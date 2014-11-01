@@ -5,7 +5,6 @@
 #include "EntityViewer.hpp"
 #include "EntityParser.hpp"
 
-
 View::View():
 m_window(),
 m_disableUserInput(false),
@@ -47,7 +46,7 @@ void View::proceedEvents()
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		    m_events.push(EventType::Down);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		    m_events.push(EventType::Up);
+            m_events.push(EventType::Up);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && m_canShoot)
         {
 		    m_events.push(EventType::Shoot);

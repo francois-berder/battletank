@@ -20,7 +20,10 @@ class Game
         virtual ~Game();
 
 		void setOptions(std::list<Option>& options);
-        void init(sf::WindowHandle handle);
+        void initView(sf::WindowHandle handle);
+        void startServer();
+        void join(const std::string serverAddress, const std::string playerName);
+        void start();
 
         void update();
 
@@ -36,6 +39,7 @@ class Game
 
 		bool m_isInteractive;
 		bool m_exit;
+        bool m_isStarted;
 		GameWorld m_gameWorld;
 		View m_view;
         CommandFile m_execFile;

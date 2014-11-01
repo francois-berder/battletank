@@ -25,6 +25,7 @@ class Player : public QObject
         QString getPseudo() const;
 
         QString getIPAddress() const;
+        QString getHostIPAddress() const;
 
     signals :
 

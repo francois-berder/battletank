@@ -14,6 +14,7 @@ m_dataSocket(),
 m_dataThread(),
 m_isConnected(false),
 m_id(0),
+m_name(),
 m_events(),
 m_eventsMutex(),
 m_toSendEvents(),
@@ -28,8 +29,11 @@ Client::~Client()
     disconnect();
 }
 
-unsigned int Client::connect(const std::string ipAddress)
+
+
+unsigned int Client::connect(const std::string ipAddress, const std::string name)
 {
+    m_name = name;
     try
     {
         makeHandshake(ipAddress);
@@ -84,6 +88,7 @@ void Client::disconnect()
     m_controlThread.join();
     m_dataThread.join();
     m_id = 0;
+    m_name.clear();
     while(!m_events.empty())
         m_events.pop();
 
@@ -170,23 +175,23 @@ void Client::makeHandshake(const std::string &ipAddress)
     }
 
     sf::Packet packet;
-    packet << "REQUEST_JOIN";
+    packet << "REQUEST_JOIN" << m_name;
     if(initSocket.send(packet) != sf::Socket::Done)
         throw std::runtime_error("Could not do handshake with server");
     packet.clear();
-    
+
     if(initSocket.receive(packet) != sf::Socket::Done)
         throw std::runtime_error("Could not do handshake with server");
-    std::string str;
-    packet >> str >> m_id;
-    if(str != "JOIN")
+    std::string str, name;
+    packet >> str >> name >> m_id;
+    if(str != "JOIN" || m_name != name)
         throw std::runtime_error("Protocol error from server");
     packet.clear();
-    
+
     packet << "ACCEPT_JOIN" << m_id;
     if(initSocket.send(packet) != sf::Socket::Done)
         throw std::runtime_error("Could not do handshake with server");
-        
+
     initSocket.disconnect();
 }
 
@@ -271,4 +276,7 @@ std::list<std::string> Client::getWorld()
     return initCommands;
 }
 
-
+std::string Client::getName() const
+{
+    return m_name;
+}

@@ -1,7 +1,7 @@
 #include <QTimer>
-#include <list>
 #include <string>
 #include "GameMenu.hpp"
+#include <iostream>
 
 
 GameMenu::GameMenu(QWidget *parent):
@@ -19,11 +19,6 @@ m_initialized(false)
 
     // Achieve 60 FPS
     m_timer.setInterval(17);
-
-    std::list<std::string> args;
-    args.push_back("--disable-network-client");
-    std::list<Option> options = Option::parse(args);
-    m_game.setOptions(options);
 }
 
 GameMenu::~GameMenu()
@@ -35,11 +30,7 @@ void GameMenu::showEvent(QShowEvent*)
 {
     if (!m_initialized)
     {
-        m_game.init(winId());
-
-        // Setup the timer to trigger a refresh at specified framerate
-        connect(&m_timer, SIGNAL(timeout()), this, SLOT(repaint()));
-        m_timer.start();
+        m_game.initView(winId());
         m_initialized = true;
     }
 }
@@ -52,4 +43,27 @@ QPaintEngine* GameMenu::paintEngine() const
 void GameMenu::paintEvent(QPaintEvent*)
 {
     m_game.update();
+}
+
+void GameMenu::host()
+{
+    m_game.startServer();
+}
+
+void GameMenu::join(QString serverAddress, QString pseudo)
+{
+    m_game.join(serverAddress.toStdString(), pseudo.toStdString());
+}
+
+void GameMenu::start()
+{
+    m_game.start();
+    // Setup the timer to trigger a refresh at specified framerate
+    connect(&m_timer, SIGNAL(timeout()), this, SLOT(repaint()));
+    m_timer.start();
+    grabKeyboard();
+}
+
+void GameMenu::keyPressEvent(QKeyEvent * event)
+{
 }

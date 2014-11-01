@@ -5,7 +5,7 @@
 #include "Logger.hpp"
 
 TextureManager::TextureManager() :
-rootDir("media/textures/"),
+rootDir("../../media/textures/"),
 m_textures()
 {
 }

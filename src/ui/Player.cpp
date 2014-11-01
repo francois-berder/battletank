@@ -1,3 +1,4 @@
+#include <QThread>
 #include "Player.hpp"
 
 Player::Player():
@@ -181,6 +182,10 @@ void Player::handleData(sf::Packet &packet)
     else if(cmdName == "LAUNCH_GAME")
     {
         m_gameLaunchStarted = true;
+
+        // Wait 100ms to ensure that server is running
+        // before the client of the host tries to connect
+        QThread::msleep(100);
         emit gameLaunchStarted();
     }
     else if(cmdName == "ABORT_LAUNCH")
@@ -210,4 +215,9 @@ QString Player::getIPAddress() const
     if(ipAddress.toString() == "0.0.0.0")
         return "127.0.0.1";
     return ipAddress.toString().c_str();
+}
+
+QString Player::getHostIPAddress() const
+{
+    return QString::fromStdString(m_socket.getRemoteAddress().toString());
 }

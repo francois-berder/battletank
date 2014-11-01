@@ -40,7 +40,7 @@ m_data()
     QObject::connect(&m_player, SIGNAL(gameLaunchStarted()), this, SLOT(reportGameLaunchStarted()));
     QObject::connect(&m_player, SIGNAL(gameLaunchAborted(QString)), this, SLOT(reportGameLaunchAborted(QString)));
     QObject::connect(&m_player, SIGNAL(errorJoined(QString)), this, SLOT(reportErrorJoined(QString)));
-
+    QObject::connect(&m_host, SIGNAL(gameLaunched()), this, SIGNAL(hostLaunchedGame()));
 }
 
 ChatMenu::~ChatMenu()
@@ -200,12 +200,17 @@ void ChatMenu::changePlayerReady(QString pseudo, bool isReady)
 }
 
 void ChatMenu::reportGameLaunchStarted()
-{
+{   
+    emit playerReceivedGameLaunch(m_player.getHostIPAddress(), m_player.getPseudo());
+
     LaunchGameDialog dialog;
     QObject::connect(&m_player, SIGNAL(gameLaunchAborted(QString)), &dialog, SLOT(close()));
     int ret = dialog.exec();
     if(ret == QDialog::Accepted)
+    {
+        emit gameStarted();
         emit changeInterface(GAME_MENU);
+    }
     else
         m_player.abortLaunch();
 }

@@ -19,6 +19,9 @@ m_gameMenu(new GameMenu(this))
     QObject::connect(m_mainMenu, SIGNAL(changeInterface(int)), this, SLOT(setCurrentIndex(int)));
     QObject::connect(m_playMenu, SIGNAL(changeInterface(int)), this, SLOT(setCurrentIndex(int)));
     QObject::connect(m_chatMenu, SIGNAL(changeInterface(int)), this, SLOT(setCurrentIndex(int)));
+    QObject::connect(m_chatMenu, SIGNAL(gameStarted()), m_gameMenu, SLOT(start()));
+    QObject::connect(m_chatMenu, SIGNAL(hostLaunchedGame()), m_gameMenu, SLOT(host()));
+    QObject::connect(m_chatMenu, SIGNAL(playerReceivedGameLaunch(QString, QString)), m_gameMenu, SLOT(join(QString, QString)));
     QObject::connect(m_playMenu, SIGNAL(createServer(QString)), this, SLOT(createServer(QString)));
     QObject::connect(m_playMenu, SIGNAL(createClient(QString, QString)), this, SLOT(createClient(QString, QString)));
 }

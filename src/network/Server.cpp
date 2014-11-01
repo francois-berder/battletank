@@ -16,6 +16,7 @@ m_data(false),
 m_running(false),
 m_id(1),
 m_clients(),
+m_clientNames(),
 m_selector(),
 m_clientMutex(),
 m_sendWorld(false),
@@ -83,6 +84,7 @@ void Server::stop()
     m_controlThread.join();
     m_dataThread.join();
     m_clients.clear();
+    m_clientNames.clear();
     m_selector.clear();
 
     Logger::info() << "Server stopped.\n";
@@ -90,17 +92,16 @@ void Server::stop()
 
 void Server::initWorld()
 {
+    for(auto& c : m_clientNames)
     {
-        std::lock_guard<std::mutex> lock(m_clientMutex);
-        for(auto& c : m_clients)
-        {
-            std::stringstream ss;
-            ss << "a new tank ";
-            ss << c.first * 2;
-            ss << " ";
-            ss << 5;
-            m_world.push_back(ss.str());
-        }
+        std::stringstream ss;
+        ss << "a new tank ";
+        ss << c.first;
+        ss << " ";
+        ss << c.second * 3;
+        ss << " ";
+        ss << 5;
+        m_world.push_back(ss.str());
     }
 
     m_world.push_back("a new obstacle 10 11");
@@ -133,18 +134,18 @@ void Server::runInit()
             continue;
         }
         // TODO: Should handle case: ret == sf::Socket::Disconnected
+        std::string clientName;
         try
         {
-            makeHandshake(initClientSocket);
-
+            makeHandshake(initClientSocket, clientName);
         }
         catch(std::exception &e)
         {
             Logger::error() << "Handshake failed with client. " << e.what() << '\n';
         }
-        addClient(m_id); // TODO: Handle exceptions
+        addClient(m_id, clientName); // TODO: Handle exceptions
         
-        Logger::info() << "New player (id=" << m_id << ") from " << initClientSocket.getRemoteAddress().toString() << '\n';
+        Logger::info() << "New player: " << clientName << " (id=" << m_id << ") from " << initClientSocket.getRemoteAddress().toString() << '\n';
         initClientSocket.disconnect();
 
         ++m_id;
@@ -152,13 +153,13 @@ void Server::runInit()
     listener.close();
 }
 
-void Server::makeHandshake(sf::TcpSocket &socket)
+void Server::makeHandshake(sf::TcpSocket &socket, std::string &clientName)
 {
     std::string str;
     sf::Packet packet;
     if(socket.receive(packet) != sf::Socket::Done)
         throw std::runtime_error("Could not receive data from client");
-    packet >> str;
+    packet >> str >> clientName;
     if(str != "REQUEST_JOIN")
     {
         packet.clear();
@@ -169,7 +170,7 @@ void Server::makeHandshake(sf::TcpSocket &socket)
     }
     
     packet.clear();
-    packet << "JOIN" << m_id;
+    packet << "JOIN" << clientName << m_id;
     if(socket.send(packet) != sf::Socket::Done)
         throw std::runtime_error("Could not send data to client");
     packet.clear();
@@ -188,7 +189,7 @@ void Server::makeHandshake(sf::TcpSocket &socket)
     }
 }
 
-void Server::addClient(const unsigned int clientID)
+void Server::addClient(const unsigned int clientID, const std::string& clientName)
 {
     unsigned short port = static_cast<unsigned short>(Server::getControlPort() + clientID);
     sf::TcpListener listener;
@@ -207,6 +208,7 @@ void Server::addClient(const unsigned int clientID)
     {
         std::lock_guard<std::mutex> lock(m_clientMutex);
         m_clients[clientID] = std::move(clientSocket);
+        m_clientNames[clientName] = clientID;
         m_selector.add(*m_clients[clientID]);
     }
 
@@ -373,5 +375,3 @@ unsigned short Server::getDataPort()
 {
     return 29999;
 }
-
-

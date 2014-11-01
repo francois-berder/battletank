@@ -25,6 +25,10 @@ class Host : public QObject
 
         bool isRunning() const;
 
+    signals :
+
+        void gameLaunched();
+
     public slots :
 
         void launchGame();

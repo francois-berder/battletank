@@ -32,8 +32,8 @@ class Server
     private :
     
         void runInit();
-        void makeHandshake(sf::TcpSocket &socket);
-        void addClient(const unsigned int clientID);
+        void makeHandshake(sf::TcpSocket &socket, std::string &clientName);
+        void addClient(const unsigned int clientID, const std::string& clientName);
         
         void runControl();
         
@@ -49,6 +49,7 @@ class Server
         bool m_running;
         unsigned int m_id;
         std::map<unsigned int, std::unique_ptr<sf::TcpSocket>> m_clients;
+        std::map<std::string, unsigned int> m_clientNames;
         sf::SocketSelector m_selector;
         std::mutex m_clientMutex;
         bool m_sendWorld;

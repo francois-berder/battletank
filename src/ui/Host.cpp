@@ -54,6 +54,8 @@ void Host::launchGame()
         itor != m_sockets.end();
         ++itor)
         itor.value()->send(packet);
+
+    emit gameLaunched();
 }
 
 void Host::run()
