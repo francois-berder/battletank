@@ -25,7 +25,6 @@ class GameMenu : public QWidget
         void start();
 
     private :
-        virtual void keyPressEvent(QKeyEvent * event);
 
         Game m_game;
         QTimer m_timer;

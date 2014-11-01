@@ -43,7 +43,6 @@ m_data()
     QObject::connect(&m_host, SIGNAL(created()), this, SLOT(join2()));
     QObject::connect(&m_host, SIGNAL(gameLaunched()), this, SIGNAL(hostLaunchedGame()));
     QObject::connect(&m_host, SIGNAL(errorListener()), this, SLOT(reportErrorHostCreation()));
-
 }
 
 ChatMenu::~ChatMenu()

@@ -64,6 +64,3 @@ void GameMenu::start()
     grabKeyboard();
 }
 
-void GameMenu::keyPressEvent(QKeyEvent * event)
-{
-}
