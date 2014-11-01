@@ -20,7 +20,15 @@ JoinDialog::~JoinDialog()
 void JoinDialog::accept()
 {
     if(ui->pseudo->text().isEmpty())
-        QMessageBox::critical(this, "Invalid pseudo", "Your need to enter a valid pseudo.");
+    {
+        QMessageBox::critical(this, "Invalid pseudo", "Your need to enter a pseudo.");
+        return;
+    }
+    if(ui->serverAddress->text().isEmpty())
+    {
+        QMessageBox::critical(this, "Invalid server address", "Your need to enter a server address.");
+        return;
+    }
 
     // Ping to server
     sf::TcpSocket socket;
