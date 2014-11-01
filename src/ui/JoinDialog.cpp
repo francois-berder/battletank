@@ -24,7 +24,7 @@ void JoinDialog::accept()
 
     // Ping to server
     sf::TcpSocket socket;
-    if(socket.connect(ui->serverAddress->text().toStdString(), 9999) == sf::Socket::Done)
+    if(socket.connect(ui->serverAddress->text().toStdString(), 9999, sf::seconds(2.f)) == sf::Socket::Done)
     {
         sf::Packet packet;
         packet << "PING_GAME" << ui->pseudo->text().toStdString();
