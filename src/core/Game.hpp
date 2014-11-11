@@ -21,13 +21,14 @@ class Game
 
 		void setOptions(std::list<Option>& options);
         void initView(sf::WindowHandle handle);
-        void startServer();
-        void join(const std::string serverAddress, const std::string playerName);
-        void start();
+        void initWorld();
 
         void update();
 
 		void exit();
+
+        Server& getServer();
+        Client& getClient();
 
 	private:
 
@@ -39,7 +40,6 @@ class Game
 
 		bool m_isInteractive;
 		bool m_exit;
-        bool m_isStarted;
 		GameWorld m_gameWorld;
 		View m_view;
         CommandFile m_execFile;

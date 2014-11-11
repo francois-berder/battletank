@@ -17,13 +17,16 @@ m_gameMenu(new GameMenu(this))
     insertWidget(GAME_MENU, m_gameMenu);
 
     QObject::connect(m_mainMenu, SIGNAL(changeInterface(int)), this, SLOT(setCurrentIndex(int)));
+
     QObject::connect(m_playMenu, SIGNAL(changeInterface(int)), this, SLOT(setCurrentIndex(int)));
+    QObject::connect(m_playMenu, SIGNAL(createServer(QString)), this, SLOT(createChatServer(QString)));
+    QObject::connect(m_playMenu, SIGNAL(createClient(QString, QString)), this, SLOT(createChatClient(QString, QString)));
+
     QObject::connect(m_chatMenu, SIGNAL(changeInterface(int)), this, SLOT(setCurrentIndex(int)));
-    QObject::connect(m_chatMenu, SIGNAL(gameStarted()), m_gameMenu, SLOT(start()));
-    QObject::connect(m_chatMenu, SIGNAL(hostLaunchedGame()), m_gameMenu, SLOT(host()));
-    QObject::connect(m_chatMenu, SIGNAL(playerReceivedGameLaunch(QString, QString)), m_gameMenu, SLOT(join(QString, QString)));
-    QObject::connect(m_playMenu, SIGNAL(createServer(QString)), this, SLOT(createServer(QString)));
-    QObject::connect(m_playMenu, SIGNAL(createClient(QString, QString)), this, SLOT(createClient(QString, QString)));
+    QObject::connect(m_chatMenu, SIGNAL(createServer(QList<QString>,QString)), this, SLOT(createGameServer(QList<QString>, QString)));
+    QObject::connect(m_chatMenu, SIGNAL(createClient(QString, QString)), this, SLOT(createGameClient(QString, QString)));
+
+    QObject::connect(m_gameMenu, SIGNAL(changeInterface(int)), this, SLOT(setCurrentIndex(int)));
 }
 
 MainWindow::~MainWindow()
@@ -34,15 +37,26 @@ MainWindow::~MainWindow()
     delete m_gameMenu;
 }
 
-void MainWindow::createServer(QString pseudo)
+void MainWindow::createChatServer(QString pseudo)
 {
     m_chatMenu->host(pseudo);
     setCurrentIndex(CHAT_MENU);
 }
 
-void MainWindow::createClient(QString pseudo, QString serverAddress)
+void MainWindow::createChatClient(QString serverAddress, QString pseudo)
 {
-    m_chatMenu->join(pseudo, serverAddress);
+    m_chatMenu->join(serverAddress, pseudo);
     setCurrentIndex(CHAT_MENU);
 }
 
+void MainWindow::createGameServer(QList<QString> clientPseudos, QString pseudo)
+{
+    m_gameMenu->host(clientPseudos, pseudo);
+    setCurrentIndex(GAME_MENU);
+}
+
+void MainWindow::createGameClient(QString serverAddress, QString pseudo)
+{
+    m_gameMenu->join(serverAddress, pseudo);
+    setCurrentIndex(GAME_MENU);
+}

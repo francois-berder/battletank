@@ -24,6 +24,7 @@ class Host : public QObject
         void stop();
 
         bool isRunning() const;
+        QList<QString> getPlayersNames() const;
 
     signals :
 

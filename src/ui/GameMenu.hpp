@@ -18,13 +18,18 @@ class GameMenu : public QWidget
         virtual QPaintEngine* paintEngine() const;
         virtual void paintEvent(QPaintEvent*);
 
+    signals :
+
+        void changeInterface(int);
+
     public slots :
 
-        void host();
+        void host(QList<QString> clients, QString pseudo);
         void join(QString serverAddress, QString pseudo);
-        void start();
 
     private :
+
+        void startGame();
 
         Game m_game;
         QTimer m_timer;

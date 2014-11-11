@@ -303,3 +303,7 @@ void Host::handleData(QString pseudo, sf::TcpSocket &socket)
     }
 }
 
+QList<QString> Host::getPlayersNames() const
+{
+    return m_sockets.keys();
+}

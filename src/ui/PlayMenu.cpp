@@ -31,7 +31,7 @@ void PlayMenu::connectToServer()
     JoinDialog dialog;
     int ret = dialog.exec();
     if(ret == QDialog::Accepted)
-        emit createClient(dialog.getPseudo(), dialog.getServerAddress());
+        emit createClient(dialog.getServerAddress(), dialog.getPseudo());
 }
 
 void PlayMenu::hostGame()

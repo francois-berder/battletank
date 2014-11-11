@@ -1,8 +1,10 @@
 #include <QTimer>
+#include <QThread>
+#include <QMessageBox>
+#include <list>
 #include <string>
 #include "GameMenu.hpp"
-#include <iostream>
-
+#include "Menu.hpp"
 
 GameMenu::GameMenu(QWidget *parent):
 QWidget(parent),
@@ -30,8 +32,12 @@ void GameMenu::showEvent(QShowEvent*)
 {
     if (!m_initialized)
     {
-        m_game.initView(winId());
         m_initialized = true;
+
+        m_game.initView(winId());
+
+        // Setup the timer to trigger a refresh at specified framerate
+        connect(&m_timer, SIGNAL(timeout()), this, SLOT(repaint()));
     }
 }
 
@@ -45,21 +51,45 @@ void GameMenu::paintEvent(QPaintEvent*)
     m_game.update();
 }
 
-void GameMenu::host()
+void GameMenu::host(QList<QString> clients, QString pseudo)
 {
-    m_game.startServer();
+    Server &server = m_game.getServer();
+    Client &client  = m_game.getClient();
+
+    try
+    {
+        // Convert Qt list of string to std list of string
+        std::list<std::string> clientNames;
+        for(QList<QString>::iterator itor = clients.begin();
+            itor != clients.end();
+            ++itor)
+            clientNames.push_back(itor->toStdString());
+
+        server.startAcceptingClients(clientNames);
+        client.connect("localhost", pseudo.toStdString());
+        server.waitUntilAllClientsConnected(2.f);
+
+        server.start();
+
+        startGame();
+    }
+    catch(std::exception &e)
+    {
+        QMessageBox::critical(this, "Error while starting game", QString::fromStdString(e.what()));
+        m_timer.stop();
+        emit changeInterface(CHAT_MENU);
+    }
 }
 
 void GameMenu::join(QString serverAddress, QString pseudo)
 {
-    m_game.join(serverAddress.toStdString(), pseudo.toStdString());
+    QThread::msleep(100);
+    m_game.getClient().connect(serverAddress.toStdString(), pseudo.toStdString());
+    startGame();
 }
 
-void GameMenu::start()
+void GameMenu::startGame()
 {
-    m_game.start();
-    // Setup the timer to trigger a refresh at specified framerate
-    connect(&m_timer, SIGNAL(timeout()), this, SLOT(repaint()));
+    m_game.initWorld();
     m_timer.start();
 }
-

@@ -19,8 +19,10 @@ class MainWindow : public QStackedWidget
 
     private slots :
 
-        void createServer(QString);
-        void createClient(QString, QString);
+        void createChatServer(QString pseudo);
+        void createChatClient(QString serverAddress, QString pseudo);
+        void createGameServer(QList<QString> clientPseudos, QString pseudo);
+        void createGameClient(QString serverAddress, QString pseudo);
 
     private :
 

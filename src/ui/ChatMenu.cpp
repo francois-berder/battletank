@@ -41,7 +41,6 @@ m_data()
     QObject::connect(&m_player, SIGNAL(gameLaunchAborted(QString)), this, SLOT(reportGameLaunchAborted(QString)));
     QObject::connect(&m_player, SIGNAL(errorJoined(QString)), this, SLOT(reportErrorJoined(QString)));
     QObject::connect(&m_host, SIGNAL(created()), this, SLOT(join2()));
-    QObject::connect(&m_host, SIGNAL(gameLaunched()), this, SIGNAL(hostLaunchedGame()));
     QObject::connect(&m_host, SIGNAL(errorListener()), this, SLOT(reportErrorHostCreation()));
 }
 
@@ -59,7 +58,7 @@ void ChatMenu::host(QString pseudo)
 }
 
 // Join if host is not running
-void ChatMenu::join(QString pseudo, QString serverAddress)
+void ChatMenu::join(QString serverAddress, QString pseudo)
 {
     m_player.setPseudo(pseudo);
     m_player.join(serverAddress);
@@ -204,15 +203,15 @@ void ChatMenu::changePlayerReady(QString pseudo, bool isReady)
 
 void ChatMenu::reportGameLaunchStarted()
 {   
-    emit playerReceivedGameLaunch(m_player.getHostIPAddress(), m_player.getPseudo());
-
     LaunchGameDialog dialog;
     QObject::connect(&m_player, SIGNAL(gameLaunchAborted(QString)), &dialog, SLOT(close()));
     int ret = dialog.exec();
     if(ret == QDialog::Accepted)
     {
-        emit gameStarted();
-        emit changeInterface(GAME_MENU);
+        if(m_host.isRunning())
+            emit createServer(m_host.getPlayersNames(), m_player.getPseudo());
+        else
+            emit createClient(m_player.getHostIPAddress(), m_player.getPseudo());
     }
     else
         m_player.abortLaunch();

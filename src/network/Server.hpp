@@ -14,30 +14,26 @@ class Server
         Server();
         ~Server();
         
-        void startAcceptingClients();
-        void stopAcceptingClients();
+        void startAcceptingClients(std::list<std::string> clientNames);
+        void waitUntilAllClientsConnected(const float timeout);
 
         void start();
         void stop();
         
-        void initWorld();
-
         static unsigned short getInitPort();
         static unsigned short getControlPort();
         static unsigned short getDataPort();
 
-        bool isRunning() const;
-        bool hasClients() const;
-
     private :
     
-        void runInit();
         void makeHandshake(sf::TcpSocket &socket, std::string &clientName);
         void addClient(const unsigned int clientID, const std::string& clientName);
         
+        void runInit();
         void runControl();
-        
         void runData();
+
+        void createWorld();
         
         std::thread m_initThread;
         std::thread m_controlThread;
@@ -49,10 +45,10 @@ class Server
         bool m_running;
         unsigned int m_id;
         std::map<unsigned int, std::unique_ptr<sf::TcpSocket>> m_clients;
-        std::map<std::string, unsigned int> m_clientNames;
+        std::list<std::string> m_clientNames;
+        sf::TcpListener m_initListener;
         sf::SocketSelector m_selector;
         std::mutex m_clientMutex;
-        bool m_sendWorld;
         std::list<std::string> m_world;
 };
 

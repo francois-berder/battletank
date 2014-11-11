@@ -17,47 +17,118 @@ m_running(false),
 m_id(1),
 m_clients(),
 m_clientNames(),
+m_initListener(),
 m_selector(),
 m_clientMutex(),
-m_sendWorld(false),
 m_world()
 {
 }
 
 Server::~Server()
 {
-    stopAcceptingClients();
     stop();
 }
 
-void Server::startAcceptingClients()
+void Server::startAcceptingClients(std::list<std::string> clientNames)
 {
-    if(m_running)
-        return;
+    m_clientNames = clientNames;
 
-    m_running = true;
+    // reset id counter
     m_id = 1;
-    m_acceptClients = true;
-    m_control = true;
-    std::thread init(&Server::runInit, this);
-    m_initThread.swap(init);
-    std::thread control(&Server::runControl, this);
-    m_controlThread.swap(control);
 
-    Logger::info() << "Server starts accepting clients.\n";
+    // create world
+    createWorld();
+
+    m_initListener.close();
+    unsigned short port = Server::getInitPort();
+    if(m_initListener.listen(port) != sf::Socket::Done)
+    {
+        std::stringstream ss;
+        ss << "Could not listen on port " << port;
+        throw std::runtime_error(ss.str());
+    }
+    Logger::info() << "Listening for incoming players on port " << port << ".\n";
+
+    m_acceptClients = true;
+    std::thread t(&Server::runInit, this);
+    m_initThread.swap(t);
 }
 
-void Server::stopAcceptingClients()
+void Server::runInit()
 {
-    if(!m_acceptClients || !m_running)
-        return;
-    
+    sf::SocketSelector selector;
+    selector.add(m_initListener);
+
+    while(m_acceptClients)
+    {
+        if(selector.wait(sf::milliseconds(20)))
+        {
+            if(selector.isReady(m_initListener))
+            {
+                sf::TcpSocket initClientSocket;
+                sf::Socket::Status ret = m_initListener.accept(initClientSocket);
+                if(ret != sf::Socket::Done)
+                    continue;
+
+                std::string clientName;
+                try
+                {
+                    makeHandshake(initClientSocket, clientName);
+                }
+                catch(std::exception &e)
+                {
+                    Logger::error() << "Handshake failed with client. " << e.what() << '\n';
+                }
+                addClient(m_id, clientName); // TODO: Handle exceptions
+
+                Logger::info() << "New player: " << clientName << " (id=" << m_id << ") from " << initClientSocket.getRemoteAddress().toString() << '\n';
+                initClientSocket.disconnect();
+                ++m_id;
+            }
+        }
+    }
+}
+
+// clientNames: list of pseudo of all clients that should join this game.
+// timout in seconds
+void Server::waitUntilAllClientsConnected(const float timeout)
+{
+    std::list<std::string> clientsNotConnected = m_clientNames;
+
+    sf::Clock clock;
+
+    /* Wait for incoming clients until:
+     * _ timeout
+     * or
+     * _ all clients are connected
+     */
+    while(clock.getElapsedTime().asSeconds() < timeout && !clientsNotConnected.empty())
+    {
+        sf::sleep(sf::milliseconds(50));
+
+        {
+            std::lock_guard<std::mutex> lock(m_clientMutex);
+            for(auto& c : m_clientNames)
+            {
+                std::list<std::string>::iterator itor;
+                for(itor = clientsNotConnected.begin();
+                    itor != clientsNotConnected.end();
+                    ++itor)
+                    if(*itor == c)
+                    {
+                        clientsNotConnected.erase(itor);
+                        break;
+                    }
+            }
+        }
+    }
+
     m_acceptClients = false;
     m_initThread.join();
-    m_sendWorld = false;
-    m_world.clear();
-    m_running = false;
-    Logger::info() << "Server stops accepting clients.\n";
+
+    m_initListener.close();
+    if(!clientsNotConnected.empty())
+        throw std::runtime_error("Timeout. Not all clients are connected");
 }
 
 void Server::start()
@@ -84,73 +155,31 @@ void Server::stop()
     m_controlThread.join();
     m_dataThread.join();
     m_clients.clear();
-    m_clientNames.clear();
     m_selector.clear();
 
     Logger::info() << "Server stopped.\n";
 }
 
-void Server::initWorld()
+// Precompute world from list of clients
+void Server::createWorld()
 {
+    m_world.clear();
+    int i = 0;
     for(auto& c : m_clientNames)
     {
         std::stringstream ss;
         ss << "a new tank ";
-        ss << c.first;
+        ss << c;
         ss << " ";
-        ss << c.second * 3;
+        ss << i * 3;
         ss << " ";
         ss << 5;
         m_world.push_back(ss.str());
+        ++i;
     }
 
     m_world.push_back("a new obstacle 10 11");
     m_world.push_back("a new obstacle 10 10");
-
-    m_sendWorld = true;
-}
-
-void Server::runInit()
-{
-    sf::TcpListener listener;
-    unsigned short port = Server::getInitPort();
-    if(listener.listen(port) != sf::Socket::Done)
-    {
-        std::stringstream ss;
-        ss << "Could not listen on port " << port;
-        throw std::runtime_error(ss.str());
-    }
-    Logger::info() << "Listening for incoming connections on port " << port << ".\n";
-    listener.setBlocking(false);    
-    while(m_acceptClients)
-    {
-        sf::TcpSocket initClientSocket;
-        sf::Socket::Status ret = listener.accept(initClientSocket);
-        if(ret == sf::Socket::NotReady)
-            continue;
-        if(ret == sf::Socket::Error)
-        {
-            Logger::warning() << "Failed to accept incoming client.\n";
-            continue;
-        }
-        // TODO: Should handle case: ret == sf::Socket::Disconnected
-        std::string clientName;
-        try
-        {
-            makeHandshake(initClientSocket, clientName);
-        }
-        catch(std::exception &e)
-        {
-            Logger::error() << "Handshake failed with client. " << e.what() << '\n';
-        }
-        addClient(m_id, clientName); // TODO: Handle exceptions
-        
-        Logger::info() << "New player: " << clientName << " (id=" << m_id << ") from " << initClientSocket.getRemoteAddress().toString() << '\n';
-        initClientSocket.disconnect();
-
-        ++m_id;
-    }
-    listener.close();
 }
 
 void Server::makeHandshake(sf::TcpSocket &socket, std::string &clientName)
@@ -189,6 +218,7 @@ void Server::makeHandshake(sf::TcpSocket &socket, std::string &clientName)
     }
 }
 
+//TODO: to change this
 void Server::addClient(const unsigned int clientID, const std::string& clientName)
 {
     unsigned short port = static_cast<unsigned short>(Server::getControlPort() + clientID);
@@ -208,10 +238,8 @@ void Server::addClient(const unsigned int clientID, const std::string& clientNam
     {
         std::lock_guard<std::mutex> lock(m_clientMutex);
         m_clients[clientID] = std::move(clientSocket);
-        m_clientNames[clientName] = clientID;
         m_selector.add(*m_clients[clientID]);
     }
-
 }
 
 void Server::runControl()
@@ -256,6 +284,7 @@ void Server::runControl()
                 }
             }
         }
+        /*
         if(m_sendWorld)
         {
             sf::Packet packet;
@@ -273,7 +302,7 @@ void Server::runControl()
             }
             m_sendWorld = false;
             Logger::info() << "Sent world to clients.\n";
-        }
+        }*/
     }
 
     {
@@ -349,16 +378,6 @@ void Server::runData()
     }
     for(auto &c : recvSockets)
         c.second->unbind();
-}
-
-bool Server::isRunning() const
-{
-    return m_running;
-}
-
-bool Server::hasClients() const
-{
-    return m_id != 1;
 }
 
 unsigned short Server::getInitPort()

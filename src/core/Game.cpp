@@ -10,7 +10,6 @@
 Game::Game() :
 m_isInteractive(false),
 m_exit(false),
-m_isStarted(false),
 m_gameWorld(),
 m_view(),
 m_execFile(*this, m_gameWorld),
@@ -66,8 +65,6 @@ void Game::setOptions(std::list<Option>& options)
             std::string replayFileName = opt.getValue().c_str();
             m_replayFile.open(replayFileName);
         }
-        else if(opt == "--run-server")
-            m_server.startAcceptingClients();
         else if(opt == "--disable-network-client")
             m_disableClient = true;
         else if(opt == "--server-address")
@@ -77,12 +74,9 @@ void Game::setOptions(std::list<Option>& options)
 
 void Game::update()
 {
-    if(m_isStarted)
-    {
-        proceedEvents();
-        m_gameWorld.step();
-        m_view.update(m_gameWorld.print());
-    }
+    proceedEvents();
+    m_gameWorld.step();
+    m_view.update(m_gameWorld.print());
 }
 
 void Game::initView(sf::WindowHandle handle)
@@ -90,31 +84,8 @@ void Game::initView(sf::WindowHandle handle)
     m_view.init(handle);
 }
 
-void Game::startServer()
+void Game::initWorld()
 {
-    m_server.startAcceptingClients();
-}
-
-void Game::join(const std::string serverAddress, const std::string playerName)
-{
-    try
-    {
-        if(!m_disableClient)
-            m_client.connect(serverAddress, playerName);
-    }
-    catch(std::exception &e)
-    {
-        Logger::error() << "Error while trying to connect to server. Reason: " << e.what() << ".\n";
-    }
-}
-
-void Game::start()
-{
-    if(m_server.isRunning())
-    {   
-        m_server.stopAcceptingClients();
-        m_server.initWorld();
-    }
     if(!m_disableClient)
     {
         std::list<std::string> initCmds = m_client.getWorld();
@@ -124,16 +95,10 @@ void Game::start()
             cmd->execute();
         }
     }
-
-    if(m_server.hasClients())
-        m_server.start();
-
-    m_isStarted = true;
 }
 
 void Game::exit()
 {
-    m_isStarted = false;
 	m_exit = true;
 }
 
@@ -221,3 +186,12 @@ void Game::proceedNetworkEvents()
 	}
 }
 
+Server& Game::getServer()
+{
+    return m_server;
+}
+
+Client& Game::getClient()
+{
+    return m_client;
+}

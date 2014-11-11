@@ -21,14 +21,13 @@ class ChatMenu : public QWidget
         virtual ~ChatMenu();
 
         void host(QString pseudo);
-        void join(QString pseudo, QString serverAddress);
+        void join(QString serverAddress, QString pseudo);
 
     signals :
 
         void changeInterface(int);
-        void hostLaunchedGame();
-        void playerReceivedGameLaunch(QString, QString);
-        void gameStarted();
+        void createServer(QList<QString>, QString);
+        void createClient(QString, QString);
 
     private slots :
 
