@@ -19,8 +19,7 @@ m_events(),
 m_eventsMutex(),
 m_toSendEvents(),
 m_toSendEventsMutex(),
-m_initCommands(),
-m_initCommandsMutex()
+m_world()
 {
 }
 
@@ -146,14 +145,13 @@ void Client::runControl()
         }
         else if(cmd == "INIT_WORLD")
         {
-            std::lock_guard<std::mutex> lock(m_initCommandsMutex);
             unsigned int nbCmds;
             packet >> nbCmds;
             while(nbCmds > 0)
             {
                 std::string str;
                 packet >> str;
-                m_initCommands.push_back(str);
+                m_world.push_back(str);
                 --nbCmds;
             }
         }
@@ -257,23 +255,7 @@ unsigned int Client::getID() const
 
 std::list<std::string> Client::getWorld()
 {
-    m_initCommandsMutex.lock();
-    std::size_t size = m_initCommands.size();
-    m_initCommandsMutex.unlock();
-    while(size == 0)
-    {
-        m_initCommandsMutex.lock();
-        size = m_initCommands.size();
-        m_initCommandsMutex.unlock();
-    }
-
-    Logger::info() << "Received world.\n";
-
-    m_initCommandsMutex.lock();
-    std::list<std::string> initCommands = m_initCommands;
-    m_initCommandsMutex.unlock();
-
-    return initCommands;
+    return m_world;
 }
 
 std::string Client::getName() const

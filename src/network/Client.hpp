@@ -46,8 +46,7 @@ class Client
         std::mutex m_eventsMutex;
         std::queue<NetworkEvent> m_toSendEvents;
         std::mutex m_toSendEventsMutex;
-        std::list<std::string> m_initCommands;
-        std::mutex m_initCommandsMutex;
+        std::list<std::string> m_world;
 };
 
 #endif /* __CLIENT_H__ */

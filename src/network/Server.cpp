@@ -81,6 +81,8 @@ void Server::runInit()
                 }
                 addClient(m_id, clientName); // TODO: Handle exceptions
 
+                sendWorld(m_id);
+
                 Logger::info() << "New player: " << clientName << " (id=" << m_id << ") from " << initClientSocket.getRemoteAddress().toString() << '\n';
                 initClientSocket.disconnect();
                 ++m_id;
@@ -242,6 +244,16 @@ void Server::addClient(const unsigned int clientID, const std::string& clientNam
     }
 }
 
+void Server::sendWorld(const unsigned int clientID)
+{
+    sf::Packet packet;
+    packet << "INIT_WORLD";
+    packet << static_cast<unsigned int>(m_world.size());
+    for(auto& s : m_world)
+        packet << s;
+    m_clients[clientID]->send(packet);
+}
+
 void Server::runControl()
 {
     while(m_control)
@@ -284,25 +296,6 @@ void Server::runControl()
                 }
             }
         }
-        /*
-        if(m_sendWorld)
-        {
-            sf::Packet packet;
-            packet << "INIT_WORLD";
-            packet << static_cast<unsigned int>(m_world.size());
-            for(auto& s : m_world)
-                packet << s;
-            {
-                std::lock_guard<std::mutex> lock(m_clientMutex);
-                for(auto& c : m_clients)
-                {
-                    std::unique_ptr<sf::TcpSocket> &socket = c.second;
-                    socket->send(packet); // TODO: Check return value
-                }
-            }
-            m_sendWorld = false;
-            Logger::info() << "Sent world to clients.\n";
-        }*/
     }
 
     {

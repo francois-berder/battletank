@@ -28,7 +28,8 @@ class Server
     
         void makeHandshake(sf::TcpSocket &socket, std::string &clientName);
         void addClient(const unsigned int clientID, const std::string& clientName);
-        
+        void sendWorld(const unsigned int clientID);
+
         void runInit();
         void runControl();
         void runData();
