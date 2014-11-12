@@ -2,6 +2,7 @@
 #include <QCheckBox>
 #include <QLabel>
 #include <QThread>
+#include <stdexcept>
 #include "ChatMenu.hpp"
 #include "ui_ChatMenu.h"
 #include "Menu.hpp"
@@ -39,9 +40,6 @@ m_data()
     QObject::connect(&m_player, SIGNAL(existingText(QString)), ui->text, SLOT(setText(QString)));
     QObject::connect(&m_player, SIGNAL(gameLaunchStarted()), this, SLOT(reportGameLaunchStarted()));
     QObject::connect(&m_player, SIGNAL(gameLaunchAborted(QString)), this, SLOT(reportGameLaunchAborted(QString)));
-    QObject::connect(&m_player, SIGNAL(errorJoined(QString)), this, SLOT(reportErrorJoined(QString)));
-    QObject::connect(&m_host, SIGNAL(created()), this, SLOT(join2()));
-    QObject::connect(&m_host, SIGNAL(errorListener()), this, SLOT(reportErrorHostCreation()));
 }
 
 ChatMenu::~ChatMenu()
@@ -53,30 +51,41 @@ ChatMenu::~ChatMenu()
 
 void ChatMenu::host(QString pseudo)
 {
-    m_host.start();
-    m_player.setPseudo(pseudo);
+    try
+    {
+        m_host.start();
+        m_player.setPseudo(pseudo);
+        m_player.join("localhost");
+        ui->startButton->show();
+        ui->startButton->setEnabled(false);
+        ui->IPAddress->show();
+        ui->labelIPAdress->show();
+        ui->IPAddress->setText(m_player.getIPAddress());
+    }
+    catch(std::exception &e)
+    {
+        QMessageBox::critical(this, "Error hosting game", QString("Error while creating host. Reason: ") + e.what());
+        leave();
+    }
 }
 
 // Join if host is not running
 void ChatMenu::join(QString serverAddress, QString pseudo)
 {
-    m_player.setPseudo(pseudo);
-    m_player.join(serverAddress);
+    try
+    {
+        m_player.setPseudo(pseudo);
+        m_player.join(serverAddress);
 
-    ui->startButton->hide();
-    ui->IPAddress->hide();
-    ui->labelIPAdress->hide();
-}
-
-// Join if host is running
-void ChatMenu::join2()
-{
-    m_player.join("localhost");
-    ui->startButton->show();
-    ui->startButton->setEnabled(false);
-    ui->IPAddress->show();
-    ui->labelIPAdress->show();
-    ui->IPAddress->setText(m_player.getIPAddress());
+        ui->startButton->hide();
+        ui->IPAddress->hide();
+        ui->labelIPAdress->hide();
+    }
+    catch(std::exception &e)
+    {
+        QMessageBox::critical(this, "Error joining game", QString("Error while joining game. Reason: ") + e.what());
+        leave();
+    }
 }
 
 void ChatMenu::sendMessage()
@@ -223,18 +232,6 @@ void ChatMenu::reportGameLaunchAborted(QString pseudo)
         return;
 
     QMessageBox::critical(this, "Game launch aborted", pseudo + " has aborted the launch of this game");
-}
-
-void ChatMenu::reportErrorJoined(QString error)
-{
-    QMessageBox::critical(this, "Error joining game", "Could not join game. Reason: " + error);
-    leave();
-}
-
-void ChatMenu::reportErrorHostCreation()
-{
-    QMessageBox::critical(this, "Error hosting game", "Error while creating host.");
-    leave();
 }
 
 void ChatMenu::clean()

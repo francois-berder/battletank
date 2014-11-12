@@ -16,17 +16,17 @@ m_gameMenu(new GameMenu(this))
     insertWidget(CHAT_MENU, m_chatMenu);
     insertWidget(GAME_MENU, m_gameMenu);
 
-    QObject::connect(m_mainMenu, SIGNAL(changeInterface(int)), this, SLOT(setCurrentIndex(int)));
+    QObject::connect(m_mainMenu, SIGNAL(changeInterface(int)), this, SLOT(setCurrentIndex(int)), Qt::QueuedConnection);
 
-    QObject::connect(m_playMenu, SIGNAL(changeInterface(int)), this, SLOT(setCurrentIndex(int)));
+    QObject::connect(m_playMenu, SIGNAL(changeInterface(int)), this, SLOT(setCurrentIndex(int)), Qt::QueuedConnection);
     QObject::connect(m_playMenu, SIGNAL(createServer(QString)), this, SLOT(createChatServer(QString)));
     QObject::connect(m_playMenu, SIGNAL(createClient(QString, QString)), this, SLOT(createChatClient(QString, QString)));
 
-    QObject::connect(m_chatMenu, SIGNAL(changeInterface(int)), this, SLOT(setCurrentIndex(int)));
+    QObject::connect(m_chatMenu, SIGNAL(changeInterface(int)), this, SLOT(setCurrentIndex(int)), Qt::QueuedConnection);
     QObject::connect(m_chatMenu, SIGNAL(createServer(QList<QString>,QString)), this, SLOT(createGameServer(QList<QString>, QString)));
     QObject::connect(m_chatMenu, SIGNAL(createClient(QString, QString)), this, SLOT(createGameClient(QString, QString)));
 
-    QObject::connect(m_gameMenu, SIGNAL(changeInterface(int)), this, SLOT(setCurrentIndex(int)));
+    QObject::connect(m_gameMenu, SIGNAL(changeInterface(int)), this, SLOT(setCurrentIndex(int)), Qt::QueuedConnection);
 }
 
 MainWindow::~MainWindow()

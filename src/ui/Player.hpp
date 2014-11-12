@@ -38,7 +38,6 @@ class Player : public QObject
         void gameLaunchStarted();
         void gameLaunchAborted(QString);
         void existingText(QString);
-        void errorJoined(QString);
 
     private :
 

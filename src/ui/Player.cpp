@@ -1,4 +1,5 @@
 #include <QThread>
+#include <stdexcept>
 #include "Player.hpp"
 
 Player::Player():
@@ -19,7 +20,9 @@ void Player::join(QString serverAddress)
     if(m_joinedGame)
         return;
 
-    m_socket.connect(serverAddress.toStdString(), 9999);
+    if(m_socket.connect(serverAddress.toStdString(), 9999) != sf::Socket::Done)
+        throw std::runtime_error(std::string("Could not connect to ") + serverAddress.toStdString());
+
     sf::Packet packet;
     packet << "JOIN";
     packet << m_pseudo.toStdString();
@@ -33,8 +36,7 @@ void Player::join(QString serverAddress)
     if(answer != "EXISTING_PLAYERS")
     {
         m_socket.disconnect();
-        emit errorJoined(QString::fromStdString(answer));
-        return;
+        throw std::runtime_error("Protocol error while connecting to host.");
     }
     unsigned int nbPlayers;
     packet >> nbPlayers;
@@ -60,12 +62,10 @@ void Player::join(QString serverAddress)
     if(answer != "EXISTING_TEXT")
     {
         m_socket.disconnect();
-        emit errorJoined(QString::fromStdString(answer));
-        return;
+        throw std::runtime_error("Protocol error while connecting to host.");
     }
     packet >> text;
     emit existingText(QString::fromStdString(text));
-
 
     m_joinedGame = true;
     std::thread thread(&Player::run, this);

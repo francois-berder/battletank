@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "Host.hpp"
 #include "Logger.hpp"
 
@@ -19,6 +20,9 @@ void Host::start()
 {
     if(m_running)
         return;
+
+    if(m_listener.listen(9999) != sf::Socket::Done)
+        throw std::runtime_error("Could not listen on port 9999.");
 
     m_running = true;
 
@@ -61,14 +65,7 @@ void Host::launchGame()
 
 void Host::run()
 {
-    if(m_listener.listen(9999) != sf::Socket::Done)
-    {
-        emit errorListener();
-        return;
-    }
-
     m_selector.add(m_listener);
-    emit created();
 
     while(m_running)
     {
