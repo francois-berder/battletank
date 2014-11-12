@@ -54,7 +54,6 @@ unsigned int Client::connect(const std::string ipAddress, const std::string name
         ss << "Could not connect to " << ipAddress << ":" << controlPort;
         throw std::runtime_error(ss.str());
     }
-    m_controlSocket.setBlocking(false);
     
     unsigned short dataPort = static_cast<unsigned short>(Server::getDataPort() + m_id);
     if(m_dataSocket.bind(dataPort) != sf::Socket::Done)
@@ -118,41 +117,45 @@ void Client::pushEvent(NetworkEvent &evt)
 
 void Client::runControl()
 {
+    sf::SocketSelector selector;
+    selector.add(m_controlSocket);
+
     while(m_isConnected)
     {
-        sf::Packet packet;
-        sf::Socket::Status ret = m_controlSocket.receive(packet);
-        if(ret == sf::Socket::NotReady)
-            continue;
-        if(ret == sf::Socket::Error)
+        if(selector.wait())
         {
-            Logger::warning() << "Could not receive control data\n";
-            continue;
-        }
-        if(ret == sf::Socket::Disconnected)
-        {
-            Logger::error() << "Disconnected from server because of unknown reason.\n";
-            m_controlSocket.disconnect();
-            return;
-        }
-        std::string cmd;
-        packet >> cmd;
-        if(cmd == "SERVER_EXIT")
-        {
-            Logger::info() << "Server has exited. Disconnected.\n";
-            m_controlSocket.disconnect();
-            return;
-        }
-        else if(cmd == "INIT_WORLD")
-        {
-            unsigned int nbCmds;
-            packet >> nbCmds;
-            while(nbCmds > 0)
+            sf::Packet packet;
+            sf::Socket::Status ret = m_controlSocket.receive(packet);
+            if(ret == sf::Socket::Error)
             {
-                std::string str;
-                packet >> str;
-                m_world.push_back(str);
-                --nbCmds;
+                Logger::warning() << "Could not receive control data\n";
+                continue;
+            }
+            if(ret == sf::Socket::Disconnected)
+            {
+                Logger::error() << "Disconnected from server because of unknown reason.\n";
+                m_controlSocket.disconnect();
+                return;
+            }
+            std::string cmd;
+            packet >> cmd;
+            if(cmd == "SERVER_EXIT")
+            {
+                Logger::info() << "Server has exited. Disconnected.\n";
+                m_controlSocket.disconnect();
+                return;
+            }
+            else if(cmd == "INIT_WORLD")
+            {
+                unsigned int nbCmds;
+                packet >> nbCmds;
+                while(nbCmds > 0)
+                {
+                    std::string str;
+                    packet >> str;
+                    m_world.push_back(str);
+                    --nbCmds;
+                }
             }
         }
     }
@@ -213,29 +216,35 @@ void Client::sendExitSequence()
 void Client::runData()
 {
     sf::UdpSocket sendSocket;
-    sendSocket.setBlocking(false);
+    sf::SocketSelector selector;
+    selector.add(m_dataSocket);
     while(m_isConnected)
     {
-        sf::Packet packet;
-        sf::IpAddress remoteAddress;
-        unsigned short remotePort;
-        sf::Socket::Status ret = m_dataSocket.receive(packet, remoteAddress, remotePort);
-        if(ret == sf::Socket::Error)
-            Logger::warning() << "Failed to receive some data.\n";
-
-        if(ret == sf::Socket::Done)
+        if(selector.wait(sf::milliseconds(10)))
         {
-            std::lock_guard<std::mutex> lock(m_eventsMutex);
-            NetworkEvent e;
-            e.fromPacket(packet);
-            m_events.push(e);
-        }
+            sf::Packet packet;
+            sf::IpAddress remoteAddress;
+            unsigned short remotePort;
+            sf::Socket::Status ret = m_dataSocket.receive(packet, remoteAddress, remotePort);
+            if(ret == sf::Socket::Error)
+                Logger::warning() << "Failed to receive some data.\n";
+            if(ret == sf::Socket::Disconnected)
+                break;
 
+            if(ret == sf::Socket::Done)
+            {
+                std::lock_guard<std::mutex> lock(m_eventsMutex);
+                NetworkEvent e;
+                e.fromPacket(packet);
+                m_events.push(e);
+            }
+        }
+        else
         {
             std::lock_guard<std::mutex> lock(m_toSendEventsMutex);
             while(!m_toSendEvents.empty())
             {
-                packet.clear();
+                sf::Packet packet;
                 NetworkEvent e = m_toSendEvents.front();
                 e.toPacket(packet);
                 unsigned short port = static_cast<unsigned short>(Server::getDataPort() - m_id);
