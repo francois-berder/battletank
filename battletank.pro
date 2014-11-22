@@ -58,10 +58,10 @@ SOURCES += \
     src/utils/Logger.cpp\
     src/utils/StringBuffer.cpp\
     src/utils/Utils.cpp\
-    src/view/EntityParser.cpp\
+    src/utils/EntityParser.cpp\
     src/view/EntityViewer.cpp\
-    src/view/TextureManager.cpp\
-    src/view/Tree.cpp\
+    src/utils/TextureManager.cpp\
+    src/utils/Tree.cpp\
     src/view/View.cpp \
     src/ui/MainMenu.cpp \
     src/ui/PlayMenu.cpp \
@@ -95,11 +95,11 @@ HEADERS  += \
     src/utils/Logger.hpp \
     src/utils/StringBuffer.hpp \
     src/utils/Utils.hpp \
-    src/view/EntityParser.hpp \
+    src/utils/EntityParser.hpp \
     src/view/EntityViewer.hpp \
     src/view/Event.hpp \
-    src/view/TextureManager.hpp \
-    src/view/Tree.hpp \
+    src/utils/TextureManager.hpp \
+    src/utils/Tree.hpp \
     src/view/View.hpp \
     src/ui/MainMenu.hpp \
     src/ui/PlayMenu.hpp \
