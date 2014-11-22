@@ -10,6 +10,9 @@
     <height>153</height>
    </rect>
   </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::DefaultContextMenu</enum>
+  </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
@@ -21,6 +24,12 @@
      <width>281</width>
      <height>32</height>
     </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::NoContextMenu</enum>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
@@ -41,6 +50,9 @@
    <layout class="QFormLayout" name="formLayout">
     <item row="1" column="0">
      <widget class="QLabel" name="label">
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="text">
        <string>Server address:</string>
       </property>
@@ -54,10 +66,24 @@
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QLineEdit" name="pseudo"/>
+     <widget class="QLineEdit" name="pseudo">
+      <property name="focusPolicy">
+       <enum>Qt::StrongFocus</enum>
+      </property>
+      <property name="clearButtonEnabled">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLineEdit" name="serverAddress"/>
+     <widget class="QLineEdit" name="serverAddress">
+      <property name="focusPolicy">
+       <enum>Qt::StrongFocus</enum>
+      </property>
+      <property name="clearButtonEnabled">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -65,6 +91,7 @@
  <tabstops>
   <tabstop>pseudo</tabstop>
   <tabstop>serverAddress</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
