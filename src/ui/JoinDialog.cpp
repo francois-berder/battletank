@@ -10,6 +10,7 @@ m_pseudo(),
 m_serverAddress()
 {
     ui->setupUi(this);
+    ui->pseudo->setFocus();
 }
 
 JoinDialog::~JoinDialog()
