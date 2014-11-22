@@ -29,16 +29,15 @@ class Game
 
 	private:
     
-		void proceedEvents();
-        void proceedViewEvents();
-        void proceedNetworkEvents();
+        void handleEvents();
+        void handleViewEvents();
+        void handleNetworkEvents();
 
 		GameWorld m_gameWorld;
 		View m_view;
         Server m_server;
         Client m_client;
         std::list<NetworkEvent> m_events;
-        std::string m_serverHostname;
 };
 
 #endif /* __GAME_H__ */

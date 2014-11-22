@@ -12,8 +12,7 @@ m_gameWorld(),
 m_view(),
 m_server(),
 m_client(),
-m_events(),
-m_serverHostname("localhost")
+m_events()
 {
 }
 
@@ -24,7 +23,7 @@ Game::~Game()
 
 void Game::update()
 {
-    proceedEvents();
+    handleEvents();
     m_gameWorld.step();
     m_view.update(m_gameWorld.print());
 }
@@ -51,15 +50,14 @@ void Game::exit()
     m_server.stop();
 }
 
-void Game::proceedEvents()
+void Game::handleEvents()
 {
-    proceedViewEvents();
-    proceedNetworkEvents();
+    handleViewEvents();
+    handleNetworkEvents();
 }
 
 // Forward events from view to client
-// If client is disabled, add it to the events list
-void Game::proceedViewEvents()
+void Game::handleViewEvents()
 {
     Event viewEvent;
     while(m_view.pollEvent(viewEvent))
@@ -70,7 +68,7 @@ void Game::proceedViewEvents()
     }
 }
 
-void Game::proceedNetworkEvents()
+void Game::handleNetworkEvents()
 {
     NetworkEvent netEvent;
     while(m_client.pollEvent(netEvent))
