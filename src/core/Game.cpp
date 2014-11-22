@@ -8,14 +8,10 @@
 
 
 Game::Game() :
-m_isInteractive(false),
 m_gameWorld(),
 m_view(),
-m_execFile(*this, m_gameWorld),
-m_replayFile(*this, m_gameWorld),
 m_server(),
 m_client(),
-m_disableClient(false),
 m_events(),
 m_serverHostname("localhost")
 {
@@ -24,50 +20,6 @@ m_serverHostname("localhost")
 Game::~Game()
 {
     exit();
-}
-
-void Game::setOptions(std::list<Option>& options)
-{
-	for(Option opt :options)
-	{
-		if(opt == "-i" || opt == "--interactive")
-			m_isInteractive = true;
-		else if(opt == "-h" || opt == "--help")
-		{
-		    displayOptionsList();
-		    exit();
-		}
-		else if(opt == "--enable-log")
-			Logger::instance().setEnabled(true);
-		else if(opt == "--disable-log")
-			Logger::instance().setEnabled(false);
-		else if(opt == "--log-file")
-			Logger::instance().writeToFile(opt.getValue());
-		else if(opt == "--disable-input")
-		    m_view.disableUserInput();
-		else if(opt == "-x")
-			m_execFile.open(opt.getValue());
-		else if(opt == "-s" || opt == "--save")
-		{
-		    try
-		    {
-			    m_gameWorld.saveToFile(opt.getValue());
-            }
-            catch(std::exception &e)
-            {
-                Logger::error() << e.what() << ". Save option ignored.\n";
-            }
-        }
-        else if(opt == "-r" || opt == "--replay")
-        {
-            std::string replayFileName = opt.getValue().c_str();
-            m_replayFile.open(replayFileName);
-        }
-        else if(opt == "--disable-network-client")
-            m_disableClient = true;
-        else if(opt == "--server-address")
-            m_serverHostname = opt.getValue();
-	}
 }
 
 void Game::update()
@@ -84,14 +36,11 @@ void Game::initView(sf::WindowHandle handle)
 
 void Game::initWorld()
 {
-    if(!m_disableClient)
+    std::list<std::string> initCmds = m_client.getWorld();
+    for(auto &cmdStr : initCmds)
     {
-        std::list<std::string> initCmds = m_client.getWorld();
-        for(auto &cmdStr : initCmds) 
-        {
-	        CommandPtr cmd = CommandFactory::parseCmd(*this, m_gameWorld, cmdStr);
-            cmd->execute();
-        }
+        CommandPtr cmd = CommandFactory::parseCmd(*this, m_gameWorld, cmdStr);
+        cmd->execute();
     }
 }
 
@@ -100,19 +49,6 @@ void Game::exit()
     m_client.disconnect();
     m_server.waitUntilAllClientsDisconnected();
     m_server.stop();
-}
-
-void Game::displayOptionsList()
-{
-    std::cout << "[-i | --interactive]\t\tEnable interactive mode\n";
-    std::cout << "[--enable-log | --disable-log]\tEnable/disable logging\n";
-    std::cout << "[--log-file]\t\t\tLog will be saved in specified file\n";
-    std::cout << "[-x]\t\t\t\tExecute commands from specified file\n";
-    std::cout << "[-s | --save]\t\t\tSave all changes made to simulation in given file\n";
-    std::cout << "[-r | --replay]\t\t\tReplay all commands from specified file\n";
-    std::cout << "[--run-server]\t\t\tRun server on this computer\n";
-    std::cout << "[--disable-network-client]\tDisable client\n";
-    std::cout << "[--server-address]\t\tSet server address. This will be used by the client\n";
 }
 
 void Game::proceedEvents()
@@ -128,25 +64,18 @@ void Game::proceedViewEvents()
     Event viewEvent;
     while(m_view.pollEvent(viewEvent))
     {
-        unsigned int myID = 1;
-        if(!m_disableClient)
-            myID = m_client.getID();
+        unsigned int myID = m_client.getID();
         NetworkEvent event(myID, m_gameWorld.getCurrentStep(), viewEvent);
-        if(m_disableClient)
-            m_events.push_back(event);
-        else
-            m_client.pushEvent(event);
+        m_client.pushEvent(event);
     }
 }
 
 void Game::proceedNetworkEvents()
 {
-    if(!m_disableClient)
-    {
-        NetworkEvent netEvent;
-	    while(m_client.pollEvent(netEvent))
-            m_events.push_back(netEvent); // FIXME: ensure order of events according to stepID
-    }
+    NetworkEvent netEvent;
+    while(m_client.pollEvent(netEvent))
+        m_events.push_back(netEvent); // FIXME: ensure order of events according to stepID
+
     const unsigned int currentStep = m_gameWorld.getCurrentStep();
 
     while(m_events.front().stepID <= currentStep)

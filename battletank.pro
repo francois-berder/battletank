@@ -40,7 +40,6 @@ SOURCES += \
     src/ui/MainWindow.cpp\
     src/core/Game.cpp\
     src/core/Command.cpp\
-    src/core/CommandFile.cpp\
     src/core/CommandFactory.cpp\
     src/network/Client.cpp\
     src/network/NetworkEvent.cpp\
@@ -57,7 +56,6 @@ SOURCES += \
     src/simulation/PhysicWorld.cpp\
     src/simulation/Tank.cpp\
     src/utils/Logger.cpp\
-    src/utils/Option.cpp\
     src/utils/StringBuffer.cpp\
     src/utils/Utils.cpp\
     src/view/EntityParser.cpp\
@@ -79,7 +77,6 @@ HEADERS  += \
     src/ui/MainWindow.hpp \
     src/core/Game.hpp \
     src/core/Command.hpp \
-    src/core/CommandFile.hpp \
     src/core/CommandFactory.hpp \
     src/network/Client.hpp \
     src/network/NetworkEvent.hpp \
@@ -96,7 +93,6 @@ HEADERS  += \
     src/simulation/PhysicWorld.hpp \
     src/simulation/Tank.hpp \
     src/utils/Logger.hpp \
-    src/utils/Option.hpp \
     src/utils/StringBuffer.hpp \
     src/utils/Utils.hpp \
     src/view/EntityParser.hpp \
