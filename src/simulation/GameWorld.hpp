@@ -2,7 +2,7 @@
 #define __GAME_WORLD_H__
 
 #include <map>
-#include <fstream>
+#include <list>
 
 #include "Entity.hpp"
 #include "EntityFactory.hpp"
@@ -25,9 +25,6 @@ class GameWorld
 		std::string printEntity(EntityID id) const;
 
 		unsigned int getCurrentStep() const;
-
-        void saveToFile(const std::string& fileName);
-
         static unsigned int getID();
 
 	private:
@@ -39,7 +36,6 @@ class GameWorld
 		std::map<EntityID, EntityPtr> m_entities;
         std::list<EntityPtr> m_toRemove;
 		EntityFactory m_factory;
-		std::ofstream m_saveFile;
 };
 
 #endif /* __GAME_WORLD_H__ */

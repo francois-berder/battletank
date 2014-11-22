@@ -121,7 +121,6 @@ bool Game::isGameFinished()
     return false;
 }
 
-
 Server& Game::getServer()
 {
     return m_server;

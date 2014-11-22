@@ -10,8 +10,7 @@ GameWorld::GameWorld() :
 m_currentStep(0),
 m_entities(),
 m_toRemove(),
-m_factory(*this),
-m_saveFile()
+m_factory(*this)
 {
 }
 
@@ -28,10 +27,7 @@ void GameWorld::step()
 }
 
 void GameWorld::applyChange(const Change &change)
-{
-    if(m_saveFile.is_open())
-        m_saveFile << m_currentStep << ' ' << change.toString() << '\n';        
-    
+{    
 	const EntityID id = change.getTargetID();
 	if(id != getID())
 		m_entities[id]->applyChange(change);
@@ -113,14 +109,6 @@ std::string GameWorld::printEntity(EntityID id) const
 unsigned int GameWorld::getCurrentStep() const
 {
 	return m_currentStep;
-}
-
-void GameWorld::saveToFile(const std::string& fileName)
-{
-    m_saveFile.open(fileName.c_str(), std::ofstream::out | std::ofstream::trunc);
-    
-    if(!m_saveFile.is_open())
-        throw std::runtime_error("Could not open file for saving changes");
 }
 
 unsigned int GameWorld::getID()
