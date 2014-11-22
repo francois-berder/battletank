@@ -133,6 +133,15 @@ void Server::waitUntilAllClientsConnected(const float timeout)
         throw std::runtime_error("Timeout. Not all clients are connected");
 }
 
+void Server::waitUntilAllClientsDisconnected()
+{
+    if(!m_running)
+        return;
+
+    while(!m_clients.empty())
+        sf::sleep(sf::milliseconds(100));
+}
+
 void Server::start()
 {
     if(m_running)

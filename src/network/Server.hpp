@@ -16,6 +16,7 @@ class Server
         
         void startAcceptingClients(std::list<std::string> clientNames);
         void waitUntilAllClientsConnected(const float timeout);
+        void waitUntilAllClientsDisconnected();
 
         void start();
         void stop();

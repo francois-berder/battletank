@@ -9,7 +9,6 @@
 
 Game::Game() :
 m_isInteractive(false),
-m_exit(false),
 m_gameWorld(),
 m_view(),
 m_execFile(*this, m_gameWorld),
@@ -24,8 +23,7 @@ m_serverHostname("localhost")
 
 Game::~Game()
 {
-    m_client.disconnect();
-    m_server.stop();
+    exit();
 }
 
 void Game::setOptions(std::list<Option>& options)
@@ -99,7 +97,9 @@ void Game::initWorld()
 
 void Game::exit()
 {
-	m_exit = true;
+    m_client.disconnect();
+    m_server.waitUntilAllClientsDisconnected();
+    m_server.stop();
 }
 
 void Game::displayOptionsList()
@@ -185,6 +185,15 @@ void Game::proceedNetworkEvents()
         m_events.erase(m_events.begin());
 	}
 }
+
+// Check if the game is finished
+// Either 0 or 1 tank alive left.
+bool Game::isGameFinished()
+{
+    // TODO: implement function
+    return false;
+}
+
 
 Server& Game::getServer()
 {

@@ -24,7 +24,7 @@ class Game
         void initWorld();
 
         void update();
-
+        bool isGameFinished();
 		void exit();
 
         Server& getServer();
@@ -38,8 +38,8 @@ class Game
         void proceedViewEvents();
         void proceedNetworkEvents();
 
+
 		bool m_isInteractive;
-		bool m_exit;
 		GameWorld m_gameWorld;
 		View m_view;
         CommandFile m_execFile;
