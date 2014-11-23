@@ -39,6 +39,7 @@ class Game
         Server m_server;
         Client m_client;
         std::list<NetworkEvent> m_events;
+        bool m_worldInitialized;
 };
 
 #endif /* __GAME_H__ */

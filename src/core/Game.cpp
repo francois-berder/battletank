@@ -12,7 +12,8 @@ m_gameWorld(),
 m_view(),
 m_server(),
 m_client(),
-m_events()
+m_events(),
+m_worldInitialized(false)
 {
 }
 
@@ -52,11 +53,12 @@ void Game::initWorld()
         CommandPtr cmd = CommandFactory::parseCmd(*this, m_gameWorld, cmdStr);
         cmd->execute();
     }
+    m_worldInitialized = true;
 }
 
 void Game::exit()
 {
-    Logger::info() << "Exiting game...\n";
+    m_worldInitialized = false;
     m_client.disconnect();
     m_server.waitUntilAllClientsDisconnected();
     m_server.stop();
@@ -143,7 +145,7 @@ bool Game::isGameFinished(Array &entities)
         }
     }
 
-    return nbTanksAlive <= 1;
+    return nbTanksAlive <= 1 && m_worldInitialized;
 }
 
 Server& Game::getServer()
