@@ -3,7 +3,6 @@
 #include "TextureManager.hpp"
 #include "Event.hpp"
 #include "EntityViewer.hpp"
-#include "EntityParser.hpp"
 
 View::View():
 m_window(),
@@ -18,10 +17,10 @@ void View::init(sf::WindowHandle handle)
     m_window.create(handle);
 }
 
-void View::update(const std::string& gameState)
+void View::update(Array& entities)
 {
 	proceedEvents();
-	draw(gameState);
+    draw(entities);
 }
 
 bool View::pollEvent(Event &evt)
@@ -86,12 +85,13 @@ float View::gameToGfx(float a)
     return a * 40.f;
 }
         
-void View::draw(const std::string &gameState)
+void View::draw(Array &entities)
 {
 	m_window.clear();
 	drawBackground();
-	drawState(gameState);
-	m_window.display();
+    EntityViewer v(m_window, entities);
+    v.drawAll();
+    m_window.display();
 }
 
 void View::drawBackground()
@@ -99,14 +99,6 @@ void View::drawBackground()
 	TexturePtr tex = TextureManager::instance().get("background.png");
 	sf::Sprite background(*tex);
 	m_window.draw(background);
-}
-
-void View::drawState(const std::string &state)
-{
-    EntityParser parser(state);
-    Array entities = parser.parse();
-    EntityViewer v(m_window, entities);
-    v.drawAll();
 }
 
 void View::disableUserInput()

@@ -5,7 +5,7 @@
 #include "Logger.hpp"
 #include "CommandFactory.hpp"
 #include "Utils.hpp"
-
+#include "EntityParser.hpp"
 
 Game::Game() :
 m_gameWorld(),
@@ -21,11 +21,22 @@ Game::~Game()
     exit();
 }
 
-void Game::update()
+/*
+ * Returns true, if game continues,
+ * otherwise returns false (end of game).
+ */
+bool Game::update()
 {
+    // update state
     handleEvents();
     m_gameWorld.step();
-    m_view.update(m_gameWorld.print());
+
+    // draw state
+    EntityParser parser(m_gameWorld.print());
+    Array entities = parser.parse();
+    m_view.update(entities);
+
+    return !isGameFinished(entities);
 }
 
 void Game::initView(sf::WindowHandle handle)
@@ -45,6 +56,7 @@ void Game::initWorld()
 
 void Game::exit()
 {
+    Logger::info() << "Exiting game...\n";
     m_client.disconnect();
     m_server.waitUntilAllClientsDisconnected();
     m_server.stop();
@@ -76,7 +88,7 @@ void Game::handleNetworkEvents()
 
     const unsigned int currentStep = m_gameWorld.getCurrentStep();
 
-    while(m_events.front().stepID <= currentStep)
+    while(!m_events.empty() && m_events.front().stepID <= currentStep)
     {
         NetworkEvent e = m_events.front();
         std::stringstream cmdStr;
@@ -115,10 +127,23 @@ void Game::handleNetworkEvents()
 
 // Check if the game is finished
 // Either 0 or 1 tank alive left.
-bool Game::isGameFinished()
+bool Game::isGameFinished(Array &entities)
 {
-    // TODO: implement function
-    return false;
+    unsigned int nbTanksAlive = 0;
+
+    for(unsigned int i = 0; i < entities.size(); ++i)
+    {
+        Map &entity = entities[i]->asMap();
+        std::string type = entity["type"]->asData().getValue();
+        if(type == "tank")
+        {
+            unsigned int health = toUInteger(entity["health"]->asData().getValue());
+            if(health > 0)
+                ++nbTanksAlive;
+        }
+    }
+
+    return nbTanksAlive <= 1;
 }
 
 Server& Game::getServer()

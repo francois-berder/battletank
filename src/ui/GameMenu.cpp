@@ -48,8 +48,7 @@ QPaintEngine* GameMenu::paintEngine() const
 
 void GameMenu::paintEvent(QPaintEvent*)
 {
-    m_game.update();
-    if(m_game.isGameFinished())
+    if(!m_game.update())
     {
         m_game.exit();
         changeInterface(CHAT_MENU); // TODO: change to STATS_MENU instead

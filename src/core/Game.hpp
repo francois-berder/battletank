@@ -20,8 +20,7 @@ class Game
         void initView(sf::WindowHandle handle);
         void initWorld();
 
-        void update();
-        bool isGameFinished();
+        bool update();
 		void exit();
 
         Server& getServer();
@@ -32,6 +31,8 @@ class Game
         void handleEvents();
         void handleViewEvents();
         void handleNetworkEvents();
+
+        bool isGameFinished(Array &entities);
 
 		GameWorld m_gameWorld;
 		View m_view;

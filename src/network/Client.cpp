@@ -122,7 +122,7 @@ void Client::runControl()
 
     while(m_isConnected)
     {
-        if(selector.wait())
+        if(selector.wait(sf::milliseconds(50)))
         {
             sf::Packet packet;
             sf::Socket::Status ret = m_controlSocket.receive(packet);
@@ -198,7 +198,6 @@ void Client::makeHandshake(const std::string &ipAddress)
 
 void Client::sendExitSequence()
 {
-    m_controlSocket.setBlocking(true);
     sf::Packet packet;
     packet << "REQUEST_QUIT" << m_id;
     m_controlSocket.send(packet);

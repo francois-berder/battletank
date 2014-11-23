@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <queue>
 
+#include "Tree.hpp"
 #include "Event.hpp"
 
 class Game;
@@ -15,7 +16,7 @@ class View
         View();
 
         void init(sf::WindowHandle handle);
-		void update(const std::string& gameState);
+        void update(Array &entities);
 
         static float gfxToGame(float);
         static float gameToGfx(float);
@@ -27,9 +28,8 @@ class View
 	private:
 
 		void proceedEvents();
-		void draw(const std::string &state);
+        void draw(Array &entities);
 		void drawBackground();
-		void drawState(const std::string &state);
 
 		sf::RenderWindow m_window;
 		bool m_disableUserInput;

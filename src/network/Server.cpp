@@ -149,9 +149,12 @@ void Server::start()
 
     m_running = true;
     m_data = true;
+    m_control = true;
     std::thread data(&Server::runData, this);
     m_dataThread.swap(data);
-    
+    std::thread control(&Server::runControl, this);
+    m_controlThread.swap(control);
+
     Logger::info() << "Server started.\n";
 }
 
@@ -267,42 +270,45 @@ void Server::runControl()
 {
     while(m_control)
     {
-        if(m_selector.wait(sf::milliseconds(20)))
+        if(m_selector.wait(sf::milliseconds(50)))
         {
             std::lock_guard<std::mutex> lock(m_clientMutex);
-            for(auto it = m_clients.begin(); it != m_clients.end(); ++it)
+            std::list<unsigned int> clientsToRemove;
+            auto it = m_clients.begin();
+            while(it != m_clients.end())
             {
                 auto& c = it->second;
                 if(m_selector.isReady(*c))
                 {
+                    Logger::info() << "control packet\n";
                     sf::Packet packet;
-                    if(c->receive(packet) == sf::Socket::Done) // TODO: handle error
+                    c->receive(packet);
+                    std::string str;
+                    unsigned int clientID;
+                    packet >> str >> clientID;
+                    if(m_clients.find(clientID) == m_clients.end())
                     {
-                        std::string str;
-                        unsigned int clientID;
-                        packet >> str >> clientID;
-                        if(m_clients.find(clientID) == m_clients.end())
-                        {
-                            Logger::warning() << "Received data from unknown client.\n";
-                            continue;
-                        }
+                        Logger::warning() << "Received data from unknown client.\n";
+                        ++it;
+                        continue;
+                    }
 
-                        if(str == "REQUEST_QUIT")
-                        {
-                            packet.clear();
-                            packet << "QUIT" << clientID;
-                            c->send(packet);
+                    if(str == "REQUEST_QUIT")
+                    {
+                        packet.clear();
+                        packet << "QUIT" << clientID;
+                        c->send(packet);
 
-                            // TODO: Broadcast to all other clients         
-                            
-                            // remove client
-                            c->disconnect();
-                            m_selector.remove(*c);
-                            m_clients.erase(it);
-                            break;
-                        }
+                        // remove client later
+                        clientsToRemove.push_back(clientID);
                     }
                 }
+                ++it;
+            }
+            for(auto clientID : clientsToRemove)
+            {
+                m_selector.remove(*m_clients[clientID]);
+                m_clients.erase(clientID);
             }
         }
     }
@@ -314,9 +320,7 @@ void Server::runControl()
             std::unique_ptr<sf::TcpSocket> &socket = c.second;   
             sf::Packet packet;
             packet << "SERVER_EXIT";
-            socket->setBlocking(true);
             socket->send(packet);
-            socket->disconnect();
         }
     }
 }
@@ -345,7 +349,7 @@ void Server::runData()
     }
     while(m_data)
     {
-        if(s.wait())
+        if(s.wait(sf::milliseconds(50)))
         {
             for(auto &r : recvSockets)
             {
