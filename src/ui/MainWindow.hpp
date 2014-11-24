@@ -7,6 +7,7 @@
 #include "PlayMenu.hpp"
 #include "ChatMenu.hpp"
 #include "GameMenu.hpp"
+#include "StatMenu.hpp"
 
 class MainWindow : public QStackedWidget
 {
@@ -30,6 +31,7 @@ class MainWindow : public QStackedWidget
         PlayMenu *m_playMenu;
         ChatMenu *m_chatMenu;
         GameMenu *m_gameMenu;
+        StatMenu *m_statMenu;
 };
 
 #endif // MAINWINDOW_H

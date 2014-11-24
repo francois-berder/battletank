@@ -51,7 +51,7 @@ void GameMenu::paintEvent(QPaintEvent*)
     if(!m_game.update())
     {
         m_game.exit();
-        changeInterface(CHAT_MENU); // TODO: change to STATS_MENU instead
+        changeInterface(STAT_MENU); // TODO: change to STATS_MENU instead
     }
 }
 
@@ -81,7 +81,7 @@ void GameMenu::host(QList<QString> clients, QString pseudo)
     {
         QMessageBox::critical(this, "Error while starting game", QString::fromStdString(e.what()));
         m_timer.stop();
-        emit changeInterface(CHAT_MENU);
+        emit changeInterface(PLAY_MENU);
     }
 }
 

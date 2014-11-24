@@ -6,7 +6,8 @@ enum
     MAIN_MENU,
     PLAY_MENU,
     CHAT_MENU,
-    GAME_MENU
+    GAME_MENU,
+    STAT_MENU
 };
 
 #endif // MENU_HPP
