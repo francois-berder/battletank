@@ -5,6 +5,7 @@
 #include <list>
 
 #include "Entity.hpp"
+#include "NetworkEvent.hpp"
 
 class Change
 {
@@ -19,7 +20,8 @@ class Change
 		std::list<std::string> getArgs() const;
 
         std::string toString() const;
-        
+        static Change fromString(const std::string &str);
+
 	private:
 
 		const EntityID m_id;

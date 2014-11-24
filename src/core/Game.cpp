@@ -3,7 +3,6 @@
 
 #include "Game.hpp"
 #include "Logger.hpp"
-#include "CommandFactory.hpp"
 #include "Utils.hpp"
 #include "EntityParser.hpp"
 
@@ -49,10 +48,8 @@ void Game::initWorld()
 {
     std::list<std::string> initCmds = m_client.getWorld();
     for(auto &cmdStr : initCmds)
-    {
-        CommandPtr cmd = CommandFactory::parseCmd(*this, m_gameWorld, cmdStr);
-        cmd->execute();
-    }
+        m_gameWorld.applyChange(Change::fromString(cmdStr));
+
     m_worldInitialized = true;
 }
 
@@ -88,41 +85,14 @@ void Game::handleNetworkEvents()
     while(m_client.pollEvent(netEvent))
         m_events.push_back(netEvent); // FIXME: ensure order of events according to stepID
 
-    const unsigned int currentStep = m_gameWorld.getCurrentStep();
-
-    while(!m_events.empty() && m_events.front().stepID <= currentStep)
+    while(!m_events.empty())
     {
-        NetworkEvent e = m_events.front();
-        std::stringstream cmdStr;
-        cmdStr << "a " << e.clientID;
-		switch (e.type)
-		{
-			case EventType::Quit :
-				exit();
-				return;
-			case EventType::Left :
-                cmdStr << " move left";
-			    break;
-		    case EventType::Right :
-                cmdStr << " move right";
-		        break;
-	        case EventType::Up :
-                cmdStr << " move up";
-	            break;
-            case EventType::Down :
-                cmdStr << " move down";
-                break;
-            case EventType::Mouse :
-                cmdStr << " dir " << e.x << " " << e.y;
-                break;
-            case EventType::Shoot :
-                cmdStr << " shoot";
-                break;
-			default :
-				throw std::runtime_error("Could not proceed unknown event.");
-		}
-		CommandPtr cmd = CommandFactory::parseCmd(*this, m_gameWorld, cmdStr.str());
-        cmd->execute();
+        const NetworkEvent e = m_events.front();
+
+        if(e.stepID > m_gameWorld.getCurrentStep())
+            break;
+
+        m_gameWorld.applyChange(e.toChange());
         m_events.erase(m_events.begin());
 	}
 }

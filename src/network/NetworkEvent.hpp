@@ -4,6 +4,7 @@
 #include <SFML/Network.hpp>
 
 #include "Event.hpp"
+#include "Change.hpp"
 
 struct NetworkEvent : public Event
 {
@@ -15,6 +16,8 @@ struct NetworkEvent : public Event
 
     void fromPacket(sf::Packet &packet);
     void toPacket(sf::Packet &packet);
+
+    Change toChange() const;
 
     unsigned int clientID;
     unsigned int stepID;

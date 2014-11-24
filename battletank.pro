@@ -39,8 +39,6 @@ SOURCES += \
     src/main.cpp\
     src/ui/MainWindow.cpp\
     src/core/Game.cpp\
-    src/core/Command.cpp\
-    src/core/CommandFactory.cpp\
     src/network/Client.cpp\
     src/network/NetworkEvent.cpp\
     src/network/Server.cpp\
@@ -76,8 +74,6 @@ SOURCES += \
 HEADERS  += \
     src/ui/MainWindow.hpp \
     src/core/Game.hpp \
-    src/core/Command.hpp \
-    src/core/CommandFactory.hpp \
     src/network/Client.hpp \
     src/network/NetworkEvent.hpp \
     src/network/Server.hpp \
