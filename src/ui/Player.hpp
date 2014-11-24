@@ -18,6 +18,8 @@ class Player : public QObject
         void leave();
         void abortLaunch();
 
+        bool isConnected();
+
         void sendMessage(QString message);
         void setReadiness(bool isReady);
 

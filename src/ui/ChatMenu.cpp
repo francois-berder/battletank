@@ -224,12 +224,15 @@ void ChatMenu::reportGameLaunchStarted()
         {
             QList<QString> playersNames = m_host.getPlayersNames();
             m_host.waitAllClientsDisconnected();
+            m_player.leave();
             m_host.stop();
             emit createServer(playersNames, pseudo);
         }
         else
         {
             QString hostIPAddress = m_player.getHostIPAddress();
+            while(m_player.isConnected());
+            m_player.leave();
             emit createClient(hostIPAddress, pseudo);
         }
     }

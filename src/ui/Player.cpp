@@ -73,12 +73,14 @@ void Player::join(QString serverAddress)
 
 void Player::leave()
 {
-    if(!m_joinedGame)
-        return;
-
     m_joinedGame = false;
     if(m_thread.joinable())
         m_thread.join();
+}
+
+bool Player::isConnected()
+{
+    return m_joinedGame;
 }
 
 void Player::sendMessage(QString message)
@@ -137,7 +139,6 @@ void Player::run()
     }
     m_socket.disconnect();
     m_gameCancelled = false;
-    m_pseudo.clear();
 }
 
 void Player::handleData(sf::Packet &packet)
