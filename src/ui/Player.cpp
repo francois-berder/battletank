@@ -1,7 +1,7 @@
 #include <QThread>
 #include <stdexcept>
 #include "Player.hpp"
-
+#include "Logger.hpp"
 Player::Player():
 QObject(),
 m_pseudo(),
@@ -9,7 +9,6 @@ m_joinedGame(false),
 m_gameCancelled(false),
 m_gameLaunchStarted(false),
 m_thread(),
-m_selector(),
 m_socket()
 {
 
@@ -78,8 +77,8 @@ void Player::leave()
         return;
 
     m_joinedGame = false;
-    m_thread.join();
-    m_gameCancelled = false;
+    if(m_thread.joinable())
+        m_thread.join();
 }
 
 void Player::sendMessage(QString message)
@@ -112,13 +111,14 @@ void Player::abortLaunch()
 
 void Player::run()
 {
-    m_selector.add(m_socket);
+    sf::SocketSelector selector;
+    selector.add(m_socket);
 
     while(m_joinedGame)
     {
-        if(m_selector.wait(sf::milliseconds(100)))
+        if(selector.wait(sf::milliseconds(100)))
         {
-            if(m_selector.isReady(m_socket))
+            if(selector.isReady(m_socket))
             {
                 sf::Packet packet;
                 m_socket.receive(packet);
@@ -136,7 +136,8 @@ void Player::run()
         m_socket.send(packet);
     }
     m_socket.disconnect();
-    m_selector.clear();
+    m_gameCancelled = false;
+    m_pseudo.clear();
 }
 
 void Player::handleData(sf::Packet &packet)
@@ -194,6 +195,10 @@ void Player::handleData(sf::Packet &packet)
         std::string pseudo;
         packet >> pseudo;
         emit gameLaunchAborted(QString::fromStdString(pseudo));
+    }
+    else if(cmdName == "DISCONNECT")
+    {
+        m_joinedGame = false;
     }
 }
 

@@ -31,7 +31,8 @@ Server::~Server()
 
 void Server::startAcceptingClients(std::list<std::string> clientNames)
 {
-    m_clientNames = clientNames;
+    for(auto& name : clientNames)
+        m_clientNames[name] = 0;
 
     // reset id counter
     m_id = 1;
@@ -95,8 +96,6 @@ void Server::runInit()
 // timout in seconds
 void Server::waitUntilAllClientsConnected(const float timeout)
 {
-    std::list<std::string> clientsNotConnected = m_clientNames;
-
     sf::Clock clock;
 
     /* Wait for incoming clients until:
@@ -104,32 +103,16 @@ void Server::waitUntilAllClientsConnected(const float timeout)
      * or
      * _ all clients are connected
      */
-    while(clock.getElapsedTime().asSeconds() < timeout && !clientsNotConnected.empty())
+    while(clock.getElapsedTime().asSeconds() < timeout && m_clientNames.size() != m_clients.size())
     {
         sf::sleep(sf::milliseconds(50));
-
-        {
-            std::lock_guard<std::mutex> lock(m_clientMutex);
-            for(auto& c : m_clientNames)
-            {
-                std::list<std::string>::iterator itor;
-                for(itor = clientsNotConnected.begin();
-                    itor != clientsNotConnected.end();
-                    ++itor)
-                    if(*itor == c)
-                    {
-                        clientsNotConnected.erase(itor);
-                        break;
-                    }
-            }
-        }
     }
 
     m_acceptClients = false;
     m_initThread.join();
 
     m_initListener.close();
-    if(!clientsNotConnected.empty())
+    if(m_clientNames.size() != m_clients.size())
         throw std::runtime_error("Timeout. Not all clients are connected");
 }
 
@@ -183,7 +166,7 @@ void Server::createWorld()
     {
         std::stringstream ss;
         ss << "0 new tank ";
-        ss << c;
+        ss << c.first;
         ss << " ";
         ss << i * 3;
         ss << " ";
@@ -211,7 +194,7 @@ void Server::makeHandshake(sf::TcpSocket &socket, std::string &clientName)
         
         throw std::runtime_error("Protocol error from client");
     }
-    
+    // TODO: check that clientName belongs to m_clientNames
     packet.clear();
     packet << "JOIN" << clientName << m_id;
     if(socket.send(packet) != sf::Socket::Done)
@@ -252,6 +235,7 @@ void Server::addClient(const unsigned int clientID, const std::string& clientNam
     {
         std::lock_guard<std::mutex> lock(m_clientMutex);
         m_clients[clientID] = std::move(clientSocket);
+        m_clientNames[clientName] = clientID;
         m_selector.add(*m_clients[clientID]);
     }
 }
@@ -280,7 +264,6 @@ void Server::runControl()
                 auto& c = it->second;
                 if(m_selector.isReady(*c))
                 {
-                    Logger::info() << "control packet\n";
                     sf::Packet packet;
                     c->receive(packet);
                     std::string str;

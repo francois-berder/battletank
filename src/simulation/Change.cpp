@@ -1,7 +1,7 @@
 #include <sstream>
 
 #include "Change.hpp"
-
+#include "Logger.hpp"
 
 Change::Change(const EntityID id, const std::string &name,
 		const std::list<std::string> &args) :
@@ -41,13 +41,12 @@ Change Change::fromString(const std::string &str)
     EntityID id;
     std::string name;
     std::list<std::string> args;
-    char sep;
     ss << str;
-    ss >> id >> sep >> name;
+    ss >> id >> name;
     std::string arg;
     while(!ss.eof())
     {
-        ss >> sep >> arg;
+        ss >> arg;
         args.push_back(arg);
     }
     return Change(id, name, args);

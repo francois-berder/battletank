@@ -45,6 +45,14 @@ bool Host::isRunning() const
     return m_running;
 }
 
+void Host::waitAllClientsDisconnected()
+{
+    disconnectAllClients();
+
+    while(!m_sockets.empty())
+        sf::sleep(sf::milliseconds(100));
+}
+
 void Host::launchGame()
 {
     if(m_gameLaunched)
@@ -61,6 +69,20 @@ void Host::launchGame()
         itor.value()->send(packet);
 
     emit gameLaunched();
+}
+
+void Host::disconnectAllClients()
+{
+    if(!m_gameLaunched)
+        return;
+
+    sf::Packet packet;
+    packet << "DISCONNECT";
+    QMap<QString, sf::TcpSocket*>::iterator itor;
+    for(itor = m_sockets.begin();
+        itor != m_sockets.end();
+        ++itor)
+        itor.value()->send(packet);
 }
 
 void Host::run()

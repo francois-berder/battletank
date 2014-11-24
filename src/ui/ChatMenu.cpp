@@ -3,6 +3,7 @@
 #include <QLabel>
 #include <QThread>
 #include <stdexcept>
+
 #include "ChatMenu.hpp"
 #include "ui_ChatMenu.h"
 #include "Menu.hpp"
@@ -217,10 +218,20 @@ void ChatMenu::reportGameLaunchStarted()
     int ret = dialog.exec();
     if(ret == QDialog::Accepted)
     {
-        if(m_host.isRunning())
-            emit createServer(m_host.getPlayersNames(), m_player.getPseudo());
+        bool isHost = m_host.isRunning();
+        QString pseudo = m_player.getPseudo();
+        if(isHost)
+        {
+            QList<QString> playersNames = m_host.getPlayersNames();
+            m_host.waitAllClientsDisconnected();
+            m_host.stop();
+            emit createServer(playersNames, pseudo);
+        }
         else
-            emit createClient(m_player.getHostIPAddress(), m_player.getPseudo());
+        {
+            QString hostIPAddress = m_player.getHostIPAddress();
+            emit createClient(hostIPAddress, pseudo);
+        }
     }
     else
         m_player.abortLaunch();

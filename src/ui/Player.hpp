@@ -49,7 +49,6 @@ class Player : public QObject
         bool m_gameCancelled;
         bool m_gameLaunchStarted;
         std::thread m_thread;
-        sf::SocketSelector m_selector;
         sf::TcpSocket m_socket;
 };
 

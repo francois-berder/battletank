@@ -22,7 +22,7 @@ class Host : public QObject
 
         void start();
         void stop();
-
+        void waitAllClientsDisconnected();
         bool isRunning() const;
         QList<QString> getPlayersNames() const;
 
@@ -39,6 +39,7 @@ class Host : public QObject
         void run();
         void handleIncomingClient();
         void handleData(QString pseudo, sf::TcpSocket &socket);
+        void disconnectAllClients();
 
         std::thread m_thread;
         sf::TcpListener m_listener;

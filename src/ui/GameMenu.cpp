@@ -62,7 +62,7 @@ void GameMenu::host(QList<QString> clients, QString pseudo)
 
     try
     {
-        // Convert Qt list of string to std list of string
+        // Convert Qt list of string to std list of std string
         std::list<std::string> clientNames;
         for(QList<QString>::iterator itor = clients.begin();
             itor != clients.end();
@@ -71,7 +71,7 @@ void GameMenu::host(QList<QString> clients, QString pseudo)
 
         server.startAcceptingClients(clientNames);
         client.connect("localhost", pseudo.toStdString());
-        server.waitUntilAllClientsConnected(2.f);
+        server.waitUntilAllClientsConnected(5.f);
 
         server.start();
 
@@ -87,7 +87,7 @@ void GameMenu::host(QList<QString> clients, QString pseudo)
 
 void GameMenu::join(QString serverAddress, QString pseudo)
 {
-    QThread::msleep(100);
+    sf::sleep(sf::milliseconds(500));
     m_game.getClient().connect(serverAddress.toStdString(), pseudo.toStdString());
     startGame();
 }
