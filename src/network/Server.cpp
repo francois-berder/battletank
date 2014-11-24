@@ -182,7 +182,7 @@ void Server::createWorld()
     for(auto& c : m_clientNames)
     {
         std::stringstream ss;
-        ss << "a new tank ";
+        ss << "0 new tank ";
         ss << c;
         ss << " ";
         ss << i * 3;
@@ -192,8 +192,8 @@ void Server::createWorld()
         ++i;
     }
 
-    m_world.push_back("a new obstacle 10 11");
-    m_world.push_back("a new obstacle 10 10");
+    m_world.push_back("0 new obstacle 10 11");
+    m_world.push_back("0 new obstacle 10 10");
 }
 
 void Server::makeHandshake(sf::TcpSocket &socket, std::string &clientName)
