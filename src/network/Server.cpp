@@ -186,15 +186,14 @@ void Server::makeHandshake(sf::TcpSocket &socket, std::string &clientName)
     if(socket.receive(packet) != sf::Socket::Done)
         throw std::runtime_error("Could not receive data from client");
     packet >> str >> clientName;
-    if(str != "REQUEST_JOIN")
+    if(str != "REQUEST_JOIN" || m_clientNames.find(clientName) == m_clientNames.end())
     {
         packet.clear();
         packet << "PROTOCOL_ERROR";
         socket.send(packet);
-        
         throw std::runtime_error("Protocol error from client");
     }
-    // TODO: check that clientName belongs to m_clientNames
+
     packet.clear();
     packet << "JOIN" << clientName << m_id;
     if(socket.send(packet) != sf::Socket::Done)
