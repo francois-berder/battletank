@@ -13,8 +13,11 @@ TEMPLATE = app
 
 QMAKE_CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -Wold-style-cast -Woverloaded-virtual -Wfloat-equal -Wwrite-strings -Wpointer-arith -Wcast-qual -Wcast-align -Wconversion -Wshadow -Weffc++ -Wredundant-decls -Winit-self -Wswitch-default -Wswitch-enum -Wundef -Wlogical-op -Winline -Wno-unused-parameter
 
-CONFIG(release, debug|release): LIBS += -lX11 -lGLEW -ljpeg -lXrandr -lsfml-graphics-s -lsfml-network-s -lsfml-window-s -lsfml-system-s  -lBox2D
-CONFIG(debug, debug|release): LIBS += -lX11 -lGLEW -ljpeg -lXrandr -lsfml-graphics-s -lsfml-network-s -lsfml-window-s -lsfml-system-s  -lBox2D
+LIBS += -lsfml-graphics-s -lsfml-network-s -lsfml-window-s -lsfml-system-s  -lBox2D
+unix {
+     LIBS += -lX11 -lGLEW -ljpeg -lXrandr
+ }
+
 CONFIG(debug, debug|release): QMAKE_CXXFLAGS += -ggdb3
 CONFIG(debug, debug|release): QMAKE_CXXFLAGS += -O2
 
