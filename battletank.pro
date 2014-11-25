@@ -16,6 +16,7 @@ QMAKE_CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -Wold-style-cast -Woverloade
 CONFIG(release, debug|release): LIBS += -lX11 -lGLEW -ljpeg -lXrandr -lsfml-graphics-s -lsfml-network-s -lsfml-window-s -lsfml-system-s  -lBox2D
 CONFIG(debug, debug|release): LIBS += -lX11 -lGLEW -ljpeg -lXrandr -lsfml-graphics-s -lsfml-network-s -lsfml-window-s -lsfml-system-s  -lBox2D
 CONFIG(debug, debug|release): QMAKE_CXXFLAGS += -ggdb3
+CONFIG(debug, debug|release): QMAKE_CXXFLAGS += -O2
 
 INCLUDEPATH += \
     src\
